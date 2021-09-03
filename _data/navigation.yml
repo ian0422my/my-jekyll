@@ -1,0 +1,31 @@
+# main links
+main:
+  - title: "About"
+    url: /about/
+  - title: "Blogs"
+    url: /blogs/
+  - title: "Contact Us"
+    url: /contact
+
+# _data/navigation.yml
+about:
+  - title: "About"
+    url: /my-jekyll/
+    children:
+      - title: "About"
+        url: /about/
+      - title: "Blogs"
+        url: /blogs/
+      - title: "Contact Us"
+        url: /contact/
+
+architecture:
+  - title: "Architecture"
+    url: /xdlab/architecture/
+    children:
+    - title: "Goal"
+      url: /xdlab/architecture/#goal
+    - title: "Users"
+      url: /xdlab/architecture/#users
+    - title: "Design"
+      url: /xdlab/architecture/#design
