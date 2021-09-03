@@ -45,6 +45,7 @@ plantuml:
   ssl_noverify: '0'
   http_debug:   '1'
   
+search: true
 
 defaults:
  #_pages
