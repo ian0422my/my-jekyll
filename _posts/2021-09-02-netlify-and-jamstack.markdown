@@ -24,6 +24,18 @@ sidebar:
 * go to netlify and deploy
 * preview (e.g. <https://focused-agnesi-dc5095.netlify.app/>)
 
+### troubleshooting
+
+#### how come css, js not loading (404) after deploy to netlify?
+
+* navigate to Settings > Build & Deploy > Post Processing > Asset Optimization, you will see a setting to Bundle/Minify CSS files. I unchecked both, and re-deployed my site
+
+##### Reference
+
+<https://answers.netlify.com/t/some-images-producing-failed-to-load-resource-error-on-netlify-build/1433/13>
+
+
+
 ## jekyll
 
 * static site generator; ruby; convert MD to HTML;

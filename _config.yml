@@ -24,7 +24,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   this blog is suppose to teach me how to create a jekyll site which should include things below
   1. create a simple jekyll site (duh)
   2. 
-baseurl: "/my-jekyll" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Build settings
