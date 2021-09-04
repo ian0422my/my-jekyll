@@ -48,6 +48,7 @@ feature_row3:
 |site.email|{{site.email}}|
 |site.description|{{site.description}}|
 |site.theme|{{site.theme}}|
+|site.minimal_mistakes_skin|{{site.minimal_mistakes_skin}}|
 |site.plantuml.url|{{site.plantuml.url}}|
 |site.plantuml.type|site.plantuml.type|
 |site.search|{{site.search}}|
