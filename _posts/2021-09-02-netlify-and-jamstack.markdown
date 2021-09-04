@@ -1,10 +1,10 @@
 ---
 layout: single
-classes: wide
+#classes: wide
 title:  "Netlify and Jamstack"
 date:   2021-09-03 15:49:50 +0800
 categories: netlify, jamstack
-toc: false
+toc: true
 toc_label: "In this page"
 toc_icon: " "
 toc_sticky: true
@@ -28,7 +28,10 @@ sidebar:
 
 #### how come css, js not loading (404) after deploy to netlify?
 
-* navigate to Settings > Build & Deploy > Post Processing > Asset Optimization, you will see a setting to Bundle/Minify CSS files. I unchecked both, and re-deployed my site
+* checked the downloaded site from netlify
+* checked index.html and notice that path to main.css is /my-jekyll/assets/css/main.css
+* notice that the only place i put "/my-jekyll" is "_config.yaml" for "baseurl"
+* remove the value "my_jekyll" and push to netlify. Success!!!
 
 ##### Reference
 

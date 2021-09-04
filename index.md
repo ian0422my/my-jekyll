@@ -1,5 +1,5 @@
 ---
-title: XDLab Cloud
+title: {{site.title}}
 permalink: /
 layout: splash
 
@@ -40,8 +40,16 @@ feature_row3:
     btn_class: "btn--primary"      
 ---
 
-# XDLab
+## {{site.title}}
 
-XDLab is Xperience Design Lab on Cloud.
+* portal configuration
+
+|key|value|
+|site.email|{{site.email}}|
+|site.description|{{site.description}}|
+|site.theme|{{site.theme}}|
+|site.plantuml.url|{{site.plantuml.url}}|
+|site.plantuml.type|site.plantuml.type|
+|site.search|{{site.search}}|
 
 {% include feature_row %}

@@ -87,12 +87,14 @@ bundle info --path jekyll-theme-minimal
 
 ## how to enable gui using plantuml
 
-* download your own local plantuml server by running below
+* download your own local plantuml server by running below (***do not point to <https://www.plantuml/>. it doesn't work and will keep returning the same image A->B***)
+
 ```sh
 cd workspace
 git clone https://github.com/plantuml/plantuml-server.git
 mvn jetty:run
 ```
+
 * make sure plantuml-server is running by visiting <http://localhost:8080/plantuml/>
 * edit _config.yaml and add content below (this will point your ruby to local plantuml server above)
 
@@ -135,3 +137,37 @@ Bob1 -> Alice1: hihi
 
 <https://gitlab.com/dgoo2308/jekyll-plantuml-url>
 <https://github.com/plantuml/plantuml-server>
+
+## how to reference and display url from _config.yaml
+
+* add line below (all value should prefix with "site.")
+
+{% raw %}
+
+```markdown
+{{site.title}}
+```
+
+{% endraw %}
+
+{{site.title}}
+
+## escape curl braces (or any special characters)
+
+* add snippet raw and endraw like below (ignore the backslah)
+
+```markdown
+\{\% raw %}
+special character like {} will not be evaluated
+\{\% endraw %}
+```
+
+just like this...
+
+{% raw %}
+special character like {} will not be evaluated
+{% endraw %}
+
+### Reference
+
+<https://stackoverflow.com/questions/24102498/escaping-double-curly-braces-inside-a-markdown-code-block-in-jekyll>
