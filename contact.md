@@ -12,4 +12,4 @@ sidebar:
 
 This page is to describe who and how to contact XDLab Team
 
-* Email: <support@xdlanncs.com>
+* Email: <ianlow@ncs.com.sg>
