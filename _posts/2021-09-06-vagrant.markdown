@@ -1,0 +1,32 @@
+---
+layout: single
+#classes: wide
+title:  "Vagrant"
+date:   2021-09-06 10:25:50 +0800
+categories: vagrant
+toc: true
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+## Purpose
+
+## Troubleshooting
+
+### cannot reload vagrant
+
+```cmd
+There was an error while executing `VBoxManage`, a CLI used by Vagrant
+for controlling VirtualBox. The command and stderr is shown below.
+
+Command: ["startvm", "fc202717-d4f4-4881-82f7-a5391f49f669", "--type", "headless"]
+
+Stderr: VBoxManage.exe: error: The VM session was closed before any attempt to power it on
+VBoxManage.exe: error: Details: code E_FAIL (0x80004005), component SessionMachine, interface ISession
+```
+
+* open Task Manager and remove all services that starts with "Virtual..."
+* run "vagrant reload"

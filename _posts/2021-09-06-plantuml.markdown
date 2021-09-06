@@ -42,4 +42,3 @@ sidebar:
 ### Reference
 
 <https://plantuml.com/commons>
-

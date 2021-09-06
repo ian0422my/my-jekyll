@@ -52,6 +52,7 @@ sidebar:
 * automatically create junit from class (select class > CTRL+1)
   * select all methods and create test method for it
 * mockito and junit version matters
+* how to run junit faster in eclipse, add -noverify i eclipse.ini and restart eclipse
 
 ## Mocking
 
