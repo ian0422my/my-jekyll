@@ -1,0 +1,45 @@
+---
+layout: single
+#classes: wide
+title:  "PlantUML"
+date:   2021-09-06 10:25:50 +0800
+categories: PlantUML
+toc: true
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+### Diagrams (What can be drawn?)
+
+* activity
+* class
+* use case
+* gannt chant
+* object
+* mindmap
+* network
+* sequence
+* state
+* timing
+* work breakdown (wbs)
+* wireframe (salt)
+
+### Features (what diagram features is available?)
+
+* comments
+  * simple comment
+  * block comment
+* zoom
+* title
+* capture
+* footer
+* header
+* legend
+
+### Reference
+
+<https://plantuml.com/commons>
+
