@@ -15,6 +15,7 @@ sidebar:
 ## Purpose
 
 * code quality
+  * to make sure expected result for expected input
 * is not meant for integration testing
 * not meant to catch bug
 * good unit testing design will be a good KT to colleague
@@ -31,6 +32,7 @@ sidebar:
 * Write tests for methods that have the fewest dependencies first, and work your way up
   * simple first; complex later
 * ***All methods, regardless of visibility, should have appropriate unit tests***
+  * although is not so straight forward to test private method
 * ***Aim for each unit test method to perform exactly one assertion***
 * Create unit tests that target exceptions
 * Use the most appropriate assertion methods
