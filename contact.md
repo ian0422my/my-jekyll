@@ -10,6 +10,4 @@ sidebar:
   nav: "about"
 ---
 
-This page is to describe who and how to contact XDLab Team
-
 * Email: <ianlow@ncs.com.sg>
