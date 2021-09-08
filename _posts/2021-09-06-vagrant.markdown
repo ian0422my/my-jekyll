@@ -14,6 +14,58 @@ sidebar:
 
 ## Purpose
 
+* to create a vm and run it with a settings (predefined set of instructions)
+* find the box you need @ <https://app.vagrantup.com/boxes/search> (please set proxy using http_proxy, https_proxy)
+
+```Vagrantfile
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.box_url = "https://app.vagrantup.com/ubuntu/boxes/trusty64"
+end
+```
+
+## list of exisitng boxes
+
+<https://www.vagrantbox.es68>
+
+## Create your own box
+
+<https://scotch.io/tutorials/how-to-create-a-vagrant-base-box-from-an-existing-one>
+
+## CLI
+
+* extra
+  * all cli can be debug with --debug
+  * all cli output can be output to file using &> log.log
+* vagrant plugin install <plugin name>
+  * sometimes you might not be able to install if the certificate is self-signed, run this in cygwin @  How to configure Vagrant to ignore SSL certificate – sleeplessbeastie's notes
+    * linux
+
+```sh
+echo :ssl_verify_mode: 0 | tee ~/.gemrc 
+```
+
+    * window
+      * create c:\users\<your nmae>\.gemrc 
+			* edit and add content below
+			* 
+	* vagrant plugin expunge --reinstall
+	* vagrant ssh-config
+	* vagrant global-status - check vm running
+
+
+
+```txt
+:ssl_verify_mode: 0
+```
+
 ## Troubleshooting
 
 ### cannot reload vagrant

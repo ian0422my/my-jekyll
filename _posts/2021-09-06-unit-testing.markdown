@@ -20,6 +20,25 @@ sidebar:
 * not meant to catch bug
 * good unit testing design will be a good KT to colleague
 
+## Concept
+
+* to test ***all possible variation of external input*** factors and make sure all are handled with ***expected result*** (i.e. to cover all possible scenarios)
+  * external input
+    * type
+      * input parameters to the method
+      * resources/files being used by the method
+      * api called by the method
+    * test case should cover positive/negative scenario of the input paraemters
+  * expected output
+* test case
+  * name should be as clear as possible. E.g. test(method name)_(input parameters scenario)_(expected output)
+    * E.g.
+      * testGetWeather_googleweatherdown_shouldbenoresult
+  * number of test case ideally should be X * Y
+    * where
+      * X - method to test
+      * Y - number of input parameters scenario
+
 ### Best Practices
 
 * ***Test only one code unit at a time***
@@ -104,14 +123,31 @@ public void testGetSingPassLoginUrl() {
   PowerMockito.when(CommonGuavaCacheUtil.get(SingPassOIDCConstants.OPENID_DISCOVERY_INFO)).thenReturn((String)singPassOIDCOpenDiscoveryJSON);
 ```
 
+### mock a void method
+
+
 * mockito
   * for sling, need to use slingcontext
 
+## Injection
+
+* you don't need to inject static method (i.e. mockStatic(class))
+
+### inject service into class
+
+```java
+  userService = mock(UserService.class);
+  PowerMockito.when(userService.getInternal_500_Url()).thenReturn("/errors/internal-server-error.html");
+  context.registerService(UserService.class, userService);
+  
+  Whitebox.setInternalState(singPassJWKSServletTest, "userService", userService);
+```
+
 ## Assertion
 
-### Test a void method
+### Test a void method (Mockito.verify)
 
-* only way is to confirm that method is invoked by using verify
+* only way is to confirm that method is invoked at least once by using Mockito.verify
 
 ```java
   // mock a class
@@ -124,8 +160,39 @@ public void testGetSingPassLoginUrl() {
   Mockito.verify(singPassOIDCServiceImplTest, Mockito.times(1)).retrieveOpenIdDiscoveryInfo();
 ```
 
-### Assert exception
+### Assert exception (Junit)
 
 ```java
 Assertions.assertThrows(Exception.class, ()->singPassOIDCServiceImplTest.retrieveOpenIdDiscoveryInfo());
 ```
+
+### Verify (Mockito.verify)
+
+```java
+  MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
+  MockSlingHttpServletResponse response = mock(MockSlingHttpServletResponse.class);
+  
+  singPassJWKSServletTest.doGet(request, response);
+  
+  // verify the senddirect is correct
+  Mockito.verify(response).sendRedirect(INTERNAL_SERVER_ERROR_URL);
+```
+
+## TLDR; 
+
+* Mockito
+  * verify(class)
+    * make sure method is called
+  * verify(class, Mockito.times(N))
+    * make sure atleast called N times
+    * times == VerificationMode
+      * Mockito.times(N)
+      * Mockito.atMost(N)
+      * Mockito.atLeast(N)
+      * Mockito.atLeastOnce()
+      * Mockito.atMostOnce()
+  * verifyNoMoreInteractions(class)
+    * make sure method is not called
+  * verify(mockedList).add(anyString());
+    * verify method called with any argument
+  * mock - mock a class
