@@ -23,11 +23,15 @@ sidebar:
 ## Concept
 
 * to test ***all possible variation of external input*** factors and make sure all are handled with ***expected result*** (i.e. to cover all possible scenarios)
-  * external input
-    * type
+  * Summary
+    * as long as the output is different when input is different, it should be tested (so that the output is expected)
+  * input
+    * should cover
       * input parameters to the method
+    * should not cover (external factors; these should be cover under SIT)
       * resources/files being used by the method
       * api called by the method
+        * this should be cover by SIT
     * test case should cover positive/negative scenario of the input paraemters
   * expected output
 * test case
@@ -44,6 +48,10 @@ sidebar:
 * ***Test only one code unit at a time***
   * if method got 2 input parameter, you should atleast have 4 test case - 00,01,10,11
 * Don’t make unnecessary assertions
+* what to mock?
+  * ***mock reference class***
+  * ***Don't mock test case*** 
+    * it defeat the purpose since the results is mocked.
 * Mock out all external services and state
 * Don’t unit-test configuration settings
 * ***Name your unit tests clearly and consistently***
@@ -125,15 +133,30 @@ public void testGetSingPassLoginUrl() {
 
 ### mock a void method
 
+```java
+// non-static 
+Mockito.doNothing().when(httpSession).putValue(Mockito.anyString(), Mockito.anyString());
+// Mockito.doNothing().when(CLAZZ).<void method>;
 
-* mockito
-  * for sling, need to use slingcontext
+// static
+PowerMockito.doNothing().when(SessionUtil.class, "regenerateSessionId", request);//78
+// PowerMockito.doNothing().when(STATIC CLAZZ, method name, input parameters....)
+```
+
+### mock private method
+
+* generally you can't, but you can verify if a private method is invokes
+
+```java
+PowerMockito.verifyPrivate(singPassOIDCOpenIDDiscoverySchedulerTest).invoke("addScheduler", config)
+// PowerMockito.verifyPrivate(clazz).invoke("<private method name>", prameters....);
+```
 
 ## Injection
 
 * you don't need to inject static method (i.e. mockStatic(class))
 
-### inject service into class
+### inject mock service into class (or set field value)
 
 ```java
   userService = mock(UserService.class);
@@ -141,6 +164,17 @@ public void testGetSingPassLoginUrl() {
   context.registerService(UserService.class, userService);
   
   Whitebox.setInternalState(singPassJWKSServletTest, "userService", userService);
+```
+
+### create mock osgi and activate it
+
+* this is used when you can't inject value into private field of a service (e.g. config). then you have to create the service (new(), cannot mock(...)) and register/activate it
+
+```java
+SingPassOIDCServiceImpl singPassOIDCServiceImplTest = new SingPassOIDCServiceImpl();
+Map parameters = new HashMap();
+parameters.put("enableSingPassLogin", true); // private String ENABLE_SP_LOGIN = config.enableSingPassLogin() -- ENABLE_SP_LOGIN cannot be mock
+context.registerInjectActivateService(singPassOIDCServiceImplTest, parameters);
 ```
 
 ## Assertion
