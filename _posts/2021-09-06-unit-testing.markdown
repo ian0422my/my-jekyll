@@ -69,10 +69,23 @@ sidebar:
 * Do not use static members in a test class. If you have used then re-initialize for each test case
 * Do not write your own catch blocks that exist only to fail a test
 * Do not skip unit tests
+* not everything can be mock, if that's the case, you have to treat it as a real class
 
 #### Reference
 
 <https://howtodoinjava.com/best-practices/unit-testing-best-practices-junit-reference-guide/#not-find-bugs>
+
+### Coverage
+
+* always use code coverage tools (e.g.EclEmma. normally installed in eclipse) to make sure all condition is covered
+  * just right click on actual class, coverage > run as configuration
+    * Red means not implemented
+    * yellow means partially covered
+    * green means implemented
+
+#### Reference
+
+<https://developers.redhat.com/blog/2017/10/06/java-code-coverage-eclipse>
 
 ### How?
 
@@ -143,9 +156,63 @@ PowerMockito.doNothing().when(SessionUtil.class, "regenerateSessionId", request)
 // PowerMockito.doNothing().when(STATIC CLAZZ, method name, input parameters....)
 ```
 
+### mock local variable
+
+* no need. local variable is like realy variable. it will instantiates on its own when you call the method.
+
+```java
+public void test1() {
+  String a = "";// no need to mock this
+}
+```
+
+### mock input parameters
+
+* Given real class as below
+
+```java
+// real class
+class Class1 {
+  public void method1() {
+    String a = " modified";
+    method2(a);
+  }
+  public String method2(String a) {
+    
+    System.out.println("A : " + a);  
+
+    return a.toUpperCase();
+  }
+}
+```
+
+* you can either pass in the real value
+
+```java
+Mockito.when(class1.method2("a")).thenReturn("FakeA");
+// when testing
+System.out.println(class1.method2("a"));// you'll get FakeA
+```
+
+* or pass in Mockito.anyString()
+
+```java
+Mockito.when(class1.method2(Mockito.anyString())).thenReturn("FakeA");
+// when testing
+System.out.println(class1.method2(null));// you'll get exception since anyString() is not "null"
+```
+
+* or pass in Mockito.any()
+
+```java
+Mockito.when(class1.method2(Mockito.anyString())).thenReturn("FakeA");
+// when testing
+System.out.println(class1.method2(null));// you'll get FakeA since any() is "null"
+```
+
 ### mock private method
 
-* generally you can't, but you can verify if a private method is invokes
+* you can't. you can only verify that's it's being invoked
 
 ```java
 PowerMockito.verifyPrivate(singPassOIDCOpenIDDiscoverySchedulerTest).invoke("addScheduler", config)
@@ -182,6 +249,7 @@ context.registerInjectActivateService(singPassOIDCServiceImplTest, parameters);
 ### Test a void method (Mockito.verify)
 
 * only way is to confirm that method is invoked at least once by using Mockito.verify
+* ***only applies to mock class***
 
 ```java
   // mock a class
@@ -194,13 +262,7 @@ context.registerInjectActivateService(singPassOIDCServiceImplTest, parameters);
   Mockito.verify(singPassOIDCServiceImplTest, Mockito.times(1)).retrieveOpenIdDiscoveryInfo();
 ```
 
-### Assert exception (Junit)
-
-```java
-Assertions.assertThrows(Exception.class, ()->singPassOIDCServiceImplTest.retrieveOpenIdDiscoveryInfo());
-```
-
-### Verify (Mockito.verify)
+* second example
 
 ```java
   MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
@@ -212,7 +274,13 @@ Assertions.assertThrows(Exception.class, ()->singPassOIDCServiceImplTest.retriev
   Mockito.verify(response).sendRedirect(INTERNAL_SERVER_ERROR_URL);
 ```
 
-## TLDR; 
+### Assert exception (Junit)
+
+```java
+Assertions.assertThrows(Exception.class, ()->singPassOIDCServiceImplTest.retrieveOpenIdDiscoveryInfo());
+```
+
+## TLDR
 
 * Mockito
   * verify(class)
