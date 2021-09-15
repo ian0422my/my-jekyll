@@ -25,6 +25,7 @@ sidebar:
 * to test ***all possible variation of external input*** factors and make sure all are handled with ***expected result*** (i.e. to cover all possible scenarios)
   * Summary
     * as long as the output is different when input is different, it should be tested (so that the output is expected)
+      * always verify with [code coverage](#coverage)
   * input
     * should cover
       * input parameters to the method
@@ -50,7 +51,7 @@ sidebar:
 * Don’t make unnecessary assertions
 * what to mock?
   * ***mock reference class***
-  * ***Don't mock test case*** 
+  * ***Don't mock test case***
     * it defeat the purpose since the results is mocked.
 * Mock out all external services and state
 * Don’t unit-test configuration settings
@@ -70,6 +71,25 @@ sidebar:
 * Do not write your own catch blocks that exist only to fail a test
 * Do not skip unit tests
 * not everything can be mock, if that's the case, you have to treat it as a real class
+* if you find certain statement ***hard to mock, convert the statement to utility class with static method*** (just make sure you also write test case for the static method)
+  * e.g.
+
+```java
+String iss = "http://localhost:5156";
+String target = "http://localhost:5156";
+if(!iss.equals(target)) { // hard to mock
+  throw new Exception("unmatched"); // test this!!!!
+}
+// chnage to
+public CommonUtil {
+  public static boolean isSame(Strnig src, String target) {
+    return src.equalsIgnoreCase(target);
+  }
+}
+// test class
+Mockito.mockStatic(CommonUtil.class);
+Mockito.when(CommonUtil.isSame(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+```
 
 #### Reference
 
@@ -87,7 +107,7 @@ sidebar:
 
 <https://developers.redhat.com/blog/2017/10/06/java-code-coverage-eclipse>
 
-### How?
+### How to create unit test in eclisps?
 
 * automatically create junit from class (select class > CTRL+1)
   * select all methods and create test method for it
