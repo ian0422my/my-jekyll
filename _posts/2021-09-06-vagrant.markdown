@@ -60,8 +60,6 @@ echo :ssl_verify_mode: 0 | tee ~/.gemrc
 	* vagrant ssh-config
 	* vagrant global-status - check vm running
 
-
-
 ```txt
 :ssl_verify_mode: 0
 ```
@@ -82,3 +80,13 @@ VBoxManage.exe: error: Details: code E_FAIL (0x80004005), component SessionMachi
 
 * open Task Manager and remove all services that starts with "Virtual..."
 * run "vagrant reload"
+
+### run "vagrant ssh" and system complain "permission for private_key is too open"
+
+* i notice that there are 2 ssh commnad "where ssh" in my system. 1 from Openssh and 1 from git. Openssh command is having issue
+  * to resolve, just add git bin path to env variables PATH
+  * restart cmd
+
+#### Reference
+
+<https://superuser.com/questions/1296024/windows-ssh-permissions-for-private-key-are-too-open>

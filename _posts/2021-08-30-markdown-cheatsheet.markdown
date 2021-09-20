@@ -41,3 +41,28 @@ or
 ```
 
 ![netlify download site](/assets/images/netlify-download-site.png)
+
+### table
+
+* use "|" as delimeter
+* if using visual studio code, we can use plugin "markdown all in one" to format
+
+change from
+`
+```markdown
+|header1|header2|header3|
+|:---|:---|:---|
+|short|mediummedium|longlonglong|
+```
+
+to (select table > SHIFT+ALT+F)
+
+```markdown
+| header1 | header2      | header3      |
+| :------ | :----------- | :----------- |
+| hort    | mediummedium | longlonglong |
+```
+
+| header1 | header2      | header3      |
+| :------ | :----------- | :----------- |
+| hort    | mediummedium | longlonglong |
