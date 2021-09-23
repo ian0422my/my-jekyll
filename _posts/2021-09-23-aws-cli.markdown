@@ -1,0 +1,28 @@
+---
+layout: single
+#classes: wide
+title:  "AWS CLI"
+date:   2021-09-23 14:52:50 +0800
+categories: aws, cli
+toc: true
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+## CLI
+
+### EC2
+
+| command | subcommand                                                               | remarks                                  |
+| :------ | :----------------------------------------------------------------------- | :--------------------------------------- |
+| aws ec2 | describe-instances                                                       | list instance                            |
+|         | run-instances --image-id ami-xxxxxxxx --count 1 --instance-type t2.micro | run instance                             |
+|         | create-tags --resources i-5203422c --tags Key=Name,Value=MyInstance      |                                          |
+|         |                                                                          | terminate-instances --instances-ids <id> |
+
+### Reference
+
+<https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-services.html>
