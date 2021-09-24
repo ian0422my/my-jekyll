@@ -14,8 +14,18 @@ sidebar:
 
 ## Purpose
 
-* to create a vm and run it with a settings (predefined set of instructions)
+* ruby based
+* to create a provider(VirtualBox, Hyper-V, Docker) and run it with a settings (predefined set of instructions)
 * find the box you need @ <https://app.vagrantup.com/boxes/search> (please set proxy using http_proxy, https_proxy)
+* provisions
+* plugins
+* providers
+  * must install the program on host first (e.g. docker desktop for docker)
+  * list
+    * VirtualBox (default)
+    * Hyper-V
+    * Docker
+      * docker-exec
 
 ```Vagrantfile
 # -*- mode: ruby -*-
@@ -90,3 +100,24 @@ VBoxManage.exe: error: Details: code E_FAIL (0x80004005), component SessionMachi
 #### Reference
 
 <https://superuser.com/questions/1296024/windows-ssh-permissions-for-private-key-are-too-open>
+
+## Sample
+
+### Vagrantfile for Docker
+
+* make sure docker is install on host
+* create with sample file below
+* run vagrant "vagrant up --provider=docker"
+* open browser on host server and visit <http://localhost:19000/>
+
+```vagrantfile
+ENV['VAGRANT_DEFAULT_PROVIDER'] ||= 'docker'
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "docker" do |d|
+    d.image = "sonarqube:latest"
+    d.ports = ["19000:9000"]
+    d.name = "sonarqube-container"
+  end
+end
+```

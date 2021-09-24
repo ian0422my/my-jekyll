@@ -26,3 +26,4 @@ sidebar:
 ### Reference
 
 <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-services.html>
+<https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html>

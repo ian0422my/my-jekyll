@@ -39,6 +39,17 @@ sidebar:
 * header
 * legend
 
+### how to draw 
+
+#### on markdown
+
+```markdown
+{% plantuml %}
+A->B: hello
+B-A: go away!
+{% endplantuml %}
+```
+
 ### Reference
 
 <https://plantuml.com/commons>
