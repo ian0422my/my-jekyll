@@ -17,6 +17,8 @@ sidebar:
 * written using Golang
 * run your application in a lightweight vm (e.g. ubuntu)
 * need to run on virtualization (hyper-v or virtualbox)
+* docker compose
+  * list of docker commands to setup a proper running environment (web, application, db)
 
 ## Glossary
 
@@ -30,46 +32,51 @@ sidebar:
 | docker compose | yaml; run multiple cotntiners using 1 command            |
 | docker engine  | grouping; consists of docker client and docker daemon    |
 
+### Notes
+
+* run vs start
+  * start just stasrt a stopped existsing container
+  * run start both new and existing container
+
 ### Reference
 
 <https://docs.docker.com/glossary/>
 
 ## Command
 
-| command                                                                     | Description                                                                                       |
-| :-------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
-| docker container ls                                                         |                                                                                                   |
-| docker ps                                                                   |                                                                                                   |
-| docker inspect                                                              |                                                                                                   |
-| docker container inspect followed by docker image inspect                   |
-| docker exec -it <cid> /bin/bash                                             | login                                                                                             |
-| docker image ls                                                             | list all the images                                                                               |
-| docker images                                                               |                                                                                                   |
-| docker image build -t mydockerimage .                                       | build docker image                                                                                |
-| docker images                                                               | list iamge                                                                                        |
-| docker image rm -f <imageid>                                                | remove docker image from repository                                                               |
-| docker image inspect                                        \| grep Version | get image version                                                                                 |
-| docker container ls                                                         | list all running container. same as "docker ps"                                                   |
-| docker network ls                                                           | list of network                                                                                   |
-| docker container run -d --name <n> --network <nw> -it <cid>                 | create and run interactively                                                                      |
-| docker container start -ai <cid> bash                                       | start existing interactively                                                                      |
-| docker container rm -f cid                                                  | remove forcefuly - running or not                                                                 |
-| docker container start --env <containerid>                                  | allow environment variables to be passed to the application                                       |
-| docker container top <cid>                                                  | check status                                                                                      |
-| docker container status <cid>                                               | check running status                                                                              |
-| docker container inspect <cid>                                              | check running status                                                                              |
-| docker container port <cid>                                                 | show port mappin                                                                                  |
-| docker logs -f <cid>                                                        | tail logs                                                                                         |
-| docker network create <nid>                                                 | create network                                                                                    |
-| docker run -d -p 7080:80 --name <dockername> <dockerimage>                  | -d: run as daemon; -p ort mapping from host(7080) to guest(80); format: ip:hostPort:containerPort | ip::containerPort | hostPort: containerPost | containerPort; -rm: cleanup(do not persist container's file system) |
-| dockerimage                                                                 |                                                                                                   |
-| docker restart <containerid>                                                |
-| docker rm <cntainerid>                                                      |
-| docker container prune                                                      | remove all exited contatin                                                                        |
-| docker build ian0422my/catnip .                                             | build dockerimage from current folder (need Dockerfile)                                           |
-| docker login                                                                | login to docker                                                                                   |
-| docker push ian0422my/catnip                                                | push docker image to docker hub                                                                   |
-| docker cp <cid>:<container path> <local path>                               | copy file from container to host                                                                  |
+| command                                                     | Description                                                                                       |
+| :---------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
+| docker ps                                                   |                                                                                                   |
+| docker inspect                                              |                                                                                                   |
+| docker container inspect followed by docker image inspect   |
+| docker exec -it <cid> /bin/bash                             | login                                                                                             |
+| docker image ls                                             | list all the images                                                                               |
+| docker images                                               |                                                                                                   |
+| docker image build -t mydockerimage .                       | build docker image                                                                                |
+| docker images                                               | list iamge                                                                                        |
+| docker image rm -f <imageid>                                | remove docker image from repository                                                               |
+| docker image inspect \| grep Version                        | get image version                                                                                 |
+| docker container ls                                         | list all running container. same as "docker ps"                                                   |
+| docker network ls                                           | list of network                                                                                   |
+| docker container run -d --name <n> --network <nw> -it <cid> | create and run interactively                                                                      |
+| docker container start -ai <cid> bash                       | start existing interactively                                                                      |
+| docker container rm -f cid                                  | remove forcefuly - running or not                                                                 |
+| docker container start [--env <cid>]                        | allow environment variables to be passed to the application                                       |
+| docker container top <cid>                                  | check status                                                                                      |
+| docker container status <cid>                               | check running status                                                                              |
+| docker container inspect <cid>                              | check running status                                                                              |
+| docker container port <cid>                                 | show port mappin                                                                                  |
+| docker logs -f <cid>                                        | tail logs                                                                                         |
+| docker network create <nid>                                 | create network                                                                                    |
+| docker run -d -p 7080:80 --name <dockername> <dockerimage>  | -d: run as daemon<br/> -p ort mapping from host(7080) to guest(80)<br/> format: ip:hostPort:containerPort | ip::containerPort | hostPort: containerPost | containerPort<br/> -rm: cleanup(do not persist container's file system) |
+| dockerimage                                                 |                                                                                                   |
+| docker restart <cid>                                        |
+| docker rm <cid>                                             |
+| docker container prune                                      | remove all exited contatin                                                                        |
+| docker build ian0422my/catnip .                             | build dockerimage from current folder (need Dockerfile)                                           |
+| docker login                                                | login to docker                                                                                   |
+| docker push ian0422my/catnip                                | push docker image to docker hub                                                                   |
+| docker cp <cid>:<container path> <local path>               | copy file from container to host                                                                  |
 
 
 ### Build Docker Image

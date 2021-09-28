@@ -29,3 +29,5 @@ sidebar:
 ### Slow when loading or editing
 
 * disable git auto refresh (Settings > Extension > Git > Autorefresh)
+* debug using Process Explorer (Help > Open Process Explorer)
+* don't try to open a folder with alot of git project (else, vsc will keep running alot of git process at the background)

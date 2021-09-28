@@ -45,10 +45,12 @@ or
 ### table
 
 * use "|" as delimeter
-* if using visual studio code, we can use plugin "markdown all in one" to format
+* use ":--" as table row seaparater
+* if using visual studio code, we an use plugin "markdown all in one" to format
+* use \<br\/\> as carriage return
 
 change from
-`
+
 ```markdown
 |header1|header2|header3|
 |:---|:---|:---|
