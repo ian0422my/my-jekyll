@@ -34,3 +34,8 @@ git remote add origin https://github.com/ian0422my/my-project.git -- confirm the
 git branch -M main
 git push -u origin main
 ```
+
+### set git credentials
+
+git config --global user.name "username"
+git config --global user.password "password"

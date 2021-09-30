@@ -24,11 +24,12 @@ sidebar:
 # page section
 
 * configure this on top of your page
+
 ```yaml
 ---
 title: About
 permalink: /about/
-#classes: wide
+classes: wide # wide, narrow?
 layout: single # compress, single. archive, posts(taxonomy), categories(taxonomy),tags(taxonomy),collection(taxonomy),home(page), splash
 toc: true # only works for "layout: single"
 toc_label: "In this page"
