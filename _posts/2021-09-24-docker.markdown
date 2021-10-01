@@ -15,12 +15,34 @@ sidebar:
 ## Introduction
 
 * written using Golang
+* light footprint
+  * quick instantiation
 * run your application in a lightweight vm (e.g. ubuntu)
+* meant to ephemereal
+  * run and destoy; repeat
 * need to run on virtualization (hyper-v or virtualbox)
-* docker compose
-  * list of docker commands to setup a proper running environment (web, application, db)
+* configuration file
+  * [Dockerfile](#Dockerfile)
+    * yaml
+      * allow you to create custom image based on existing base image <https://thenewstack.io/docker-basics-how-to-use-dockerfiles/>
+      * good if you want to use image multiple times with configuration steps. E.g. web, app, db all can be build from the same image (with slight difference)
+  * docker-compose.yaml
+    * list of docker commands to setup and run multiple containers at the same time; 
+    * all containers is able to look at each other (localhost)
+    * commands
+      * docker-compose up # bring up containers
+      * docker-compose down # bring down conainer but preserve volumn
+      * docker-compose down --volume # bring down container and remove volume
+    * sammple
+      * wordpress, mysql
+        * <https://docs.docker.com/samples/wordpress/>
+* VS
+  * start just stasrt a stopped existsing container
+  * run start both new and existing container
 
 ## Glossary
+
+* <https://docs.docker.com/glossary/>
 
 | Name           | Description                                              |
 | :------------- | :------------------------------------------------------- |
@@ -32,78 +54,125 @@ sidebar:
 | docker compose | yaml; run multiple cotntiners using 1 command            |
 | docker engine  | grouping; consists of docker client and docker daemon    |
 
-### Notes
-
-* run vs start
-  * start just stasrt a stopped existsing container
-  * run start both new and existing container
-
-### Reference
-
-<https://docs.docker.com/glossary/>
-
-## VS
-
-* run vs start
-  * run is create new and run
-  * start is run existing
-
 ## Command
 
-| command                                                     | Description                                                                                       |
-| :---------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
-| docker ps                                                   |                                                                                                   |
-| docker inspect                                              |                                                                                                   |
+| command                                                     | Description                                                                                                         |
+| :---------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------ |
+| docker ps                                                   |                                                                                                                     |
+| docker inspect                                              |                                                                                                                     |
 | docker container inspect followed by docker image inspect   |
-| docker exec -it <cid> /bin/bash                             | login                                                                                             |
-| docker image ls                                             | list all the images                                                                               |
-| docker images                                               |                                                                                                   |
-| docker image build -t mydockerimage .                       | build docker image                                                                                |
-| docker images                                               | list iamge                                                                                        |
-| docker image rm -f <imageid>                                | remove docker image from repository                                                               |
-| docker image inspect \| grep Version                        | get image version                                                                                 |
-| docker container ls                                         | list all running container. same as "docker ps"                                                   |
-| docker network ls                                           | list of network                                                                                   |
-| docker container run -d --name <n> --network <nw> -it <cid> | create and run interactively                                                                      |
-| docker container start -ai <cid> bash                       | start existing interactively                                                                      |
-| docker container rm -f cid                                  | remove forcefuly - running or not                                                                 |
-| docker container start [--env <cid>]                        | allow environment variables to be passed to the application                                       |
-| docker container top <cid>                                  | check status                                                                                      |
-| docker container status <cid>                               | check running status                                                                              |
-| docker container inspect <cid>                              | check running status                                                                              |
-| docker container port <cid>                                 | show port mappin                                                                                  |
-| docker logs -f <cid>                                        | tail logs                                                                                         |
-| docker network create <nid>                                 | create network                                                                                    |
+| docker exec -it <cid> /bin/bash                             | login                                                                                                               |
+| docker image ls                                             | list all the images                                                                                                 |
+| docker images                                               |                                                                                                                     |
+| docker image build -t mydockerimage .                       | build docker image                                                                                                  |
+| docker images                                               | list iamge                                                                                                          |
+| docker image rm -f <imageid>                                | remove docker image from repository                                                                                 |
+| docker image inspect \| grep Version                        | get image version                                                                                                   |
+| docker container ls                                         | list all running container. same as "docker ps"                                                                     |
+| docker network ls                                           | list of network                                                                                                     |
+| docker container run -d --name <n> --network <nw> -it <cid> | create and run interactively                                                                                        |
+| docker container start -ai <cid> bash                       | start existing interactively                                                                                        |
+| docker container rm -f cid                                  | remove forcefuly - running or not                                                                                   |
+| docker container start [--env <cid>]                        | allow environment variables to be passed to the application                                                         |
+| docker container top <cid>                                  | check status                                                                                                        |
+| docker container status <cid>                               | check running status                                                                                                |
+| docker container inspect <cid>                              | check running status                                                                                                |
+| docker container port <cid>                                 | show port mappin                                                                                                    |
+| docker logs -f <cid>                                        | tail logs                                                                                                           |
+| docker network create <nid>                                 | create network                                                                                                      |
 | docker run -d -p 7080:80 --name <dockername> <dockerimage>  | -d: run as daemon<br/> -p ort mapping from host(7080) to guest/container(80)<br/> format: ip:hostPort:containerPort | ip::containerPort | hostPort: containerPost | containerPort<br/> -rm: cleanup(do not persist container's file system) |
-| dockerimage                                                 |                                                                                                   |
+| dockerimage                                                 |                                                                                                                     |
 | docker restart <cid>                                        |
 | docker rm <cid>                                             |
-| docker container prune                                      | remove all exited contatin                                                                        |
-| docker build ian0422my/catnip .                             | build dockerimage from current folder (need Dockerfile)                                           |
-| docker login                                                | login to docker                                                                                   |
-| docker push ian0422my/catnip                                | push docker image to docker hub                                                                   |
-| docker cp <cid>:<container path> <local path>               | copy file from container to host                                                                  |
+| docker container prune                                      | remove all exited contatin                                                                                          |
+| docker build ian0422my/catnip .                             | build dockerimage from current folder (need Dockerfile)                                                             |
+| docker login                                                | login to docker                                                                                                     |
+| docker push ian0422my/catnip                                | push docker image to docker hub                                                                                     |
+| docker cp <cid>:<container path> <local path>               | copy file from container to host                                                                                    |
+| docker compose up                                           | run docker using docker-compose.yml                                                                                 |
 
+### Docker Compose
 
-### Build Docker Image
+* tool for defining and running multi-container Docker applications
+* create docker-compose.yaml below (Wordpress:80 -> MySQL:3306)
 
-* create Dockerfile with content below
-  * select image
-    * FROM debian:sid
-  * run os command (i.e. run)
-  	* RUN apt-get clean
-	* copy file from host to image
-  	* ADD .bashrc /root/.bashrc
-  * copy folder from host to image
-    * ADD app /app
-    	* ADD and COPY both allow copy file from host to guest; ADD allow also add from URL and tar
-  * set environment variables
-  	* ENV PYTHONIOENCODING UTF-8
-	* build image from curennt (i.e. ".") folder
-		* docker image build -t <tag> .
-  * provision
-    * docker run
+```yaml
+version: "3.9"
+    
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+volumes:
+  db_data: {}
+  wordpress_data: {}
+```
 
-#### Reference
+* bring up containers
 
-<https://www.sitepoint.com/how-to-build-an-image-with-the-dockerfile/>
+```ssh
+docker-compose up
+```
+
+* bring down conainer but preserve volume
+
+```ssh
+docker-compose down [--volume]
+```
+
+### Dockerfile
+
+* Reference
+  * <https://thenewstack.io/docker-basics-how-to-use-dockerfiles/>
+  * <https://www.sitepoint.com/how-to-build-an-image-with-the-dockerfile/>
+* create Dockerfile below
+
+```yaml
+FROM ubuntu:latest # image
+MAINTAINER NAME EMAIL
+ 
+RUN apt-get -y update
+RUN apt-get -y upgrade
+RUN apt-get install -y build-essential
+
+ADD .bashrc /root/.bashrc # copy file from host to container
+ADD app /app # copy folder frmo host to container
+
+ENV PYTHONIOENCODING UTF-8 # set environment variables
+
+Where NAME is your full name and EMAIL is your email address.
+```
+
+* build image
+
+```ssh
+docker image build -t <tag> . # define tag
+```
+
+* run
+
+```ssh
+docker run
+```
