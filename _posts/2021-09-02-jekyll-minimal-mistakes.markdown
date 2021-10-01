@@ -12,16 +12,17 @@ sidebar:
   nav: "about"
 ---
 
-# navigation
+## navigation
 
 * main - top menu
 * custom navigation can be created and reference in page
+
 ```yaml
 sidebar:
   nav: "about"
 ```
 
-# page section
+## page section
 
 * configure this on top of your page
 
@@ -43,4 +44,3 @@ sidebar:
 ## Reference
 
 <https://mmistakes.github.io/>
-

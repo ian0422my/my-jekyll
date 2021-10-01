@@ -42,6 +42,12 @@ sidebar:
 
 <https://docs.docker.com/glossary/>
 
+## VS
+
+* run vs start
+  * run is create new and run
+  * start is run existing
+
 ## Command
 
 | command                                                     | Description                                                                                       |
@@ -68,7 +74,7 @@ sidebar:
 | docker container port <cid>                                 | show port mappin                                                                                  |
 | docker logs -f <cid>                                        | tail logs                                                                                         |
 | docker network create <nid>                                 | create network                                                                                    |
-| docker run -d -p 7080:80 --name <dockername> <dockerimage>  | -d: run as daemon<br/> -p ort mapping from host(7080) to guest(80)<br/> format: ip:hostPort:containerPort | ip::containerPort | hostPort: containerPost | containerPort<br/> -rm: cleanup(do not persist container's file system) |
+| docker run -d -p 7080:80 --name <dockername> <dockerimage>  | -d: run as daemon<br/> -p ort mapping from host(7080) to guest/container(80)<br/> format: ip:hostPort:containerPort | ip::containerPort | hostPort: containerPost | containerPort<br/> -rm: cleanup(do not persist container's file system) |
 | dockerimage                                                 |                                                                                                   |
 | docker restart <cid>                                        |
 | docker rm <cid>                                             |

@@ -101,6 +101,21 @@ VBoxManage.exe: error: Details: code E_FAIL (0x80004005), component SessionMachi
 
 <https://superuser.com/questions/1296024/windows-ssh-permissions-for-private-key-are-too-open>
 
+### vagrant cannot find powershell
+
+```cmd
+The version of powershell currently installed on this host is less than
+the required minimum version. Please upgrade the installed version of
+powershell to the minimum required version and run the command again.
+
+  Installed version: N/A
+  Minimum required version: 3
+```
+
+* install the latest powershell (i was using powershell 7)
+  * once installed, the path will set to PATH
+* go to C:\Program Files (x86)\PowerShell\7\ and copy pwsh.exe to powershell.exe
+
 ## Sample
 
 ### Vagrantfile for Docker

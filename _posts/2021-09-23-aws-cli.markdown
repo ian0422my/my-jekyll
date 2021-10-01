@@ -14,6 +14,9 @@ sidebar:
 
 ## CLI
 
+* aws cli command can auto suggest
+  * just type "aws ec2" follow by "tab" (a list of avaulable command will occur)
+
 ### EC2
 
 | command | subcommand                                                               | remarks                                  |
