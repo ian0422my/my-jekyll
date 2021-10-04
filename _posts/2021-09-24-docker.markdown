@@ -15,9 +15,10 @@ sidebar:
 ## Introduction
 
 * written using Golang
-* light footprint
-  * quick instantiation
+* use [Visual Studio Code](./2021-09-22-visual-studio-code.markdown) (with docker plugin) to build docker image easily
 * run your application in a lightweight vm (e.g. ubuntu)
+  * light footprint
+  * quick instantiation
 * meant to ephemereal
   * run and destoy; repeat
 * need to run on virtualization (hyper-v or virtualbox)
@@ -94,6 +95,7 @@ sidebar:
 ### Docker Compose
 
 * tool for defining and running multi-container Docker applications
+* containers will joined the same network (can see each other by service.name. E.g. db:3306, wordpress:80 )
 * create docker-compose.yaml below (Wordpress:80 -> MySQL:3306)
 
 ```yaml
@@ -133,7 +135,7 @@ volumes:
 * bring up containers
 
 ```ssh
-docker-compose up
+docker-compose up [-d] [--remove-orphans]
 ```
 
 * bring down conainer but preserve volume
@@ -142,17 +144,37 @@ docker-compose up
 docker-compose down [--volume]
 ```
 
+#### Command
+
+<https://docs.docker.com/compose/reference/run/>
+
 ### Dockerfile
 
 * Reference
   * <https://thenewstack.io/docker-basics-how-to-use-dockerfiles/>
   * <https://www.sitepoint.com/how-to-build-an-image-with-the-dockerfile/>
+* to build dokcer image
 * create Dockerfile below
 
 ```yaml
+ARG username # build argument (can password from cli -buildargs key=value)
+ARG useremail=ianlow@ncs.com.sg
+
+RUN echo "my email is $useremail"
+
 FROM ubuntu:latest # image
+
+ENV GRAPHVIZ_DOT=/usr/bin/dot # container envinronment variables
+
 MAINTAINER NAME EMAIL
- 
+
+# COPY pom.xml /app/ # copy file from  host to container
+# COPY src /app/src/ # copy folder from  host to container 
+
+RUN echo "hi. user $username" # run command in container
+# apt-get update && \
+#    apt-get install -y --no-install-recommends graphviz fonts-noto-cjk && \
+#    rm -rf /var/lib/apt/lists/*   # run chain command
 RUN apt-get -y update
 RUN apt-get -y upgrade
 RUN apt-get install -y build-essential
@@ -162,13 +184,13 @@ ADD app /app # copy folder frmo host to container
 
 ENV PYTHONIOENCODING UTF-8 # set environment variables
 
-Where NAME is your full name and EMAIL is your email address.
+# Where NAME is your full name and EMAIL is your email address.
 ```
 
 * build image
 
 ```ssh
-docker image build -t <tag> . # define tag
+docker image build -t <tag> . --build-arg username=ianlow [-f custom.dockerfile]# with build arg
 ```
 
 * run
@@ -176,3 +198,24 @@ docker image build -t <tag> . # define tag
 ```ssh
 docker run
 ```
+
+* login to docker hub
+
+```ssh
+docker login
+```
+
+* push image to docker hub
+
+```ssh
+docker push
+```
+
+## Toubleshotting
+
+### container cannot access internet
+
+<https://stackoverflow.com/questions/59766135/not-able-to-access-internet-inside-docker-windows-container>
+
+* add ["dns":"202.166.1.56"] to docker engine json and restart docker
+* or add --dns 202.166.1.56 to start up command

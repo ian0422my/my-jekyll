@@ -38,7 +38,7 @@ gems:
   - 'jekyll-plantuml-url'
 
 plantuml:
-  url:          'http://localhost:8080/plantuml' 
+  url:          'http://my-jekyll_my-plantuml-server_1:8080/uml' 
   type:         'svg'
   ssl_noverify: '0'
   http_debug:   '1'

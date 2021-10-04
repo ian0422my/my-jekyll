@@ -1,0 +1,16 @@
+version: '2.4'
+
+services:
+  my-plantuml-server:
+    image: ian0422my/plantuml-server-jetty
+    ports:
+      - '8080:8080'
+
+  my-jekyll:
+    depends_on:
+    - my-plantuml-server
+    image: bretfisher/jekyll-serve
+    volumes:
+      - .:/site
+    ports:
+      - '4000:4000'

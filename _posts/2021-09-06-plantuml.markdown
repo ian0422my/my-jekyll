@@ -39,17 +39,29 @@ sidebar:
 * header
 * legend
 
-### how to draw 
+### how to draw
 
 #### on markdown
 
 ```markdown
-{% plantuml %}
+\{\% plantuml \%\}
 A->B: hello
-B-A: go away!
-{% endplantuml %}
+B->A: go away!!!
+\{\% endplantuml \%\}
 ```
+
+{% plantuml %}
+A->B: hihi
+B->A: go away!!!
+{% endplantuml %}
 
 ### Reference
 
 <https://plantuml.com/commons>
+
+### Docker
+
+* docker image build . -t ian0422my/plantuml-server-jetty -f Dockerfile.jetty
+* docker image build . -t ian0422my/plantuml-server-tomcat -f Dockerfile.tomcat
+* docker push ian0422my/plantuml-server-jetty
+* docker push ian0422my/plantuml-server-tomcat

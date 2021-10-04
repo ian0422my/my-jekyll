@@ -22,6 +22,11 @@ sidebar:
   * markdown all in one
     * can format whole document (e.g. table)
   * markdownlint
+  * Docker
+    * makes docker coding a breeze
+      * Example
+        * auto suggest on docker image
+        * ***UI to direct browsing of container's file system*** (e.g. /app, /bin, /etc)
 * written using nodejs
 
 ## Troubleshoot
