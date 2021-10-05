@@ -14,7 +14,7 @@ sidebar:
 
 ### Diagrams (What can be drawn?)
 
-* activity
+* [activity/flow chart](https://plantuml.com/activity-diagram-legacy)
 * class
 * use case
 * gannt chant

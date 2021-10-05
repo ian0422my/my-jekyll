@@ -18,6 +18,7 @@ sidebar:
   * sonarqube
     * code smell
     * bug
+    * security
   * maven checkstyle plugin
     * command
       * mvn checkstyle:checkstyle // check
