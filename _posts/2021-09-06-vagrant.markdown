@@ -17,12 +17,14 @@ sidebar:
 * ruby based
 * to create a provider(VirtualBox, Hyper-V, Docker) and run it with a settings (predefined set of instructions)
 * find the box you need @ <https://app.vagrantup.com/boxes/search> (please set proxy using http_proxy, https_proxy)
+* ***must disable hyper-v and containers*** (windows feature)
 * provisions
 * plugins
 * providers
   * must install the program on host first (e.g. docker desktop for docker)
   * list
     * VirtualBox (default)
+      * hyper-v and virtualbox doesn't work well. if using virtualbox, then have to disable ***hyper-v*** and ***containers*** (windows features)
     * Hyper-V
     * Docker
       * docker-exec

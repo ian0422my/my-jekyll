@@ -22,6 +22,9 @@ sidebar:
 * meant to ephemereal
   * run and destoy; repeat
 * need to run on virtualization (hyper-v or virtualbox)
+  * docker desktop requires
+    * [hyper-v and containers (windows features) to be enabled](https://docs.docker.com/desktop/windows/install/#hyper-v-backend-and-windows-containers)
+    * [wsl and containers](https://docs.docker.com/desktop/windows/wsl/)
 * configuration file
   * [Dockerfile](#Dockerfile)
     * yaml
