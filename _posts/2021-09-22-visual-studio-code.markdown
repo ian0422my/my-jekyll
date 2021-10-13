@@ -38,3 +38,8 @@ sidebar:
 * either
   * don't try to open a folder with alot of git project (else, vsc will keep running alot of git process at the background) at the "Source Control", OR
   * you can ignore some of the git project (Settings > git.ignoredRepositories)
+
+### can visual studio code docker extension connect to remote host?
+
+* yes. but prerequisties is need to install Docker in your local machine, and install docker extension (by microsoft)
+  * <https://www.axians-infoma.de/techblog/use-vs-code-docker-extension-remote-docker-host/>

@@ -1,0 +1,288 @@
+---
+layout: single
+#classes: wide
+title:  "Keycloak"
+date:   2021-10-11 11:00:50 +0800
+categories: keycloak
+toc: true
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+## Summary
+
+<https://ielio.medium.com/gitlab-sso-oidc-with-keycloak-9c027c632d28>
+
+### Docker
+
+#### Keycloak
+
+* docker-compose.yml
+* docker-compose up -d
+* Login to Keycloak user and password is `admin:Pa55w0rd`
+* docker-compose stop
+
+#### Gitlab
+
+* launch by running command below
+
+```ssh
+docker run -d -p 9080:80 --name gitlab1 --network keycloak_default --restart always gitlab/gitlab-ee:latest
+```
+
+* login to gitlab by visiting <http://localhost:8080/>
+* login using "root" and getting the password by running command below in vagrant
+
+```sh
+sudo docker exec -it gitlab1 grep 'Password:' /etc/gitlab/initial_root_password
+```
+
+* change root password (edit profile > password)
+* stop by running command below
+
+```sh
+sudo docker stop gitlab1
+```
+
+Login to Keycloak user and password is `admin:Pa55w0rd`
+
+##### Trust keycloak self signed certificate (not needed if you are using non-https)
+
+* use chrome to visit https://localhost:8443 
+* download certificate as base64 cer (certificate path > copy file)
+* copy cer to container
+  * docker cp keycloak-self-signed-certification-base64.cer gitlab1:/etc/gitlab/trusted-certs
+  * restart gitlab
+
+### OAuth
+
+#### SAML
+
+<https://docs.gitlab.com/ee/integration/saml.html>
+<https://dheeruthedeployer.medium.com/gitlab-integration-with-keycloak-e1b2ff11a177>
+
+* login to keycloak @ <http://localhost:8080>
+* create new realm
+  * name : devops
+* create new saml client
+  * settings
+    * client id: gitlab1
+    * name: gitlab1
+    * description: gitlab1
+    * enable: true
+    * login theme: keycloak
+    * client protocal: saml
+    * inlcude authnstaement: on
+    * sign doucment: on
+    * sign assertions: on
+    * signature algorithm: RSA_SHA256
+    * sam signature key name: KEY_ID
+    * canonicalization mrthod: EXCLUSIVE
+    * client signature required: on
+    * force post binding: on
+    * front channel logout: on
+    * name id format: persistent
+    * root url: http://gitlab1:9080
+    * valid redirect uris: http://gitlab1:9080/users/auth/saml/callback
+    * Base url: /
+    * master saml processing url: http://gitlab1:8080/users/auth/saml/callback
+    * ido initiated sso url name: gitlab1
+* create new role
+  * role name: gitlab1:external
+  * description: gitlab1:external
+* create new mapper
+  * Name
+    * Name: name
+    * Mapper Type: User Property
+    * Property: Username
+    * Friendly Name: Username
+    * SAML Attribute Name: name
+    * SAML Attribute NameFormat: Basic
+  * Email
+    * Name: email
+    * Mapper Type: User Property
+    * Property: Email
+    * Friendly Name: Email
+    * SAML Attribute Name: email
+    * SAML Attribute NameFormat: Basic
+  * First Name
+    * Name: first_name
+    * Mapper Type: User Property
+    * Property: FirstName
+    * Friendly Name: First Name
+    * SAML Attribute Name: first_name
+    * SAML Attribute NameFormat: Basic
+  * Last Name
+    * Name: last_name
+    * Mapper Type: User Property
+    * Property: LastName
+    * Friendly Name: Last Name
+    * SAML Attribute Name: last_name
+    * SAML Attribute NameFormat: Basic
+  * Role
+    * Name: roles
+    * Mapper Type: Role list
+    * Role attribute name: roles
+    * Friendly Name: Roles
+    * SAML Attribute NameFormat: Basic
+    * Single Role Attribute: On
+* new scope
+  * full scope allowed: on
+* copy certificate from realm to gitlab
+  * Go to Realm -> Keys -> RSA256 -> click on certificate -> copy it
+* copy gitlab.rb from gcitlab container to host
+
+```ssh
+cd /workspace/my-jekyll/assets/resources/gitlab/saml
+docker cp gitlab1:/etc/gitlab/gitlab.rb .
+```
+
+* copy content below to the end of gitlab.rb
+
+```yaml
+gitlab_rails["omniauth_enabled"] = true
+gitlab_rails["omniauth_allow_single_sign_on"] = ["saml"]
+# gitlab_rails["omniauth_auto_sign_in_with_provider"] = "saml"
+gitlab_rails["omniauth_block_auto_created_users"] = false
+# gitlab_rails["omniauth_auto_link_ldap_user"] = false
+gitlab_rails["omniauth_auto_link_saml_user"] = true
+gitlab_rails["omniauth_providers"] = [
+{
+    "name": "saml",
+    "args": {
+        "assertion_consumer_service_url": "http://gitlab1:9080/users/auth/saml/callback",
+        "idp_cert": "-----BEGIN CERTIFICATE-----MIICmzCCAYMCBgF8WoeMOTANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZEZXZvcHMwHhcNMjExMDA3MTEzMTQ1WhcNMzExMDA3MTEzMzI1WjARMQ8wDQYDVQQDDAZEZXZvcHMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCEksAv1SsLBFJZZFI3rw2gz5c4HFUZe7OenlbYuHdTkXrqn+5eg1Y7gJncjuGlGPfjBz5UR/y6GJULObbnq8a4SAgYqbtcN574dCvSg2WIAU6IsU537wRmNQLSSa+3XOy5wha4xBVjwu61wZSAmzPXyomFUd1LMIyk1AxDdjBzfv5XmVWV318e/yl971N86jprjVnjZCkdIC6RSI6w/AHo6BtIIuSehPWVCs0iOol5WcUk8gp6Dv5kHc+PiuhPUHnK4gRTOQV32DbniU1bEac4YvDHMut4rCps3DtZ97GIDwz2nlLAS+dw61xCi47TDI5MH217AiDgqcaheEM9U0whAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAAizvjbrvfcL2h5NdFW3wV3fAyUHkhz36VjQrMAsv8a3SG7MM9bZlU51I8SqN/H4YNF115r1gJs9+JVHvp5X5YSCyKWxGS7tXB7WCPE0Dg95rF/vx1IyKKxJgCFlA7/vyftm4RJRtY+JAcXP3RhbbGTTkyQgZjtnUNSWpS0IujS6pB/G+tve0Qz+kXesq5AmBjiicEnmKJLXmReEkF8jELQtI8ueMUYis2ibTclfotsspMTYtZux6r4Q02xQzRGrgwF508+wHZN3kBYxQvPQKgSuNpsFf3nu0Gjsis+6YD56NhHNY2QdFh/9Tq2tUHMm+AyxerW0cAasr6o74Spddfo=-----END CERTIFICATE-----",
+        "idp_sso_target_url": "http://keycloak_keycloak_1:8080/auth/realms/devops/protocol/saml/clients/gitlab1",
+        "issuer": "gitlab1",
+        "name_identifier_format": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+    },
+    "label": "KEYCLOAK LOGIN"
+ }
+]
+```
+
+* copy gitlab.rb to gitlab1 container
+
+```ssh
+cd /workspace/my-jekyll/assets/resources/gitlab/saml
+sudo docker cp gitlab.rb gitlab1:/etc/gitlab/
+```
+
+* restart gitlab1 container
+
+```ssh
+docker restart gitlab1
+```
+
+* add content below into c:\windows\system32\drivers\etc\hosts
+
+```txt
+127.0.0.1	localhost	picaaem101s.irasor.gov.sg	picaaem101u.irasor.gov.sg	my-plantuml-server	keycloak_keycloak_1	gitlab1
+```
+
+* test <http://localhost:8080>
+
+#### OIDC
+
+##### Keycloak
+
+* create new realm
+  * name: Test
+* create new client
+  * clientid: gitlab1
+  * client protocol: openid-connect
+  * access type: confidential
+  * enable
+    * standard flow enabled
+    * direct access granted enabled
+    * backchannel logout session required
+  * root url: http://gitlab1:9080
+  * admin url: http://gitlab1:9080
+  * web origins: http://gitlab1:9080
+  * valid redirect uris: *
+  * disable ssl
+* save the changes (a new tab named "credentials" will appear)
+  * client id: gitlab1
+  * client secret: 5c4d8305-c03d-47bf-a7d8-4999c1417990
+* create new user
+  * name: keycloakuser1
+  * email: keycloakuser1@email.com
+  * password: Pa55w0rd
+
+##### Gitlab
+
+<https://docs.gitlab.com/ee/integration/oauth_provider.html>
+<https://docs.gitlab.com/ee/administration/auth/oidc.html>
+
+* create new application (menu > applications > create)
+  * name: test
+  * redirect uri: http://gitlab1:9080 -- where user is redirect to after login successfully
+  * openid: checked
+  * trusted: checked
+  * confidential: checked
+  * expire access token: not checked
+  * scopes
+    * openid: checked
+* save
+  * application id: 7d867e47261edff23137f1a39535a9118c628227f49ca4b1159b1ec5bfa72cd1
+  * secret: 838d9c4a2194c6933cf784e9a6a7c0d4e953a0ebc23bfb83518c8577c4602b18
+* configure logout url (workaround from <https://gitlab.com/gitlab-org/gitlab/-/issues/31203>)
+  * menu > admin > general > sign-in restrictions > Sign-out page URL > http://keycloak_keycloak_1:8080/auth/realms/test/protocol/openid-connect/logout?redirect_uri=http://gitlab1:9080
+* cd /workspace/my-jekyll/assets/resources/gitlab/oidc
+* docker cp gitlab.rb gitlab1:/etc/gitlab/
+  
+```yaml
+gitlab_rails['omniauth_allow_single_sign_on'] = true
+gitlab_rails['omniauth_block_auto_created_users'] = false # enable auto create user
+gitlab_rails['omniauth_providers'] = [
+  { 'name' => 'openid_connect',
+    'label' => 'keycloak',
+    #'icon' => '<custom_provider_icon>',
+    'args' => {
+      'name' => 'openid_connect',
+      'scope' => ['openid','profile','email'],
+      'response_type' => 'code',
+      'issuer' => 'http://keycloak_keycloak_1:8080/auth/realms/test',
+      'discovery' => false, # tried "true" but unable to get it to work
+      'client_auth_method' => 'query',
+      'uid_field' => 'preferred_username',
+      'send_scope_to_token_endpoint' => 'false',
+      'client_options' => {
+        'identifier' => 'gitlab1',
+        'secret' => '5c4d8305-c03d-47bf-a7d8-4999c1417990', # take this value from keycloak > Test(reaml) > client > gitlab1 > credentials(tab)
+        'redirect_uri' => 'http://gitlab1:9080/users/auth/openid_connect/callback',
+        'authorization_endpoint' => 'http://keycloak_keycloak_1:8080/auth/realms/test/protocol/openid-connect/auth', # these info are all obtain from "Test" realm openid connect disovery url
+        'token_endpoint' => 'http://keycloak_keycloak_1:8080/auth/realms/test/protocol/openid-connect/token',
+        'userinfo_endpoint' => 'http://keycloak_keycloak_1:8080/auth/realms/test/protocol/openid-connect/userinfo',
+        'jwks_uri' => 'http://keycloak_keycloak_1:8080/auth/realms/test/protocol/openid-connect/certs',
+        'end_session_endpoint' => 'https://keycloak_keycloak_1:8443/auth/realms/test/protocol/openid-connect/logout'
+      }
+    }
+  }
+]
+```
+
+* docker restart gitlab1 (or use UI)
+* login through gitlab
+  * click on keycloak
+  * login to keycloak using
+    * keycloakuser1/Pa55w0rd
+      * user will be automatically created into gitlab
+  * redirect to gitlab homepage
+* logout
+  * gitlab will invoke <http://keycloak_keycloak_1:8080/auth/realms/test/protocol/openid-connect/logout?redirect_uri=http://gitlab1:9080>
+  * keycloak will clear session and redirect to http://gitlab1:9080
+
+###### Troubleshoot
+
+* Check your system clock to ensure the time is synchronized properly.
+* As mentioned in the documentation, make sure issuer corresponds to the base URL of the Discovery URL. For example, <https://accounts.google.com> is used for the URL <https://accounts.google.com/.well-known/openid-configuration>.
+* The OpenID Connect client uses HTTP Basic Authentication to send the OAuth2 access token if client_auth_method is not defined or if set to basic. If you are seeing 401 errors upon retrieving the userinfo endpoint, you may want to check your OpenID Web server configuration. For example, for oauth2-server-php, you may need to add a configuration parameter to Apache.
+
+### Useful Command
+
+docker exec -it gitlab1 tail -f /var/log/gitlab/gitlab-rails/production.log
+docker exec -it gitlab1 /bin/bash

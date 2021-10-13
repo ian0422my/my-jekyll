@@ -19,12 +19,17 @@ sidebar:
 * run your application in a lightweight vm (e.g. ubuntu)
   * light footprint
   * quick instantiation
-* meant to ephemereal
+* meant to ***ephemereal***
   * run and destoy; repeat
 * need to run on virtualization (hyper-v or virtualbox)
   * docker desktop requires
     * [hyper-v and containers (windows features) to be enabled](https://docs.docker.com/desktop/windows/install/#hyper-v-backend-and-windows-containers)
     * [wsl and containers](https://docs.docker.com/desktop/windows/wsl/)
+* can be connected ***remotely***
+  * guest
+    * dockerd -H tcp://0.0.0.0:2375
+  * host
+    * set DOCKER_HOST=tcp://<guest>:2375
 * configuration file
   * [Dockerfile](#Dockerfile)
     * yaml
@@ -90,7 +95,7 @@ sidebar:
 | docker rm <cid>                                             |
 | docker container prune                                      | remove all exited contatin                                                                                          |
 | docker build ian0422my/catnip .                             | build dockerimage from current folder (need Dockerfile)                                                             |
-| docker login                                                | login to docker                                                                                                     |
+| docker login                                                | login to docker  hub                                                                                                   |
 | docker push ian0422my/catnip                                | push docker image to docker hub                                                                                     |
 | docker cp <cid>:<container path> <local path>               | copy file from container to host                                                                                    |
 | docker compose up                                           | run docker using docker-compose.yml                                                                                 |

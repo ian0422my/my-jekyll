@@ -78,6 +78,10 @@ echo :ssl_verify_mode: 0 | tee ~/.gemrc
 
 ## Troubleshooting
 
+### vagrant not stable. sometimes can start properly, most of the time cannot
+
+* in windows, notice that "containers" and "hyper-v" (needed by docker-desktop) is the culprint. once disable, vagrant starts properly
+
 ### cannot reload vagrant
 
 ```cmd
