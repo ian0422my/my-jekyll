@@ -1,0 +1,22 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:1.15
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.crt:/etc/nginx/nginx.crt
+      - ./nginx/nginx.key:/etc/nginx/nginx.key
+    ports:
+    - "9443:9443"
+  sonarqube1:
+    image: sonarqube:latest
+    ports:
+    - "19000:9000"
+    - "8000:18000"
+    extra_hosts:
+    - "keycloak1:172.19.0.5"
+
+networks:
+  default:
+    external: true
+    name: keycloak_default

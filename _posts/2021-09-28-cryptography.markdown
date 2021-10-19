@@ -80,11 +80,11 @@ BgNVBAgTCkNhbGlmb3JuaWExCzAJBgNVBAYTAlVTMIGfMA0GCSqGSIb3DQEBAQUA
 
 ### Conversion
 
-### extract private key from jks
+#### extract private key from jks
 
 keytool -importkeystore -srckeystore signing.hc-dev-rsa-careshieldlife.jks -destkeystore signing.hc-dev-rsa-careshieldlife.jks.p12 -deststoretype PKCS12  -srcstorepass password1234  -srcalias signing.hc-dev-rsa.careshieldlife.gov.sg     -deststorepass password1234     -destkeypass password1234
 openssl pkcs12 -in signing.hc-dev-rsa-careshieldlife.jks.p12  -nodes -nocerts -out signing.hc-dev-rsa-careshieldlife.jks.p12.pem
 
-### generate public key from private key
+#### generate public key from private key
 
 openssl rsa -in signing.hc-dev-rsa-careshieldlife.jks.p12.pem -pubout > signing.hc-dev-rsa-careshieldlife.jks.p12.pem.pub

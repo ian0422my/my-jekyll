@@ -300,6 +300,17 @@ context.registerInjectActivateService(singPassOIDCServiceImplTest, parameters);
 Assertions.assertThrows(Exception.class, ()->singPassOIDCServiceImplTest.retrieveOpenIdDiscoveryInfo());
 ```
 
+### assert static method with void return
+
+```java
+      // run the class fisrt
+      singPassOIDCServiceImplTest.retrieveOpenIdDiscoveryInfo();
+      
+      // assert
+      PowerMockito.verifyStatic(CommonGuavaCacheUtil.class, Mockito.atLeastOnce());
+      CommonGuavaCacheUtil.put(SingPassOIDCTestConstants.OPENID_DISCOVERY_INFO, SingPassOIDCTestConstants.SINGPASS_OPENID_VALUE);
+```
+
 ## TLDR
 
 * Mockito
@@ -318,3 +329,35 @@ Assertions.assertThrows(Exception.class, ()->singPassOIDCServiceImplTest.retriev
   * verify(mockedList).add(anyString());
     * verify method called with any argument
   * mock - mock a class
+
+## Troubleshooting
+
+### Eclipse complains "no runnable method"
+
+* make sure test class has below on top of the class
+
+```java
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({
+        LogManager.class, Logger.class, RequestUtil.class, UserUtil.class,
+        GsonUtil.class, CommonUtil.class, CommonGuavaCacheUtil.class, PortalRestControllerService.class,
+        //CryptoUtil.class,
+        DateCustomUtil.class,
+        CipherUtil.class
+})
+@PowerMockIgnore({"javax.management.*", "com.sun.org.apache.xerces.*", "javax.xml.*",
+        "org.xml.*", "org.w3c.dom.*", "com.sun.org.apache.xalan.*",
+        "javax.activation.*", "javax.script.*", "javax.cyrpto.JceSecurity.*", "javax.crypto.*"})
+```java
+
+* make sure test class has public constructor
+* make sure test class has test annotation(@Test) and it must be from org.junit.Test
+
+```java
+@Test
+public void testGeneratePublicKeyFromPrivateKey_OK_PublicKeyReturned() throws CipherException {
+    // test method
+}
+```
+
+* make sure test method has public visibility

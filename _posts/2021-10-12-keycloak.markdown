@@ -22,19 +22,19 @@ sidebar:
 * add content below into c:\windows\system32\drivers\etc\hosts
 
 ```txt
-127.0.0.1	localhost	picaaem101s.irasor.gov.sg	picaaem101u.irasor.gov.sg	my-plantuml-server	keycloak_keycloak_1	gitlab1
+127.0.0.1	localhost	picaaem101s.irasor.gov.sg	picaaem101u.irasor.gov.sg	my-plantuml-server	keycloak_keycloak_1	gitlab1 nexus1  sonarqube1  keycloak1
 ```
 
 ### Docker
 
-#### Keycloak
+#### Keycloak(Done)
 
 * docker-compose.yml
 * docker-compose up -d
 * Login to Keycloak user and password is `admin:Pa55w0rd`
 * docker-compose stop
 
-#### Gitlab
+#### Gitlab(Done)
 
 * launch by running command below
 * run gitlab
@@ -55,7 +55,93 @@ sidebar:
   * docker cp keycloak-self-signed-certification-base64.cer gitlab1:/etc/gitlab/trusted-certs
   * restart gitlab
 
-### OAuth
+#### SonarQube + NGINX(Done)
+
+* create docker-compose.yaml with content below
+
+```yml
+version: '2'
+services:
+  nginx:
+    image: nginx:1.15
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.crt:/etc/nginx/nginx.crt
+      - ./nginx/nginx.key:/etc/nginx/nginx.key
+    ports:
+    - "9443:9443"
+  sonarqube1:
+    image: sonarqube:latest
+    ports:
+    - "19000:9000"
+    - "8000:8000" # for remote debugging purpose
+    extra_hosts:
+    - "keycloak1:172.19.0.2" # sonarqube1 need to be able to see this
+networks:
+  default:
+    external: true
+    name: keycloak_default
+```
+
+* create nginx folder and cd inside
+  * mkdir nginx
+  * cd nginx
+* create self signed certificate(for nginx)
+
+```ssh
+openssl req -newkey rsa:2048 -nodes -keyout nginx.key -x509 -days 365 -out nginx.crt
+Generating a RSA private key
+........................................................................................+++++
+.......+++++
+writing new private key to 'nginx.private.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:SG
+State or Province Name (full name) [Some-State]:SG
+Locality Name (eg, city) []:SG
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:SG
+Organizational Unit Name (eg, section) []:SG
+Common Name (e.g. server FQDN or YOUR name) []:SG
+Email Address []:test@test.com
+```
+
+* launch by running command below
+  * docker-compose start -d
+* launch <https://sonarqube1:9443/>
+* login as admin/admin
+* chnage password
+  * old password: admin
+  * new password: Pa55w0rd
+  * confirm password: Pa55w0rd
+* stop sonarqube
+  * docker-compose stop
+
+#### Nexus (YTB)
+
+<https://hub.docker.com/r/sonatype/nexus3/>
+
+* launch by running command below
+* run gitlab
+  * docker run -d -p 8081:8081 --name nexus1 --network keycloak_default --restart always sonatype/nexus3:latest
+* launch <http://nexus1:9081/>
+* get root password
+  * docker exec -it nexus1 cat /opt/sonatype/sonatype-work/nexus3/admin.password
+    * 6004d713-54fe-49af-95e9-c00c6fc1db41
+* login using admin and password above
+* wizard will popup
+  * change password to Pa55w0rd
+    * once changed, /opt/sonatype/sonatype-work/nexus3/admin.password will be removed
+  * enable annonymous access
+* stop nexus
+  * docker stop nexus1 --time=120
+
+### Integration
 
 #### SAML (WIP)
 
@@ -171,7 +257,9 @@ gitlab_rails["omniauth_providers"] = [
 
 #### OIDC
 
-##### Keycloak
+##### Keycloak + Gitlab (Done)
+
+###### Keycloak
 
 * create new realm
   * general
@@ -194,7 +282,7 @@ gitlab_rails["omniauth_providers"] = [
       * admin url: http://gitlab1:9080
       * web origins: http://gitlab1:9080
       * back channel logout session required: ON # to incude sessionid in the logout url(Not in use. but if enable, will logout per client only (based on session id))
-      * save the changes (a new tab named "credentials" will appear)
+      * save the changes (a new tab named "credentials" will appear if access type = credential)
     * credentials (tab)
       * client authenticator: client id and secret
       * client secret: 5c4d8305-c03d-47bf-a7d8-4999c1417990
@@ -206,7 +294,7 @@ gitlab_rails["omniauth_providers"] = [
       * password: Pa55w0rd
       * user enabled: ON
 
-##### Gitlab
+###### Gitlab
 
 <https://docs.gitlab.com/ee/integration/oauth_provider.html>
 <https://docs.gitlab.com/ee/administration/auth/oidc.html>
@@ -223,7 +311,7 @@ gitlab_rails["omniauth_providers"] = [
       * application id: 7d867e47261edff23137f1a39535a9118c628227f49ca4b1159b1ec5bfa72cd1
       * secret: 838d9c4a2194c6933cf784e9a6a7c0d4e953a0ebc23bfb83518c8577c4602b18
 * configure logout url (workaround from <https://gitlab.com/gitlab-org/gitlab/-/issues/31203>)
-  * menu > admin > general > 
+  * menu > admin > general >
     * sign-in restrictions
       * Sign-out page URL: http://keycloak_keycloak_1:8080/auth/realms/test/protocol/openid-connect/logout?redirect_uri=http://gitlab1:9080
 * cd /workspace/my-jekyll/assets/resources/gitlab/oidc
@@ -262,7 +350,7 @@ gitlab_rails['omniauth_providers'] = [
 
 * docker restart gitlab1 (or use UI)
 
-##### Testing
+###### Testing
 
 * login through gitlab via <http://gitlab1:9080/>
 * click on keycloak button
@@ -273,14 +361,275 @@ gitlab_rails['omniauth_providers'] = [
   * gitlab will invoke <http://keycloak_keycloak_1:8080/auth/realms/test/protocol/openid-connect/logout?redirect_uri=http://gitlab1:9080>
   * keycloak will clear session and redirect to <http://gitlab1:9080>
 
-##### Troubleshoot
+###### Troubleshoot
 
 * gitlab.rb > discovery = true doesn't work. need time to prepare.
 * Check your system clock to ensure the time is synchronized properly.
 * As mentioned in the documentation, make sure issuer corresponds to the base URL of the Discovery URL. For example, <https://accounts.google.com> is used for the URL <https://accounts.google.com/.well-known/openid-configuration>.
 * The OpenID Connect client uses HTTP Basic Authentication to send the OAuth2 access token if client_auth_method is not defined or if set to basic. If you are seeing 401 errors upon retrieving the userinfo endpoint, you may want to check your OpenID Web server configuration. For example, for oauth2-server-php, you may need to add a configuration parameter to Apache.
 
-##### Useful Command
+###### Useful Command
 
 docker exec -it gitlab1 tail -f /var/log/gitlab/gitlab-rails/production.log
 docker exec -it gitlab1 /bin/bash
+
+##### Keycloak + SonarQube - Not Working
+
+###### Keycloak
+
+* login as admin/Pa55w0rd
+* create realm (if not exists. Refer [gitlab](#keycloak--gitlab)) or select "Test" realm
+  * create new client
+    * settings (tab)
+      * clientid: sonarqube1
+      * enable: ON
+      * client protocol: openid-connect
+      * access type: confidential
+      * standard flow enabled: ON
+      * direct access granted enabled: ON
+      * root url: http://sonarqube1:19000
+      * valid redirect uris: *
+      * admin url: http://sonarqube1:19000
+      * web origins: http://sonarqube1:19000
+      * back channel logout session required: ON # to incude sessionid in the logout url(Not in use. but if enable, will logout per client only (based on session id))
+      * save the changes (a new tab named "credentials" will appear)
+        * client secret: d2fceb00-5d74-4597-acde-dda9745d2aca
+    * mapper
+      * create
+        * name: Groups
+        * Add to ID token: ON
+        * Add to userinfo: ON
+        * Mapper Type: Group Membership
+        * Token Claim Naem: groups
+        * Full group path: OFF
+        * Add to access token: OFF
+  * Group?
+    * new
+      * group 1
+
+###### SonarQube
+
+<https://github.com/vaulttec/sonar-auth-oidc>
+
+* launch <http://sonarqube1:19000>
+* login as admin/Pa55w0rd
+* administration
+  * general
+    * server base url: http://sonarqube1:19000/?auto-login=false
+  * security
+    * Force user authentication: checked
+* install openid connect (OIDC) plugin
+  * download <https://github.com/vaulttec/sonar-auth-oidc/releases/download/v2.1.0/sonar-auth-oidc-plugin-2.1.0.jar>
+* copy jar to sonarqube
+  * docker cp sonar-auth-oidc-plugin-2.1.0.jar sonarqube1:/opt/sonarqube/extensions/plugins/
+* ***docker restart sonarqube1***
+* Configuration > Security > OpenID Connect
+  * enabled: true
+  * auto-login: false
+  * issuer uri: http://keycloak_keycloak_1:8080/auth/realms/test
+  * client id: sonarqube1
+  * client secret: d2fceb00-5d74-4597-acde-dda9745d2aca
+  * scopes: openid email profile
+  * allow users to sign-up: false?
+  * login generation strategy: preferred username
+  * login strategy custom claim: upn
+  * group claim name: groups
+  * Synchronize groups: false
+  * icon path: /static/authoidc/openid.svg
+  * background color: #236a97
+  * login button text: OpenID Connect? Keycloak?
+
+##### Keycloak + SonarQube - WIP
+
+<https://github.com/ian0422my/sonar-auth-keycloak-plugin>
+
+###### host
+
+* cd D:\Workspace
+* git clone https://github.com/ian0422my/sonar-auth-keycloak-plugin.git
+* cd sonar-auth-keycloak-plugin
+* mvn clean install
+* vagrant ssh
+* docker cp /workspace/sonar-auth-keycloak-plugin/target/sonar-auth-keycloak-plugin-0.1.0-SNAPSHOT.jar sonarqube_sonarqube1_1:/opt/sonarqube/extensions/plugins
+* docker restart sonarqube1
+
+###### keycloak
+
+* login as admin/Pa55w0rd
+* create realm (if not exists. Refer [gitlab](#keycloak--gitlab)) or select "Test" realm
+  * create new client
+    * settings (tab)
+      * clientid: sonarqube1
+      * enable: ON
+      * client protocol: openid-connect
+      * access type: confidential
+      * standard flow enabled: ON
+      * direct access granted enabled: ON
+      * root url: https://sonarqube1:9443
+      * valid redirect uris: *
+      * admin url: https://sonarqube1:9443
+      * web origins: https://sonarqube1:9443
+      * back channel logout session required: ON # to incude sessionid in the logout url(Not in use. but if enable, will logout per client only (based on session id))
+      * save the changes (a new tab named "credentials" will appear)
+        * client secret: d2fceb00-5d74-4597-acde-dda9745d2aca
+      * Activate the Installation tab, and choose Keycloak OIDC JSON option. Copy or download the json configuration (this settings need to restart sonarqube to take effects)
+
+```json
+{
+  "realm": "test",
+  # "auth-server-url": "https://keycloak_keycloak_1:8443/auth/", # keycloak plugin will fail on line Keycloakdeployment.class(line 138) since "https://keycloak_keycloak_1:8443/auth/" will always return null
+  "auth-server-url": "https://keycloak1:8443/auth/", # need to add "keycloak1" to c:\windows\system32\driver\etc\hosts file
+  "ssl-required": "external",
+  "resource": "sonarqube1",
+  "credentials": {
+    "secret": "d2fceb00-5d74-4597-acde-dda9745d2aca"
+  },
+  "confidential-port": 0,
+  "disable-trust-manager": true # this is only needed if https://keycloak1:8443/auth/ is self-signed (trust all)
+}
+```
+
+    * mapper
+      * create
+        * protocol: openid-connect
+        * name: roles
+        * mapper type: user-client role
+        * client id: sonarqube1
+        * client role prefix: keycloak-client-role-
+        * multivalued: on
+        * token cliam name: roles
+        * claim json tyoe: String
+        * add to id token: on
+        * add to access token: off
+        * add to userinfo: on
+    * roles
+      * add
+        * name: admin
+      * add
+        * name: member
+    * user
+      * edit existing user
+        * role mappings
+          * client roles: sonarqube1
+            * available roles: 
+              * admin
+              * member
+                * add to assigned roles
+* docker restart sonarqube1
+
+###### sonarqube
+
+note!!! sonarqube url must be https (if oauth is used)
+
+* login as admin/Pa55w0rd
+* adminstration > configuration > keycloak auth
+  * enabled: true
+  * allow users to sign-up: true
+  * Login generation strategy: same as keycloak login
+  * keycloak json: <copy keycloak installation json from above>
+  * Synchronize user client roles: true
+* administration > configuration > general
+  * server base url: https://sonarqube1:9443
+* administration > security > groups
+  * add
+    * name: keycloak-client-role-admin
+  * add
+    * name: keycloak-client-role-member
+
+###### Testing
+
+* launch https://sonarqube1:9443
+* click on keycloak
+* login using keycloakuser1/Pa55w0rd
+* verify groups
+  * user > my account
+    * groups
+      * keycloak-client-role-admin
+      * keycloak-client-role-member
+      * sonar-users
+* click logout
+  * returned to sonarqube page
+* click keycloak
+* login using keycloakuser1/Pa55w0rd
+
+###### Troubleshooting
+
+####### Bad gateway when hitting <https://sonarqube1:9443/>
+
+* nginx.conf is pointing to sonarqube1 by ip. Need to inspect keykloak_defayult network to get the latest ip.
+
+####### Fail to initialize authentication with provider 'keycloak'
+
+* launch <https://sonarqube1:9443/sessions/new?return_to=%2F>
+* click pon keycloak
+* gets <https://sonarqube1:9443/sessions/unauthorizeds> with error below
+
+```txt
+2021.10.18 05:56:59 WARN  web[AXyR7eYCYegC1DisAABQ][o.s.s.a.AuthenticationError] Fail to initialize authentication with provider 'keycloak'
+java.lang.NullPointerException: null
+        at org.github.flytreeleft.sonar.auth.keycloak.KeycloakIdentityProvider.init(KeycloakIdentityProvider.java:90)
+        at org.sonar.server.authentication.InitFilter.handleOAuth2IdentityProvider(InitFilter.java:108)
+        at org.sonar.server.authentication.InitFilter.handleProvider(InitFilter.java:80)
+        at org.sonar.server.authentication.InitFilter.doFilter(InitFilter.java:70)
+        at org.sonar.server.platform.web.MasterServletFilter$GodFilterChain.doFilter(MasterServletFilter.java:139)
+        at org.sonar.server.authentication.DefaultAdminCredentialsVerifierFilter.doFilter(DefaultAdminCredentialsVerifierFilter.java:89)
+```
+
+which is vaused by NPE in ".getAuthUrl()" is null
+
+```java
+
+        String authUrl = getKeycloakDeployment().getAuthUrl()
+                                                .clone()
+                                                .queryParam(OAuth2Constants.CLIENT_ID,
+                                                            getKeycloakDeployment().getResourceName())
+                                                .queryParam(OAuth2Constants.REDIRECT_URI, redirect)
+                                                .queryParam(OAuth2Constants.STATE, state)
+```
+
+* remote debug
+* notice that {"auth-server-url": "https://keycloak_keycloak_1:8443/auth/"} will fail on line Keycloakdeployment.class(line 138) since "https://keycloak_keycloak_1:8443/auth/" will always return null
+
+####### PKIX path building failed:
+
+```txt
+java.lang.IllegalStateException: javax.net.ssl.SSLHandshakeException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path
+to requested target
+        at org.github.flytreeleft.sonar.auth.keycloak.KeycloakIdentityProvider.callback(KeycloakIdentityProvider.java:108)
+```
+
+* add "disable-trust-manager: true"
+
+```json
+{
+  "realm": "test",
+  # "auth-server-url": "https://keycloak_keycloak_1:8443/auth/", # keycloak plugin will fail on line Keycloakdeployment.class(line 138) since "https://keycloak_keycloak_1:8443/auth/" will always return null
+  "auth-server-url": "https://keycloak1:8443/auth/", # need to add "keycloak1" to c:\windows\system32\driver\etc\hosts file
+  "ssl-required": "external",
+  "resource": "sonarqube1",
+  "credentials": {
+    "secret": "d2fceb00-5d74-4597-acde-dda9745d2aca"
+  },
+  "confidential-port": 0,
+  "disable-trust-manager": true # this is only needed if https://keycloak1:8443/auth/ is self-signed (trust all)
+}
+```
+
+####### Cannot logout properly
+
+* login to keycloak successfully. but after logout and tryied to clock on "keycloak" button again, user is automatically login
+  * known problem, no solution
+
+####### You're not authorized to access this page. Please contact the administrator (after login to keycloak)
+
+```txt
+2021.10.19 08:00:33 WARN  web[AXyXiqLUOAP9u3gPAAC/][o.s.s.a.AuthenticationError] Fail to callback authentication with 'keycloak'
+java.lang.IllegalStateException: java.net.ConnectException: Connection refused (Connection refused)
+```
+
+* docker-compose.yml hardcode extra_hosts.keycloak1 = 172.19.0.2
+* resolve by gettitng the latest ip, update yaml, stop sonarqybe1 - docker-compose up -d;
+
+####### manage to login to keycloak, but screen hang
+
+* update server base url
