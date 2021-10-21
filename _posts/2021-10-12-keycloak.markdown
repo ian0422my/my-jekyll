@@ -439,7 +439,7 @@ docker exec -it gitlab1 /bin/bash
   * background color: #236a97
   * login button text: OpenID Connect? Keycloak?
 
-##### Keycloak + SonarQube - WIP
+##### Keycloak + SonarQube - Done
 
 <https://github.com/ian0422my/sonar-auth-keycloak-plugin>
 

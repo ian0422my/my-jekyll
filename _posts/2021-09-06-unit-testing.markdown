@@ -145,7 +145,9 @@ public void testGetSingPassLoginUrl() {
 }
 ```
 
-### mock response for non-static class
+### mock non-void method
+
+#### non-static
 
 ```java
   private PortalRestControllerService portalRestControllerService = mock(PortalRestControllerService.class);
@@ -157,7 +159,7 @@ public void testGetSingPassLoginUrl() {
   Assertions.assertNull(res);
 ```
 
-### mock response for static class
+#### static
 
 ```java
   PowerMockito.mockStatic(CommonGuavaCacheUtil.class);
@@ -251,6 +253,22 @@ PowerMockito.verifyPrivate(singPassOIDCOpenIDDiscoverySchedulerTest).invoke("add
   context.registerService(UserService.class, userService);
   
   Whitebox.setInternalState(singPassJWKSServletTest, "userService", userService);
+```
+
+### inject mock service into super class (or set field value)
+
+* please make sure variable name declared in child and parent class are different (else set whitebox will only set in child class only)
+
+```java
+  class Parent {
+    String test1 = ""; // this won't work if child has the same variable name
+  }
+  class Child extends Parent {
+    String test1 = ""; // only this will be set
+  }
+
+  Child child = mock(Child.class);  
+  Whitebox.setInternalState(child, "test1", "test 1 value"); // Praent.test1 will be null. onlu child.test1 will be initialzed
 ```
 
 ### create mock osgi and activate it
