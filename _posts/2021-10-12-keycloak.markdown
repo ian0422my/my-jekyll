@@ -122,18 +122,20 @@ Email Address []:test@test.com
 * stop sonarqube
   * docker-compose stop
 
-#### Nexus (YTB)
+#### Nexus (Done)
 
 <https://hub.docker.com/r/sonatype/nexus3/>
 
 * launch by running command below
-* run gitlab
-  * docker run -d -p 8081:8081 --name nexus1 --network keycloak_default --restart always sonatype/nexus3:latest
+* run nexus
+  * docker run -d -p 8081:8081 --name nexus1 --network keycloak_default sonatype/nexus3:latest
+  * ~~docker run -d -p 8081:8081 --name nexus1 --network keycloak_default clearent/nexus:3.3.2-02~~
 * launch <http://nexus1:9081/>
 * get root password
   * docker exec -it nexus1 cat /opt/sonatype/sonatype-work/nexus3/admin.password
-    * 6004d713-54fe-49af-95e9-c00c6fc1db41
+    * bfb6a408-facf-471a-91ef-ae07d6afe578
 * login using admin and password above
+* ~~login using admin/admin123~~
 * wizard will popup
   * change password to Pa55w0rd
     * once changed, /opt/sonatype/sonatype-work/nexus3/admin.password will be removed
@@ -633,3 +635,131 @@ java.lang.IllegalStateException: java.net.ConnectException: Connection refused (
 ####### manage to login to keycloak, but screen hang
 
 * update server base url
+
+##### Keycloak + Nexus (Done)
+
+<https://github.com/flytreeleft/nexus3-keycloak-plugin>
+
+###### Nexus
+
+* install jre 8 (jre1.8.0_311)
+* set JAVA_HOME="C:\Progra~2\Java\jre1.8.0_311"
+* set PATH=%JAVA_HOME%/bin;%PATH%
+* cd d:\Workspace
+* git clone https://github.com/flytreeleft/nexus3-keycloak-plugin.git
+* cd nexus3-keycloak-plugin
+* ~~mvn clean package -DskipTests~~
+* ~~docker cp target/nexus3-keycloak-plugin-0.6.0-SNAPSHOT.jar nexus1:/opt/sonatype/nexus/system/~~
+* ~~docker cp target/nexus3-keycloak-plugin-0.6.0-SNAPSHOT-sources.jar nexus1:/opt/sonatype/nexus/system/~~
+* ~~docker exec -u 0 -it nexus1 sh~~
+  * ~~careful!!! you are loggin in as root user~~
+* ~~vi /opt/sonatype/nexus/etc/karaf/startup.properties and add line below~~
+
+```txt
+mvn\:org.github.flytreeleft/nexus3-keycloak-plugin/0.6.0-SNAPSHOT = 200
+```
+
+* mvn -PbuildKar clean install -DskipTests
+* docker cp target/nexus3-keycloak-plugin-0.6.0-SNAPSHOT-bundle.kar nexus1:/opt/sonatype/nexus/deploy/
+* docker restart nexus1
+
+###### Keycloak
+
+* login to keycloak using 
+  * admin/Pa55w0rd
+* go to "Test" realm
+* create new client
+  * name: nexus1
+  * client protocol: openid-connect
+  * root url: http://nexus1:9081
+  * settings (tab)
+    * client id: nexus1
+    * enabled: on
+    * clinet protocol: openid-connect
+    * access type: confidential
+    * standard flow enabled: on
+    * direct access grants enabled: on
+    * service acounts enabled: on
+    * authorization enabled: on
+  * credentials (tab)
+    * client authenticator: client id and secret
+    * secret: 48ecfe25-3f72-40ac-a4d4-1454994ab3b2
+  * service account roles (tab)
+    * client roles: realm-management
+      * available roles
+        * view-realm
+        * view-clients
+        * view-users
+      * add selected
+  * installation (tab)
+    * format option: keycloak oidc json
+
+```json
+{
+  "realm": "test",
+  "auth-server-url": "https://keycloak_keycloak_1:8443/auth/",
+  "ssl-required": "external",
+  "resource": "nexus1",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "48ecfe25-3f72-40ac-a4d4-1454994ab3b2"
+  },
+  "confidential-port": 0,
+  "policy-enforcer": {},
+  "ssl-required": false,
+  "allow-any-hostname": true,
+  "disable-trust-manager": true
+}
+```
+
+###### Nexus
+
+* add contnet below into nexus's /opt/sonatype/nexus/etc/keycloak.json
+* docker exec -u 0 -it nexus1 sh
+* vi /opt/sonatype/nexus/etc/keycloak.json
+* copy json above
+* save the changes
+* login to <http://nexus1:9081/>
+  * admin/Pa55w0rd
+* goto <http://nexus1:9081/#admin/security/realms>
+  * active realms
+    * select keycloak authentication realm > add to selected(Right arrow)
+  * save the changes
+
+###### Keycloak
+
+* login to keycloak using 
+  * admin/Pa55w0rd
+* go to "Test" realm
+  * client
+    * roles
+      * add role
+        * role name: admin
+
+###### Nexus
+
+* login to <http://nexus1:9081/>
+  * admin/Pa55w0rd
+* go to <http://nexus1:9081/#admin/security/roles>
+* create role
+  * external role mapping1
+    * keycloak
+      * mapped role: adminr
+      * role name: keycloak admin
+      * privileges
+        * available
+          * nx-admin > add to selected (right arrow)
+
+###### Testing
+
+* launch <http://nexus1:9081>
+* login using keycloakuser1/Pa55w0rd
+* verify > click on "keycloakuser1"
+    * username: keycloakuser1
+    * first name: keycloakuser1
+    * last name: keycloakuser1
+    * email: keycloakuser1@email.com
+* click "sign out"
+  * returned to nexus main page
+* click sign in
+* login using keycloakuser1/Pa55w0rd
