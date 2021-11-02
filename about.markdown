@@ -14,20 +14,25 @@ sidebar:
 ## Build and Run
 
 * this is a jekyll project which relies on plantuml-server
-* this project can be run
-  * manually
-    * run plantuml-server/run.bat
-    * run my-jekyll/run.bat
-  * docker compose
-    * docker-compose up [-d]
-    * docker-compose down
-    * which depends on image
-      * ian0422my/plantuml-server-jetty
-        * skipped codestyle checking
-        * code change
-      * bretfisher/jekyll-server
+* this project can be run manually or via docker compose
 
-Docker Image
+### Manually
+
+* manually
+  * run plantuml-server/run.bat
+  * run my-jekyll/run.bat
+
+### Docker Compose
+
+* docker-compose up [-d]
+* docker-compose down
+* which depends on image
+  * ian0422my/plantuml-server-jetty
+    * skipped codestyle checking
+    * code change
+  * bretfisher/jekyll-server
+
+## Docker Image
 
 * ian0422my/plantuml-server
   * docker image build -t ian0422my/plantuml-server .
