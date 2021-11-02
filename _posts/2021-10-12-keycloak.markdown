@@ -665,7 +665,7 @@ mvn\:org.github.flytreeleft/nexus3-keycloak-plugin/0.6.0-SNAPSHOT = 200
 
 ###### Keycloak
 
-* login to keycloak using 
+* login to keycloak using
   * admin/Pa55w0rd
 * go to "Test" realm
 * create new client

@@ -241,6 +241,19 @@ PowerMockito.verifyPrivate(singPassOIDCOpenIDDiscoverySchedulerTest).invoke("add
 // PowerMockito.verifyPrivate(clazz).invoke("<private method name>", prameters....);
 ```
 
+### mock exception thrown
+
+* only can mock declared checkedexception
+* can mock any runtime exception
+
+#### Non-void method
+
+PowerMockito.when(userService.getInternal_500_Url()).thenThrow(new RuntimeException("runtime exception"));
+
+#### Void method
+
+Mockito.doThrow(IOException.class).when(response).sendRedirect(Mockito.anyString());
+
 ## Injection
 
 * you don't need to inject static method (i.e. mockStatic(class))
