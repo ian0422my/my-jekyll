@@ -297,6 +297,25 @@ context.registerInjectActivateService(singPassOIDCServiceImplTest, parameters);
 
 ## Assertion
 
+### Test if constructor is invoked
+
+* make sure the object return is not null
+
+```java
+package sg.gov.cpf.csw.exception;
+
+public class CipherException extends Exception {
+	private static final long serialVersionUID = 1L;
+
+	public CipherException(Exception e) {
+		super(e);
+	}
+}
+
+// assertion
+Assertions.assertNotNull(new CipherException(new Exception()));
+```
+
 ### Test a void method (Mockito.verify)
 
 * only way is to confirm that method is invoked at least once by using Mockito.verify

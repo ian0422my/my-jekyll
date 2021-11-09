@@ -29,6 +29,22 @@ sidebar:
         * ***UI to direct browsing of container's file system*** (e.g. /app, /bin, /etc)
 * written using nodejs
 
+## Useful settings
+
+* format on save
+* tab space = 4
+  * edit a file
+  * click on the spaces (status bar)
+  * change to 2
+
+## Shortcuts
+
+| shortcut            | description                                   |
+| :------------------ | :-------------------------------------------- |
+| ctrl+,              | settings                                      |
+| ctrl+d              | select same pattern(run again to select more) |
+| shift+alt+[up/down] | copy existing line up/down                    |
+
 ## Troubleshoot
 
 ### Slow when loading or editing

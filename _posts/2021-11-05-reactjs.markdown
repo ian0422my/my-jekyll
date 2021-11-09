@@ -1,0 +1,993 @@
+---
+layout: single
+#classes: wide
+title:  "React"
+date:   2021-11-15 10:00:50 +0800
+categories: nginx
+allow_different_nesting: true
+toc: true
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+## Archtecture Design
+
+* react will create virtual dom(based on code) and render as actual dom (html display on page)
+* refresh automatically once code change is saved
+  * hot module refresh -> that's why its call "React"
+* object oriented
+  * method
+    * each method is object
+* construct by component(reusable) - nav bar, login, menu, etc
+  * need to export (E.g. export default Counter) to import 
+* content is written using
+  * javascript
+    * templating engine
+      * loop
+      * if/else
+  * JSX (javascript xml) - {}, {{}}
+    * where jsx expression (E.g. <span className="basic">) will be converted into javascript object
+      * hence, "<span className="basic"> cannot be written as <span class="basic"> since "class" is a reserved keyword in javascript
+    * not templating engine
+      * no looping concept
+      * no if/else
+* Internal
+  * babel
+    * compile JSX into javascript
+      * code > virtuadom > dom
+  * create-react-app  
+    * zero-config
+  * ES6
+    * new line
+      * const
+      * let
+
+## Javascript Syntax
+
+* like normal javascript
+* method can return jsx
+* class
+  * extends Components
+    * setState(state)
+      * call this method to refresh the view
+  * comprises of
+    * state
+    * render (method)
+      * return jsx component
+        * <button className={}>, Or
+        * text (E.g. "text")
+
+## JSX Syntax
+
+### {}
+
+* javascript expression
+* E.g.
+  * {2+2}
+    * you get 4
+  * {this.state.count}
+    * will display you declare in component's state.count
+  * {this.formatCount()}
+    * call a function (e.g. formatCount() { return 'hi';}) and display value returned by the function
+  * onClick={() => this.handleFunction(param1, param2))}
+    * password a reference of a function to event
+    * function will not be called until event is triggered
+  * {{}}
+    * use as it is? native value?
+
+### Attributes
+
+* jsx attribute is different from dom attributes
+* E.g.
+  * id
+  * style
+    * variable
+      * styles1 = {fontSize: 10} // property must be camelCase
+      * style = {this.styles1}
+    * inline
+      * style = {{fontSize: 80}}
+  * className (not class)
+
+### List
+
+```jsx  
+state = { 
+      count: 0,
+      tags: ['tag1','tag2','tag3']
+    };
+
+{this.state.tags.map(tag => <li key={tag}>{tag}</li>)}
+```
+
+### Inter-component communication
+
+* (src)can include other component(target)
+  * </Counter>
+* (src)can pass value to target components 
+  * via target.props
+    * src (i.e. Counters)
+      * </Counter targetProps1="targetProps1Value">
+    * target (i.e. Counter)
+      * console.log(this.props.targetProps1); // log "targetProps1Value"
+  * via target.children
+    * src
+      * <Counter><h4>product name1</h4></Counter>
+    * target
+      * console.log(this.children); // log <h4>product name1</h4>
+* (src)can pass function(as object) to target components
+  * via target.props
+    * src (i.e. Counters)
+      * <Counter handleDelete={this.handleDeleteParent}>
+    * target (i.e. Counter)
+      * onClick={this.props.handleDelete}
+* (src)can pass state(as object) to target components
+  * via target.props
+    * src (i.e. Counters)
+      * <Counter counters={this.counters}>
+    * target (i.e. Counter)
+      * console.log("id : " + {this.props.counters.id});
+
+## Best Practice
+
+* use arrow function instead of constructor with binding to access "this"
+* state should modified
+  * only by component that owns it, OR
+  * when there's parent/child component relationship, child should be a controlled component (no local state), and all value should entirely controlled by parent (value also should come from parent only)
+    * parent should declare all the function and pass the reference to child
+* function should always prefix with handle
+* when dealing with component list, always make sure "key" value is set, and always unique (since React render by comparing virtualdom and dom, it needs a unique id to compare)
+* do not modify the state directly, always clone the state and setState(clone)
+
+## Tutorial 1
+
+### preparation
+
+* softwares
+  * node
+    * module
+      * create-react-app (npm i -g create-react-app@1.5.2)
+* ide
+  * visual studio code
+  * extensions
+    * prettier - code formatter
+      * configure
+        * Select VS Code -> View -> Command Palette, and type: Format Document With
+        * Then Configure Default Formatter... and then choose Prettier - Code formatter.
+        * settings
+          * format on save: true
+    * simple react snippet
+      * imrc + tab
+        * import React, { Component } from 'react';
+      * cc + tab
+        * import class skeleton
+
+### development
+
+* npm init react-app my-app
+* cd my-app
+* npm start
+* visit <http://localhost:3000>
+
+#### Project structure
+
+* /public - public files (favicon.ico)
+  * index.html - main html to render
+* src - folders for components?
+
+#### Hello World
+
+* create src/index.js with content below
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+const element = <h1>hello world</h1>;
+
+ReactDOM.render(element, document.getElementById('root'));//which wil render "element" into index.html's root div
+```
+
+### install bootstarp
+
+* npm i bootstrap@4.1.1
+* import into index.js
+  * edit index.js
+  * import 'bootstrap/dist/css/bootstrap.css';
+
+### create components
+
+* create src/components/counter.jsx
+* edit counter.jsx
+
+```jsx
+import React, { Component } from 'react'; 
+class Counter extends React.Component {
+    render() { 
+        return <h1>hello world</h1>;
+    }
+}
+ 
+export default Counter;
+```
+
+* import into index.jsx and render
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.css';
+import Counter from './components/counter'; // here
+
+ReactDOM.render(
+  <Counter/>,  // here
+  document.getElementById('root')
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+```
+
+* refresh page
+
+### Embedding Expression
+
+* edit counter.jsx
+
+```jsx
+render() { 
+    return <div class="temp"><h1>hello world</h1><button>increment</button></div>;
+    // return <React.Fragment><h1>hello world</h1><button>increment</button></React.Fragment> // if you don't want the extra div.temp
+}
+```
+
+### Embedding Expression - with state (36:01)
+
+* edit counter.jsx and add
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+  // add state
+  state = {
+    count: 1,
+  };
+
+  render() {
+    return (
+      <div>
+        <span>{this.formatCount()}</span>
+        <button>increment</button>
+      </div>
+    );
+  }
+
+  formatCount() {
+    //return this.state.count === 0 ? 'zero': this.state.count;
+    //const cnt = this.state.count;
+    //return cnt === 0 ? 'zero' : cnt;
+    const { count } = this.state;
+    //return count === 0 ? zero : count;
+    return count === 0 ? <h1>zero</h1> : count;
+  }
+}
+
+export default Counter;
+```
+
+### Setting Attributes (40:55)
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+  // add state
+  state = { count: 0 };
+
+  styles = {fontSize: 12}; 
+
+  render() {
+    return (
+      <div>
+        <span id="1" style={this.styles} className="badge badge-primary m-2">{this.formatCount()}</span> // non-inline style
+        <button style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button> // inline style
+      </div>
+    );
+  }
+
+  formatCount() {
+    //return this.state.count === 0 ? 'zero': this.state.count;
+    //const cnt = this.state.count;
+    //return cnt === 0 ? 'zero' : cnt;
+    const { count } = this.state;
+    return count === 0 ? "zero" : count;
+  }
+}
+
+export default Counter;
+```
+
+### Rendering Classes Dynamically (46:40)
+
+* change zero to yellow when zero
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+  // add state
+  state = { count: 0 };
+
+  styles = {fontSize: 12}; 
+
+  render() {
+    return (
+      <div>
+        <span id="1" style={this.styles} className={this.getBadgeClasses()}>{this.formatCount()}</span>
+        <button style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button>
+      </div>
+    );
+  }
+
+    getBadgeClasses() {
+        let classes = "badge m-2 badge-";
+        classes += (this.state.count === 0) ? "warning" : "primary";
+        return classes;
+    }
+
+    formatCount() {
+        //return this.state.count === 0 ? 'zero': this.state.count;
+        //const cnt = this.state.count;
+        //return cnt === 0 ? 'zero' : cnt;
+        const { count } = this.state;
+        return count === 0 ? "zero" : count;
+    }
+}
+
+export default Counter;
+```
+
+### Rendering Lists - Using Map to Loop (51:02)
+
+* render list of items
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+  state = { 
+    count: 0,
+    tags: ['tag1','tag2','tag3'] // here
+  };
+
+  styles = {fontSize: 12}; 
+
+  render() {
+    return (
+      <div>
+        <span id="1" style={this.styles} className={this.getBadgeClasses()}>{this.formatCount()}</span> // display count here
+        <button style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button>
+        <ul>
+            {this.state.tags.map(tag => <li key={tag}>{tag}</li>)} // here
+        </ul>
+      </div>
+    );
+  }
+
+  getBadgeClasses() {
+      let classes = "badge m-2 badge-";
+      classes += (this.state.count === 0) ? "warning" : "primary";
+      return classes;
+  }
+
+  formatCount() {
+      const { count } = this.state;
+      return count === 0 ? "zero" : count;
+  }
+}
+
+export default Counter;
+```
+
+### Conditional Rendering (55:00)
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+	state = { 
+		count: 0,
+		tags: ['tag1','tag2','tag3']
+	};
+
+	styles = {fontSize: 12}; 
+
+	render() {
+		return (
+		<div>
+			{this.state.tags.length===0?"Please create new tag":"Your selection"}
+			{this.renderTags()}
+		</div>
+		);
+	}
+
+	renderTags() {
+		if ( this.state.tags.length===0 ) return "no tags defined";
+		
+		return <ul>{this.state.tags.map(tag => <li key={tag}>{tag}</li>)}</ul>;
+	}
+}
+```
+
+export default Counter;
+
+### Handling Events (60:05)
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+  state = { 
+    count: 0,
+    tags: ['tag1','tag2','tag3'] 
+  };
+
+  styles = {fontSize: 12}; 
+
+  render() {
+    return (
+      <div>
+        <span id="1" style={this.styles} className={this.getBadgeClasses()}>{this.formatCount()}</span> // display count here
+        <button onClick={this.handleIncrement} // here
+        style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button>
+        <ul>
+            {this.state.tags.map(tag => <li key={tag}>{tag}</li>)} // here
+        </ul>
+      </div>
+    );
+  }
+
+  getBadgeClasses() {
+		let classes = "badge m-2 badge-";
+		classes += (this.state.count === 0) ? "warning" : "primary";
+		return classes;
+  }
+
+  formatCount() {
+		const { count } = this.state;
+		return count === 0 ? "zero" : count;
+  }
+
+	handleIncrement() {// here
+		console.log(11);
+	}
+}
+
+export default Counter;
+```
+
+### Binding Event Handler (60:04)
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+	state = { 
+    count: 0,
+    tags: ['tag1','tag2','tag3'] 
+  };
+
+  styles = {fontSize: 12}; 
+
+  render() {
+    return (
+      <div>
+        <span style={this.styles} className={this.getBadgeClasses()}>{this.formatCount()}</span> // display count here
+        <button onClick={this.handleIncrement} style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button>
+        <ul>
+            {this.state.tags.map(tag => <li key={tag}>{tag}</li>)} 
+        </ul>
+      </div>
+    );
+  }
+
+  getBadgeClasses() {
+		let classes = "badge m-2 badge-";
+		classes += (this.state.count === 0) ? "warning" : "primary";
+		return classes;
+  }
+
+  formatCount() {
+		const { count } = this.state;
+		return count === 0 ? "zero" : count;
+  }
+
+	handleIncrement = () => { // here
+		this.state.count = this.state.count + 1;
+
+		console.log(this);
+	}
+}
+
+export default Counter;
+```
+
+### Updating The State (60:08)
+
+* update the state and refresh the view (using Component.setState(object))
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+	state = { 
+    count: 0,
+    tags: ['tag1','tag2','tag3'] 
+  };
+
+  styles = {fontSize: 12}; 
+
+  render() {
+    return (
+      <div>
+        <span style={this.styles} className={this.getBadgeClasses()}>{this.formatCount()}</span> // display count here
+        <button onClick={this.handleIncrement} style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button>
+        <ul>
+            {this.state.tags.map(tag => <li key={tag}>{tag}</li>)} 
+        </ul>
+      </div>
+    );
+  }
+
+  getBadgeClasses() {
+		let classes = "badge m-2 badge-";
+		classes += (this.state.count === 0) ? "warning" : "primary";
+		return classes;
+  }
+
+  formatCount() {
+		const { count } = this.state;
+		return count === 0 ? "zero" : count;
+  }
+
+	handleIncrement = () => {
+		this.state.count++;
+		this.setState({count: this.state.count++}); // here
+	}
+}
+
+export default Counter;
+```
+
+### What happen when state changes (60:11)
+
+* state changes > virtual changes > actual dom changes
+  * only affected dom are updated on this page (other dom is not affected)
+
+### Passing Events Arguments for Method Referencing (60:13)
+
+* change from
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+	state = { 
+    count: 0,
+    tags: ['tag1','tag2','tag3'] 
+  };
+
+  styles = {fontSize: 12}; 
+
+  render() {
+    return (
+      <div>
+        <span style={this.styles} className={this.getBadgeClasses()}>{this.formatCount()}</span> // display count here
+        <button onClick={() => this.handleIncrement("name1")} style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button> // here
+        <ul>
+            {this.state.tags.map(tag => <li key={tag}>{tag}</li>)} 
+        </ul>
+      </div>
+    );
+  }
+
+  getBadgeClasses() {
+		let classes = "badge m-2 badge-";
+		classes += (this.state.count === 0) ? "warning" : "primary";
+		return classes;
+  }
+
+  formatCount() {
+		const { count } = this.state;
+		return count === 0 ? "zero" : count;
+  }
+
+	handleIncrement = (productName) => { // here
+		console.log("incrementing for production " + productName);
+		this.state.count++;
+		this.setState({count: this.state.count++});
+	}
+}
+
+export default Counter;
+```
+
+## Tutorial 2
+
+### Composing Components (1:17:34)
+
+* create src/counters.jsx
+* edit index.js and import Counters
+
+```js
+import Counters from './components/counters'
+...
+ReactDOM.render(
+  <Counters/>,
+  document.getElementById('root')
+);
+```
+
+* edit counters.jsx
+
+```jsx
+import React, { Component } from 'react';
+import Counter from './counter'
+
+class Counters extends React.Component {
+  state = {
+    counters: [
+      {id:1, value:3},
+      {id:2, value:0},
+      {id:3, value:0},
+      {id:4, value:0}
+    ]
+  }
+
+  render() { 
+    return (<div>
+      {this.state.counters.map(counter=>
+        <Counter 
+          id={counter.id}
+          value={counter.value}
+        />
+      )}
+    </div>);
+  }
+}
+ 
+export default Counters;
+```
+
+### Passing Children (1:24:35)
+
+* counters.jsx
+
+```jsx
+import React, { Component } from 'react';
+import Counter from './counter'
+
+class Counters extends React.Component {
+  state = {
+    counters: [
+      {id:1, value:3},
+      {id:2, value:0},
+      {id:3, value:0},
+      {id:4, value:0}
+    ]
+  }
+
+  render() { 
+    return (<div>
+      {this.state.counters.map(counter=>
+        <Counter 
+          key={counter.id} 
+          id={counter.id}
+          value={counter.value}
+          titleName={counter.id}
+        /> // here
+      )}
+    </div>);
+  }
+}
+ 
+export default Counters;
+```
+
+* counter.jsx
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+	state = { 
+    count: this.props.value // here
+  };
+
+  styles = {fontSize: 12}; 
+
+  render() {
+    return (
+      <div>
+        {this.props.titleName} // here
+        <span style={this.styles} className={this.getBadgeClasses()}>{this.formatCount()}</span>
+        <button onClick={() => this.handleIncrement("name1")} style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button>
+      </div>
+    );
+  }
+
+  getBadgeClasses() {
+		let classes = "badge m-2 badge-";
+		classes += (this.state.count === 0) ? "warning" : "primary";
+		return classes;
+  }
+
+  formatCount() {
+		const { count } = this.state;
+		return count === 0 ? "zero" : count;
+  }
+
+	handleIncrement = (productName) => {
+		console.log("incrementing for production " + productName);
+		this.state.count++;
+		this.setState({count: this.state.count++});
+	}
+}
+
+export default Counter;
+```
+
+### Debugging React Apps (1:27:47)
+
+* chrome
+  * install react developer tools
+  * inspect element
+  * select react
+* inspect element
+  * you can see all the components
+
+### Prop vs State(1:31:59)
+
+| state                               | props                                                  |
+| :---------------------------------- | :----------------------------------------------------- |
+| read and write                      | read only; can only set during component instantiation |
+| private;visible from component only | public; can see from outside                           |
+
+### Decrement button
+
+* edit counter.jsx
+* add line below, go to end of the line and tab (auto-complete)
+
+```txt
+button.btn.btn-danger.btn-sm.m-2
+```
+
+* will become
+
+```jsx
+<button className="btn btn-danger btn-sm m-2"></button>
+```
+
+* edit counters.jsx (to pass contorl to counter)
+
+```jsx
+import React, { Component } from 'react';
+import Counter from './counter'
+
+class Counters extends React.Component {
+  state = {
+    counters: [
+      {id:1, value:3},
+      {id:2, value:0},
+      {id:3, value:0},
+      {id:4, value:0}
+    ]
+  }
+
+  render() { 
+    return (<div>
+      {this.state.counters.map(counter=>
+        <Counter 
+          key={counter.id} 
+          id={counter.id}
+          value={counter.value}
+          titleName={counter.id}
+          handleDelete={this.handleDelete} // here
+        />
+      )}
+    </div>);
+  }
+
+  handleDelete() { // here
+    console.log("handleDelete ||| delete");
+  }
+}
+ 
+export default Counters;
+```
+
+* edit counter.jsx
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+	state = { 
+    count: this.props.value
+  };
+
+  styles = {fontSize: 12}; 
+
+  render() {
+    return (
+      <div>
+				Counter #{this.props.titleName}
+        <span style={this.styles} className={this.getBadgeClasses()}>{this.formatCount()}</span>
+        <button onClick={() => this.handleIncrement("name1")} style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button>
+				 <button onClick={this.props.handleDelete} className="btn btn-danger btn-sm m-2">delete</button> // here 
+      </div>
+    );
+  }
+
+  ...
+}
+
+export default Counter;
+```
+
+### Updating the delete state (1:39:19)
+
+* counters.jsx
+
+```jsx
+import React, { Component } from 'react';
+import Counter from './counter'
+
+class Counters extends React.Component {
+  ...
+
+  handleDelete = (counterId) => { // here
+    const counters = this.state.counters.filter(c=>c.id != counterId);
+
+    this.setState({counters: counters});
+  }
+}
+ 
+export default Counters;
+```
+
+* counters.jsx
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+  ...
+  render() {
+    return (
+      <div>
+        ...
+				<button onClick={() => this.props.handleDelete(this.props.id)} className="btn btn-danger btn-sm m-2">delete</button> // here
+      </div>
+    );
+  }
+  ...
+}
+
+export default Counter;
+```
+
+### Passing whote object (1:41:37)
+
+* counters.jsx
+
+```jsx
+import React, { Component } from 'react';
+import Counter from './counter'
+
+class Counters extends React.Component {
+  ...
+  render() { 
+    return (<div>
+      {this.state.counters.map(counter=>
+        <Counter
+          key={counter.id} 
+          counter={counter} // here
+          handleDelete={this.handleDelete}
+        />
+      )}
+    </div>);
+  }
+  ...
+}
+ 
+export default Counters;
+```
+
+* counter.jsx
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+	state = { 
+    count: this.props.counter.value // here
+  };
+  ...
+  render() {
+    return (
+      <div>
+				Counter #{this.props.counter.id}
+        <span style={this.styles} className={this.getBadgeClasses()}>{this.formatCount()}</span>
+        <button onClick={() => this.handleIncrement("name1")} style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button>
+				 <button onClick={() => this.props.handleDelete(this.props.counter.id)} className="btn btn-danger btn-sm m-2">delete</button>
+      </div>
+    );
+  }
+  ...
+}
+
+export default Counter;
+```
+
+### single source of truth (1:44:00)
+
+* deleting counters.state.counters will not refresh counter.state.count (since counter.state.count is initialized only once and component is re-render again)
+
+### removing the local state - in counter (1:47:56)
+
+* counters.jsx
+
+```jsx
+import React, { Component } from 'react';
+import Counter from './counter'
+
+class Counters extends React.Component {
+  ...
+  render() { 
+    return (<div>
+      {this.state.counters.map(counter=>
+        <Counter
+          key={counter.id}
+          counter={counter}
+          handleDelete={this.handleDelete} // here
+          handleIncrement={this.handleIncrement} // here
+        />
+      )}
+    </div>);
+  }
+// here
+  handleDelete = (counter) => {
+    const counters = this.state.counters.filter(c=>c.id !== counter.id);
+
+    this.setState({counters});
+  }
+// here
+  handleIncrement = (counter) => {
+    const counters = [...this.state.counters];
+    const index = counters.indexOf(counter);    
+    counters[index] = {...counter};
+    counters[index].value++;
+    this.setState({counters});
+  }
+}
+ 
+export default Counters;
+```
+
+* counter.jsx
+
+```jsx
+import React, { Component } from "react";
+class Counter extends React.Component {
+  ...
+  render() {
+    return (
+      <div>
+        ...
+        <button onClick={() => this.props.handleIncrement(this.props.counter)} style={{fontSize: 12}} className="btn btn-seconday btn-sm">increment</button> // here
+				 <button onClick={() => this.props.handleDelete(this.props.counter)} className="btn btn-danger btn-sm m-2">delete</button> // here
+      </div>
+    );
+  }
+  ...
+}
+
+export default Counter;
+```
