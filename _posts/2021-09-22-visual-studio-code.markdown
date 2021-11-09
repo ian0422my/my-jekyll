@@ -44,6 +44,7 @@ sidebar:
 | ctrl+,              | settings                                      |
 | ctrl+d              | select same pattern(run again to select more) |
 | shift+alt+[up/down] | copy existing line up/down                    |
+| shift+delete        | delete line                                   |
 
 ## Troubleshoot
 

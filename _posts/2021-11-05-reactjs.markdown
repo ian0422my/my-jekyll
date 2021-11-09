@@ -48,7 +48,7 @@ sidebar:
 ## Javascript Syntax
 
 * like normal javascript
-* method can return jsx
+* method can return JSX
 * class
   * extends Components
     * setState(state)
@@ -72,11 +72,16 @@ sidebar:
     * will display you declare in component's state.count
   * {this.formatCount()}
     * call a function (e.g. formatCount() { return 'hi';}) and display value returned by the function
-  * onClick={() => this.handleFunction(param1, param2))}
-    * password a reference of a function to event
+  * <button onClick={() => this.handleFunction(param1, param2))}>Click</button>
+    * passing a reference of a function(with parameter) to event
+    * function will not be called until event is triggered
+  * <button onClick={this.handleFunction)}>Click</button>
+    * passing a reference of a function(with no parameter) to event
     * function will not be called until event is triggered
   * {{}}
     * use as it is? native value?
+  * <Counter handleIncrement={this.handleIncrement}/>
+    * passing control frmo parent to child via Counter.props
 
 ### Attributes
 
@@ -130,16 +135,37 @@ state = {
     * target (i.e. Counter)
       * console.log("id : " + {this.props.counters.id});
 
+## Cheatsheet
+
+| code                                                                  | description                                    |
+| :-------------------------------------------------------------------- | :--------------------------------------------- |
+| React.Fragment                                                        | create component without div                   |
+| const counters = [...this.state.counters]                             | clone object                                   |
+| totalCounters={this.state.counters.filter(c=>c.value>0).length}/>     | copy with filtering condition                  |
+| const index = counters.indexOf(counter);                              | getting the index of object in an array        |
+| this.setState({counters});                                            | refresh the view                               |
+| imrc + tab                                                            | import react ocmponent                         |
+| cc + tab                                                              | create class component skeleton                |
+| sfc  + tab                                                            | create stateless functional component skeleton |
+| const {handleReset, counters} = this.props; handleReset();            | destructing argument                           |
+| onClick={() => handleReset(counters)}                                 | pass reference to a method with arg            |
+| onClick={handleReset}                                                 | pass reference to a method without arg         |
+| parent - <Counter total=1>; child - this.props.total                  | passing value from parent to child             |
+| parent - <Counter handleMe={handleMe}>; child - this.props.handleMe() | passing method reference from parent to child  |
+
 ## Best Practice
 
+* JSX returned by render method must consists of only 1 root element - encapshlate with <div> or <react.fragment>
 * use arrow function instead of constructor with binding to access "this"
 * state should modified
   * only by component that owns it, OR
   * when there's parent/child component relationship, child should be a controlled component (no local state), and all value should entirely controlled by parent (value also should come from parent only)
     * parent should declare all the function and pass the reference to child
-* function should always prefix with handle
+* function should always prefix with handle*
 * when dealing with component list, always make sure "key" value is set, and always unique (since React render by comparing virtualdom and dom, it needs a unique id to compare)
 * do not modify the state directly, always clone the state and setState(clone)
+* always destructure your arguments to make code cleaner
+* create component to be generic to promote reuseability
 
 ## Tutorial 1
 
@@ -163,6 +189,8 @@ state = {
         * import React, { Component } from 'react';
       * cc + tab
         * import class skeleton
+      * sfc + tab
+        * create stateless functional components
 
 ### development
 
@@ -175,7 +203,7 @@ state = {
 
 * /public - public files (favicon.ico)
   * index.html - main html to render
-* src - folders for components?
+* src - folders for components
 
 #### Hello World
 
@@ -228,12 +256,7 @@ ReactDOM.render(
   <Counter/>,  // here
   document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
-
+...
 ```
 
 * refresh page
@@ -425,7 +448,7 @@ class Counter extends React.Component {
 
 export default Counter;
 
-### Handling Events (60:05)
+### Handling Events (1:00:05)
 
 ```jsx
 import React, { Component } from "react";
@@ -469,7 +492,7 @@ class Counter extends React.Component {
 export default Counter;
 ```
 
-### Binding Event Handler (60:04)
+### Binding Event Handler (1:00:04)
 
 ```jsx
 import React, { Component } from "react";
@@ -514,7 +537,7 @@ class Counter extends React.Component {
 export default Counter;
 ```
 
-### Updating The State (60:08)
+### Updating The State (1:00:08)
 
 * update the state and refresh the view (using Component.setState(object))
 
@@ -560,12 +583,12 @@ class Counter extends React.Component {
 export default Counter;
 ```
 
-### What happen when state changes (60:11)
+### What happen when state changes (1:00:11)
 
 * state changes > virtual changes > actual dom changes
   * only affected dom are updated on this page (other dom is not affected)
 
-### Passing Events Arguments for Method Referencing (60:13)
+### Passing Events Arguments for Method Referencing (1:00:13)
 
 * change from
 
@@ -617,13 +640,13 @@ export default Counter;
 ### Composing Components (1:17:34)
 
 * create src/counters.jsx
-* edit index.js and import Counters
+* edit index.js
 
 ```js
-import Counters from './components/counters'
+import Counters from './components/counters'//here
 ...
 ReactDOM.render(
-  <Counters/>,
+  <Counters/>,//here
   document.getElementById('root')
 );
 ```
@@ -637,10 +660,10 @@ import Counter from './counter'
 class Counters extends React.Component {
   state = {
     counters: [
-      {id:1, value:3},
-      {id:2, value:0},
-      {id:3, value:0},
-      {id:4, value:0}
+      {id:1, value:3},//here
+      {id:2, value:0},//here
+      {id:3, value:0},//here
+      {id:4, value:0}//here
     ]
   }
 
@@ -935,9 +958,6 @@ export default Counter;
 * counters.jsx
 
 ```jsx
-import React, { Component } from 'react';
-import Counter from './counter'
-
 class Counters extends React.Component {
   ...
   render() { 
@@ -974,7 +994,6 @@ export default Counters;
 * counter.jsx
 
 ```jsx
-import React, { Component } from "react";
 class Counter extends React.Component {
   ...
   render() {
@@ -991,3 +1010,200 @@ class Counter extends React.Component {
 
 export default Counter;
 ```
+
+### Multiple Components in Sync (1:54:47)
+
+* we are going to change the component tree
+  * from
+    * App
+      * NavBar
+      * Counters - State
+        * Counter
+    * App - State
+      * NavBar
+      * Counters
+        * Counter
+
+* index.js - point to App
+
+```js
+ReactDOM.render(
+  <App/>,
+  document.getElementById('root')
+);
+```
+
+* App.js - point to NavBar and Counters
+
+```jsx
+import NavBar from './components/navbar';
+import Counters from './components/counters';
+class App extends React.Component {
+```
+
+* goto <https://getbootstrap.com/docs/5.1/components/navbar/> and copy the html and paste below
+* navbar.jsx - new file
+
+```jsx
+import React, { Component } from 'react';
+class NavBar extends React.Component {
+  render() { 
+    return <nav className="navbar navbar-light bg-light">
+    <div className="container-fluid">
+      <a className="navbar-brand" href="#">Navbar</a>
+    </div>
+  </nav>;
+  }
+}
+ 
+export default NavBar;
+```
+
+
+### Lifting State Up (2:00:42)
+
+* move state and handle method from Counters to App
+  * pass state/control from App to Counters
+    * E.g.
+      * counters={this.state.counters}
+      * handleReset={this.handleReset}
+  * pass state from App to NavBar
+    * E.g.
+      * <NavBar totalCounters={this.props.totalCounters}/>
+  * change reference to props in Counters.jsx
+    * E.g.
+      * handleDelete={this.props.handleDelete}
+  * show totalCounters state in NavBar
+    * E.g.
+      * {this.props.totalCounters}
+* show state in navbar
+* App.js
+
+```js
+import './App.css';
+import NavBar from './components/navbar';
+import React, { Component } from 'react';
+import Counters from './components/counters';
+
+class App extends React.Component {
+  state = {
+    counters: [
+      {id:1, value:3},
+      {id:2, value:2},
+      {id:3, value:1},
+      {id:4, value:0}
+    ]
+  }
+
+  handleReset = () => {
+    console.log("resetting");
+    const counters = [...this.state.counters];
+    counters.filter(c=>console.log("check : " + c.id + " : " + c.value));
+    counters.filter(c=>c.value=0);
+    this.setState({counters});
+  }
+
+  handleDelete = (counter) => {
+    const counters = this.state.counters.filter(c=>c.id !== counter.id);
+
+    this.setState({counters});
+  }
+
+  handleIncrement = (counter) => {
+    const counters = [...this.state.counters];
+    const index = counters.indexOf(counter);    
+    counters[index] = {...counter};
+    counters[index].value++;
+    this.setState({counters});
+  }
+
+  render() { 
+    return (
+      <React.Fragment>
+        <NavBar totalCounters={this.state.counters.filter(c=>c.value>0).length}/>
+        <Counters
+          counters={this.state.counters}
+          handleReset={this.handleReset} 
+          handleIncrement={this.handleIncrement}
+          handleDelete={this.handleDelete}
+        />
+      </React.Fragment>
+    );
+  }
+}
+ 
+export default App;
+```
+
+* Counters.jsx
+
+```jsx
+import React, { Component } from 'react';
+import Counter from './counter'
+
+class Counters extends React.Component {
+  render() { 
+    return (<div>
+      <div><button className="btn btn-primary btn-sm m-2" onClick={() => this.props.handleReset()}>reset</button></div>
+      <div>{this.props.counters.map(counter=>
+        <Counter
+          key={counter.id}
+          counter={counter}
+          handleDelete={this.props.handleDelete}
+          handleIncrement={this.props.handleIncrement}
+        />
+      )}</div>
+    </div>);
+  }
+}
+ 
+export default Counters;
+```
+
+### Stateless Functional Components - sfc(2:06:20)
+
+* since navbar is view only with no helper function, we can decide to render class or sfc
+* edit navbar.jsx
+* sfc + tab
+
+```jsx
+const NavBar = () => {
+  return <nav className="navbar navbar-light bg-light">
+  <div className="container-fluid">
+    <a className="navbar-brand" href="#">Navbar 
+      <span className="badge badge-pill badge-secondary">{this.props.totalCounters}</span></a>
+  </div>
+</nav>;
+}
+ 
+export default NavBar;
+```
+
+### Destructuring Arguments (2:08:53)
+
+* instead of calling this.props. multiple times in counters.jsx, we can destructure the argemnets
+  * from
+    * <Counter handleIncrement={this.props.handleIncrement} handleReset={this.handleReset}>
+  * to
+    * const {handleIncrement, handleReset} = this.props;
+    * <Counter handleIncrement={handleIncrement} handleReset={handleReset}>
+
+### Lifecycle Hook (2:10:54)
+
+* 3 phase with hook (method)
+  * mount - create compoment
+    * hook
+      * constructor
+      * render
+      * componentDidMount - DOM rendered
+  * update - update componnet
+    * render
+    * componentDidUpdate
+  * unmount - remove component
+    * componentWillUnmount
+
+### Mounting Phase (2:12:33)
+
+* when render is called, the child render is called too
+
+### Updating Phase (2:18:12)

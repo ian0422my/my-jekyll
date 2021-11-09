@@ -36,3 +36,8 @@ handleIncrement() {
   console.log(this); // log current function
 }
 ```
+
+### Clone Object
+
+state = [[]];
+const counters = [...this.state.counters];
