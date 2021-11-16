@@ -39,12 +39,15 @@ sidebar:
 
 ## Shortcuts
 
-| shortcut            | description                                   |
-| :------------------ | :-------------------------------------------- |
-| ctrl+,              | settings                                      |
-| ctrl+d              | select same pattern(run again to select more) |
-| shift+alt+[up/down] | copy existing line up/down                    |
-| shift+delete        | delete line                                   |
+| shortcut                                 | description                                                                          |
+| :--------------------------------------- | :----------------------------------------------------------------------------------- |
+| ctrl+,                                   | settings                                                                             |
+| ctrl+d                                   | select same pattern(run again to select more)                                        |
+| shift+alt+[up/down]                      | copy existing line up/down                                                           |
+| shift+delete                             | delete line                                                                          |
+| table.table>thead>tr>td*4>span.m-2 + tab | this will generate a table with thead, tr, 4 Td - Zencoding (using css class syntax) |
+| select line(s) + alt + up/down           | move the line up/down (no need cut/paste)                                            |
+| ctrl+p                                   | find files; can use regex;                                                           |
 
 ## Troubleshoot
 
