@@ -43,6 +43,7 @@ sidebar:
 | :--------------------------------------- | :----------------------------------------------------------------------------------- |
 | ctrl+,                                   | settings                                                                             |
 | ctrl+d                                   | select same pattern(run again to select more)                                        |
+| alt+click                                | select multiple location(to edit multiple location)                                  |
 | shift+alt+[up/down]                      | copy existing line up/down                                                           |
 | shift+delete                             | delete line                                                                          |
 | table.table>thead>tr>td*4>span.m-2 + tab | this will generate a table with thead, tr, 4 Td - Zencoding (using css class syntax) |

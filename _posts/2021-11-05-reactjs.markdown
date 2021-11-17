@@ -205,51 +205,63 @@ state = {
   * router is not really routing, is more like render component at the defined location based on the path, url and query parameter
   * when using switch, always declare the more specific function/url first followed by less specific function/url
   * parameters
-    * optional parameters is better as queyr parameter than url parameters
+    * optional parameters is better as query parameter than url parameters
+* Form
+  * always initialized controlled element state properties to string (cannot null or undefined)
+  * all react handler by default gets a [sytheticevent](https://reactjs.org/docs/events.html)
+    * do not pass "this" to event handler (i.e. onChange={onChange(this)}) since "this" is refers to the dom itself
+    * use Joi(joi-browser@13.4) to validate forms object
 
 ## Cheatsheet
 
-| code                                                                              | description                                                                 |
-| :-------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- |
-| React.Fragment                                                                    | create component without div                                                |
-| const counters = [...this.state.counters]                                         | clone object                                                                |
-| totalCounters={this.state.counters.filter(c=>c.value>0).length}/>                 | copy with filtering condition                                               |
-| const index = counters.indexOf(counter);                                          | getting the index of object in an array                                     |
-| this.setState({counters});                                                        | refresh the view                                                            |
-| imrc + tab                                                                        | import react ocmponent                                                      |
-| cc + tab                                                                          | create class component skeleton                                             |
-| ccc + tab                                                                         | create class component with constructor                                     |
-| sfc  + tab                                                                        | create stateless functional component skeleton                              |
-| const {handleReset, counters} = this.props; handleReset();                        | destructing argument                                                        |
-| const {handleReset: customVarName} = this.props; customVarName();                 | destructing argument with custom variable name                              |
-| onClick={() => handleReset(counters)}                                             | pass reference to a method with arg                                         |
-| state={m1: name => <h1>welcome {name}</h1>}; <Profile m1={this.state.m1}/>        | pass reference to a method with arg as object member                        |
-| onClick={handleReset}                                                             | pass reference to a method without arg                                      |
-| parent - <Counter total=1>; child - this.props.total                              | passing value from parent to child                                          |
-| parent - <Counter fn1={fn1}>; child - this.props.fn1()                            | passing method(no arg) reference from parent to child                       |
-| parent - <Counter fn1={fn1}>; child - () => this.props.fn1(param1,param2)         | passing method(with arg) reference from parent to child                     |
-| let counters = this.state.counters.filter((counter)=>counter.id!==target.id));    | filter                                                                      |
-| this.state.counters.map((counter)=>console.log(counter.id));                      | iterate                                                                     |
-| table.table>thead>tr>td*4>h1+span.m-2[style="cursor:pointer"] + tab               | generate table with thead,tr,4 Td, h1 and span(same level) with style; zen  |
-| this.setState({movies}); // rather than {movie:movie}.                            | ecma6; use when key=value;shorter and cleaner code                          |
-| let pages = lodash.range(min, max);                                               | create array with min, max size                                             |
-| _(items).slice(startIndex).take(pageSize).value()                                 | cut a chuck sizes(pageSize) of items from start(index)                      |
-| Pagination.propTypes = {itemCount: PropTypes.number.isRequired}                   | enforce type - number and required - for a class member                     |
-| const a1 = [1,2,3]; const a2 = [4,5,6];const combined = [...a1, 'a', ...a2, 'b']; | combine array and new item                                                  |
-| <span className={{m-2 col-2}}/><span className={{col}}>                           | span in 1st column(grid system has 12 columns); 2nd span takes all column   |
-| item={id: "1", name:"ian"}; key="id";item[key] == 1;//true                        | item[key] access value of items dynamically (i.e. no hardcode like item.id) |
-| MyComponent.defaultProps = { customPropVal: "default value"}                      | set default value for props member                                          |
-| _.get(object, path)                                                               | get object member by path                                                   |
-| <Router path="/path" component="Products"/>                                       | render component based on path with standard props                          |
-| <Router render={(props)=><Product sortBy="newest" {...props}/>}/>                 | render component based on path with custom+standard props                   |
-| <Link to="/path"/>                                                                | change url without reloading bundle.js                                      |
-| <NavLink to="/path">                                                              | change url; highlight automatically once clicked                            |
-| <Switch>                                                                          | render component based on path. If match, stop processing the rest          |
-| <Route path="/posts/:year?" component={Posts} />; year=q.get                      | path with optional parameters                                               |
-| query param > ?year > let {year} = queryString.parse(this.props.location.search); |                                                                             |
-| router param > /:year/ > let year = this.props.match.params.year                  |                                                                             |
-| change url > this.props.history.push(url) or replace(url)                         |                                                                             |
-| npm i query-string@6.1.0; queryString.parse(location.search);                     | parse queryString as object                                                 |
+| type   | code                                                                                 | description                                                                          |
+| :----- | :----------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- |
+| vscode | imrc > tab                                                                           | import react ocmponent                                                               |
+| vscode | cc > tab                                                                             | create class component skeleton                                                      |
+| vscode | ccc > tab                                                                            | create class component with constructor                                              |
+| vscode | sfc > tab                                                                            | create stateless functional component skeleton                                       |
+| vscode | table.table>thead>tr>td*4>h1+span.m-2[style="cursor:pointer"] + tab                  | generate table with thead,tr,4 Td, h1 and span(same lvl) with style; zen             |
+| css    | \<span className=\{\{m-2 col-2\}\}\/>\<span className=\{\{col\}\}>                   | 1st column occupy 2 column(grid system has 12 columns); 2nd span the rest of columns |
+| js     | Object.keys(errors).length                                                           | length of all keys of an object                                                      |
+| js     | let errors = { errors: errors \|\| {} }                                              | return errors if is not null(or return empty object)                                 |
+| js     | const counters = [...this.state.counters, {}]                                        | clone object array with additional object                                            |
+| js     | totalCounters={this.state.counters.filter(c=>c.value>0).length}/>                    | copy with filtering condition                                                        |
+| js     | const index = counters.indexOf(counter); const counter = counters[index];            | getting the index of object in an array and get the object based on index            |
+| js     | this.state.counters.map((counter)=>console.log(counter.id));                         | iterate                                                                              |
+| js     | const a1 = [1,2,3]; const a2 = [4,5,6];const combined = [...a1, 'a', ...a2, 'b'];    | combine array and new item                                                           |
+| js     | item={id:"1", name:"ian"}; key="id";item[key] == 1;//true                            | access value of items dynamically by name(i.e. no hardcode like item.id)             |
+| lodash | let pages = lodash.range(min, max);                                                  | create array with min, max size                                                      |
+| lodash | _(items).slice(startIndex).take(pageSize).value()                                    | cut a chuck sizes(pageSize) of items from start(index)                               |
+| lodash | const sortedMovies = _.orderBy(array,["field1",...],["asc"];                         | sorting array                                                                        |
+| lodash | _.get(object, path)                                                                  | get object member by path                                                            |
+| joi    | schema = {uname: Joi.required().label("User Name")};Joi.validate({uname:""}, schema) | define Joi schema,validate object and return validation message with friendly name   |
+| react  | npm i query-string@6.1.0; queryString.parse(location.search);                        | parse queryString as object                                                          |
+| react  | this.setState({counters});                                                           | update state and refresh the view                                                    |
+| react  | {error && \<div className="alert alert-danger">{error}</div>}                        | show when "error" is not null                                                        |
+| react  | React.Fragment                                                                       | create component without div                                                         |
+| react  | const {handleReset, counters} = this.props; handleReset();                           | destructing argument                                                                 |
+| react  | const {handleReset: customVarName} = this.props; customVarName();                    | destructing argument with custom variable name                                       |
+| react  | onClick={() => handleReset(this.state.counters)}                                     | pass reference to a method with arg                                                  |
+| react  | state={m1: name => \<h1>welcome {name}</h1>}; \<Profile m1={this.state.m1}/>         | pass reference to a method with arg as object member                                 |
+| react  | onClick={handleReset}                                                                | pass reference to a method without arg                                               |
+| react  | parent - \<Counter total=1>; child - this.props.total                                | passing value from parent to child                                                   |
+| react  | parent - \<Counter fn1={fn1}>; child - this.props.fn1()                              | passing method(no arg) reference from parent to child                                |
+| react  | parent - \<Counter fn1={fn1}>; child - () => this.props.fn1(param1,param2)           | passing method(with arg) reference from parent to child                              |
+| react  | this.setState({movie}); // rather than {movie:movie}.                                | ecma6; use when key=value;shorter and cleaner code                                   |
+| react  | Pagination.propTypes = {itemCount: PropTypes.number.isRequired}                      | enforce type - number and required - for a class member                              |
+| react  | MyComponent.defaultProps = { customProp: "default value"}                            | set default value for props member                                                   |
+| react  | \<Route path="/path" component="Products"/>                                          | render component based on path with standard props                                   |
+| react  | \<Route render={(props)=>\<Product sortBy="newest" {...props}/>}/>                   | render component based on path with custom+standard props                            |
+| react  | \<Link to="/path"/>                                                                  | change url without reloading bundle.js                                               |
+| react  | \<NavLink to="/path">                                                                | change url; highlight automatically once clicked                                     |
+| react  | \<Switch/>\<Link/>                                                                   | render component based on path. If match, stop processing the rest                   |
+| react  | \<Route path="/posts/:year?" component={Posts} />; year=this.props.match.param.year  | path with optional parameters                                                        |
+| react  | http://url/?year - let {year} = queryString.parse(this.props.location.search);       | read query param                                                                     |
+| react  | http://url/:year/ - let year = this.props.match.params.year                          | read url param                                                                       |
+| react  | this.props.history.replace(url)                                                      | change browser url without history                                                   |
+| react  | this.props.history.push(url)                                                         | change browser url with history                                                      |
+| react  | \<form onSubmit=\{this.handleSubmit\}*>\<button name=Login/>                         | submit form                                                                          |
+| react  | \<input onChange=\{this.onChange\}/>;onChange(e) {}                                  | call function when input changes                                                     |
 
 ## Tutorial - ES6 Refresher
 
@@ -282,7 +294,7 @@ function test() {
 const i = 1;
 i = i++; // compilation error since const is read only
 
-#### Comparison table
+#### Comparison
 
 | command | scope    | read? write? | remarks                            |
 | :------ | :------- | :----------- | :--------------------------------- |
@@ -2794,58 +2806,289 @@ export default MovieDetails;
 ### 2 - Building a Bootstrap Form
 
 * find html from [bootstrap form](https://getbootstrap.com/docs/4.0/components/forms/)
-
-## Self Study
-
-### call api
-
-#### GET
-
-* use componentDidMount follow by setState
-
-```jsx
-import React, { Component } from 'react';
-
-class Profile extends React.Component {
-
-  state = {person: []};
-
-  componentDidMount() {
-    this.UserList();
-  }
-  
-  UserList() {
-    const that = this; 
-    fetch('https://randomuser.me/api/') 
-      .then(function(response) { return response.json(); }) 
-      .then(function(myJson) { 
-        that.setState({person: myJson.results}); // for example
-      });
-  }
-
-  render() { 
-    return <div>Welcome {this.state.person.map(p=>p.name.first + " " + p.name.last)}</div>
-  }
-}
- 
-export default Profile;
-```
-
-#### non-GET
-
-* <https://stackoverflow.com/questions/44996357/react-fetch-post-request>
+* create src/component/loginform.jsx
+  * form>(div.form-group>label+input.form-control[type="email"][id="a"]+small.form-text.text-muted)*2
+* loginform.jsx
+  * for change to htmlFor
+  * class change to className
 
 ```js
-fetch('https://randomuser.me/api/', 
-  {
-    method: 'post',
-    headers: {'Content-Type':'application/json'},
-    body: {
-      JSON.stringify("first_name": this.firstName.value)
-    }
-  })
-.then(function(response) { return response.json(); }) 
-.then(function(myJson) { 
-  that.setState({person: myJson.results}); // for example
-});
+import React, { Component } from "react";
+class LoginForm extends React.Component {
+  render() {
+    return (
+      <form>
+        <div className="form-group">
+          <label htmlFor="username">username</label>
+          <input type="text" className="form-control" id="username" />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input type="password" className="form-control" id="password" />
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Login
+        </button>
+      </form>
+    );
+  }
+}
+
+export default LoginForm;
+```
+
+### 3 - Handling Form submission
+
+* loginform.jsx
+
+```js
+...
+  handleSubmit = (e) => {
+    e.preventDefault();// prevent default behavior - i.e. submitting the form
+    console.log("handleSubmit");
+  };
+  ...
+      <form onSubmit={this.handleSubmit}>
+ ...
+        <button className="btn btn-primary">Login</button>
+      </form>
+```
+
+### 4 - Refs
+
+* in replace of document.getElementById
+* use sparingly
+
+```js
+username = React.createRef();
+...
+console.log(this.username.current.value);
+```
+
+### 5 - Controlled Elements
+
+* keep the input value in sync with state
+  * create state
+  * create method to sync form and state
+  * call onchange and set value using state
+
+```jsx
+...
+  state = {
+    account: { username: "", password: "" },
+  };
+...
+  handleChange = (e) => {
+    const account = { ...this.state.account };
+    account.username = e.currentTarget.value;
+    this.setState({ account });
+  };
+...
+           <input
+...
+              onChange={this.handleChange}
+              value={this.state.account.username}
+            />
+            ...
+```
+
+### 6 - handling multiple input
+
+* loginform.jsx
+
+```jsx
+...
+  handleChange = (e) => {
+    ... 
+    account[e.currentTarget.name] = e.currentTarget.value;
+    ...
+  };
+  ...
+            <input
+              ...
+              name="username"
+              onChange={this.handleChange}
+              value={this.state.account.username}
+            />
+...
+              name="password"
+              value={this.state.account.password}
+              onChange={this.handleChange}
+```
+
+### 7 - Common Errors
+
+* controlled element state properties value cannot be null or undefined
+
+### 8 - Extracting a resuable input
+
+* create input.jsx
+
+```jsx
+import React from "react";
+class Input extends React.Component {
+  render() {
+    const { name, type, label, value, handleChange } = this.props;
+
+    return (
+      <div className="form-group">
+        <label htmlFor={name}>{label}</label>
+        <input
+          autoFocus
+          type={type}
+          className="form-control"
+          id={name}
+          name={name}
+          onChange={handleChange}
+          value={value}
+        />
+      </div>
+    );
+  }
+}
+
+export default Input;
+```
+
+* loginform.jsx
+  * import and use input.jsx
+
+```jsx
+import Input from "./common/input";
+...
+          <Input
+            name="username"
+            type="text"
+            handleChange={this.handleChange}
+            value={this.state.account.username}
+            label="Username"
+          />
+          <Input
+            name="password"
+            type="password"
+            handleChange={this.handleChange}
+            value={this.state.account.password}
+            label="Password"
+          />
+```
+
+### 9,10 - Validation/Basic validation implementation
+
+* loginform.jsx
+  * inject errors in errors object and return
+
+```jsx
+...
+  validate() {
+    let errors = {};
+    if (this.state.account.username.trim() === "")
+      errors.username = "username is required";
+    if (this.state.account.password.trim() === "")
+      errors.password = "password is required";
+
+    return Object.keys(errors).length === 0 ? null : errors;
+  }
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    const errors = this.validate();
+    console.log(errors);
+    this.setState({ errors });
+    if (errors) return;
+
+    console.log("submitted");
+  };
+  ...
+```
+
+### 11 - Display validation errors
+
+* loginform.jsx
+  * add error object for each field into state.errors during validation
+  * passed error object to input
+
+```jsx
+  ...
+  handleSubmit = (e) => {
+...
+    this.setState({ errors: errors || {} }); // errors must always be not null
+    ...
+  };
+  ...
+          <Input
+            name="username"
+            ...
+            error={this.state.errors["username"]}
+          />
+          <Input
+            name="password"
+            ...
+            error={this.state.errors["password"]}
+          />
+```
+
+* input.jsx
+  
+```jsx
+...
+{error && <div className="alert alert-danger">{error}</div>} // show when "error" is not null
+...
+```
+
+### 12 - validation on change
+
+* input.jsx
+  * validation upon change
+  * set error to state and update view
+* loginform.jsx
+
+```jsx
+...
+  validateInput = (currentTarget) => {
+    if (currentTarget.value.trim() === "")
+      return currentTarget.name + " cannot be empty";
+    return null;
+  };
+  handleChange = (e) => {
+    let errorMessage = this.validateInput(e.currentTarget);
+    let errors = {};
+    errors[e.currentTarget.name] = errorMessage;
+    const account = { ...this.state.account };
+    account[e.currentTarget.name] = e.currentTarget.value;
+    this.setState({ account, errors });
+  };
+  ...
+```
+
+### 13/14 - Joi/Validating a form using joi
+
+* install joi
+  * npm i joi-browser@13.4
+* loginform.jsx
+  * import Joi
+  * define schema
+  * validate using joi
+  * construct errors and refresh ui
+
+```jsx
+...
+import Joi from "joi-browser";
+...
+  schema = {
+    username: Joi.string().required().label("User Name"),
+    password: Joi.string().min(8).required().label("Password"),
+  };
+...
+  validate() {
+    let results = Joi.validate(this.state.account, this.schema, {
+      abortEarly: false,
+    });
+    if (!results.error) return null;
+
+    let errors = {};
+    for (let item of results.error.details) errors[item.path[0]] = item.message;
+
+    return errors;
+  }
+  ...
 ```
