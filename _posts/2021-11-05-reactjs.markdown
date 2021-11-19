@@ -28,15 +28,15 @@ sidebar:
   * method
     * each method is object
 * construct by component(reusable) - nav bar, login, menu, etc
-  * need to export (E.g. export default Counter) to import 
+  * need to export (E.g. export default Counter) to import
 * content is written using
   * javascript
     * templating engine
       * loop
       * if/else
   * JSX (javascript xml) - {}, {{}}
-    * where jsx expression (E.g. <span className="basic">) will be converted into javascript object
-      * hence, "<span className="basic"> cannot be written as <span class="basic"> since "class" is a reserved keyword in javascript
+    * where jsx expression (E.g. \<span className="basic">) will be converted into javascript object
+      * hence, "\<span className="basic"> cannot be written as \<span class="basic"> since "class" is a reserved keyword in javascript
     * not templating engine
       * no looping concept
       * no if/else
@@ -63,17 +63,17 @@ sidebar:
     * state
       * each object has a state
         * initialize 1 time by object's state (i.e. state = {})
-          * "state = {}" is just for initialization. this.state is referring to the state inside the object, not "state = {}". 
+          * "state = {}" is just for initialization. this.state is referring to the state inside the object, not "state = {}".
       * will be overwritten after setState({})
     * render (method)
       * return jsx component
-        * <button className={}>, Or
+        * \<button className={}>, Or
         * text (E.g. "text")
 
 ## JSX Syntax
 
 * javascript object
-  * can be use like any other javascript like "let state = [like: <Like/>]"
+  * can be use like any other javascript like "let state = [like: \<Like/>]"
 
 ### {}
 
@@ -85,15 +85,15 @@ sidebar:
     * will display you declare in component's state.count
   * {this.formatCount()}
     * call a function (e.g. formatCount() { return 'hi';}) and display value returned by the function
-  * <button onClick={() => this.handleFunction(param1, param2))}>Click</button>
+  * \<button onClick={() => this.handleFunction(param1, param2))}>Click</button>
     * passing a reference of a function(with parameter) to event
     * function will not be called until event is triggered
-  * <button onClick={this.handleFunction)}>Click</button>
+  * \<button onClick={this.handleFunction)}>Click</button>
     * passing a reference of a function(with no parameter) to event
     * function will not be called until event is triggered
   * {{}}
     * use as it is? native value?
-  * <Counter handleIncrement={this.handleIncrement}/>
+  * \<Counter handleIncrement={this.handleIncrement}/>
     * passing control frmo parent to child via Counter.props
 
 ### Attributes
@@ -132,19 +132,19 @@ state = {
       * console.log(this.props.targetProps1); // log "targetProps1Value"
   * via target.children
     * src
-      * <Counter><h4>product name1</h4></Counter>
+      * \<Counter>\<h4>product name1</h4></Counter>
     * target
-      * console.log(this.children); // log <h4>product name1</h4>
+      * console.log(this.children); // log \<h4>product name1</h4>
 * (src)can pass function(as object) to target components
   * via target.props
     * src (i.e. Counters)
-      * <Counter handleDelete={this.handleDeleteParent}>
+      * \<Counter handleDelete={this.handleDeleteParent}>
     * target (i.e. Counter)
       * onClick={this.props.handleDelete}
 * (src)can pass state(as object) to target components
   * via target.props
     * src (i.e. Counters)
-      * <Counter counters={this.counters}>
+      * \<Counter counters={this.counters}>
     * target (i.e. Counter)
       * console.log("id : " + {this.props.counters.id});
 
@@ -161,8 +161,24 @@ state = {
     * bootstrap
     * font-awesome
     * [lodash(pka underscore)](https://lodash.com/docs/)
+    * query-string
+    * joi
+      * form validation - .required().min(8).max(16).regex([a-z]?[A-Z]?[0-9](8,16)).label("Friendaly Name")
+    * axios (npm i axios@0.18)
+      * http client
+    * toastify (npm i react-toastify@4.1)
+      * replacing alert
 * coding practice
   * use let instead of var
+  * be familiar with [truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy) and [falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy)
+    * E.g.
+      * not null is considered truthy
+      * undefined and null is considered falsy
+  * be careful with the use of && and ||
+    * &&
+      * will return right operand if left operand is truthy
+    * ||
+      * will return left operand if left operand is truthy, if falsy, then return right operand
   * convention
     * function name
       * camelCase
@@ -170,7 +186,7 @@ state = {
     * variable name
       * plural should append with s
       * utility class should use generic name such as item(e.g. handleItem vs handleMovie; itemCount vs movieCount)
-  * JSX returned by render method must consists of only 1 root element - encapsulate with <div> or <react.fragment>
+  * JSX returned by render method must consists of only 1 root element - encapsulate with \<div> or <react.fragment>
   * use arrow function instead of constructor with binding to access "this"
   * state should modified
     * only by component that owns it, OR
@@ -200,7 +216,7 @@ state = {
     * always destructure your arguments to make code cleaner
     * decoupling
       * decouple UI code from logic code(parent)
-      * decouple high level code (<Component/>) from low level code(<table><tr>)
+      * decouple high level code (\<Component/>) from low level code(\<table>\<tr>)
 * Router
   * router is not really routing, is more like render component at the defined location based on the path, url and query parameter
   * when using switch, always declare the more specific function/url first followed by less specific function/url
@@ -211,59 +227,74 @@ state = {
   * all react handler by default gets a [sytheticevent](https://reactjs.org/docs/events.html)
     * do not pass "this" to event handler (i.e. onChange={onChange(this)}) since "this" is refers to the dom itself
     * use Joi(joi-browser@13.4) to validate forms object
+* API
+  * use axios
+  * use optimistics rather than pessimistics update
+    * UI looks more friendly
+  * use axios.interceptors.response/request to ***prehandle condition globally***
+  * implement try/catch only for specific condition (e.g. when there's input parameter)
+    * /api/posts - get all - no need since got error is unexpected (network, database)
+    * /api/posts/1 - get specific - need to catch since client might pass in a wrong value (i.e. "1" doesn't exist in db)
 
 ## Cheatsheet
 
-| type   | code                                                                                 | description                                                                          |
-| :----- | :----------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- |
-| vscode | imrc > tab                                                                           | import react ocmponent                                                               |
-| vscode | cc > tab                                                                             | create class component skeleton                                                      |
-| vscode | ccc > tab                                                                            | create class component with constructor                                              |
-| vscode | sfc > tab                                                                            | create stateless functional component skeleton                                       |
-| vscode | table.table>thead>tr>td*4>h1+span.m-2[style="cursor:pointer"] + tab                  | generate table with thead,tr,4 Td, h1 and span(same lvl) with style; zen             |
-| css    | \<span className=\{\{m-2 col-2\}\}\/>\<span className=\{\{col\}\}>                   | 1st column occupy 2 column(grid system has 12 columns); 2nd span the rest of columns |
-| js     | Object.keys(errors).length                                                           | length of all keys of an object                                                      |
-| js     | let errors = { errors: errors \|\| {} }                                              | return errors if is not null(or return empty object)                                 |
-| js     | const counters = [...this.state.counters, {}]                                        | clone object array with additional object                                            |
-| js     | totalCounters={this.state.counters.filter(c=>c.value>0).length}/>                    | copy with filtering condition                                                        |
-| js     | const index = counters.indexOf(counter); const counter = counters[index];            | getting the index of object in an array and get the object based on index            |
-| js     | this.state.counters.map((counter)=>console.log(counter.id));                         | iterate                                                                              |
-| js     | const a1 = [1,2,3]; const a2 = [4,5,6];const combined = [...a1, 'a', ...a2, 'b'];    | combine array and new item                                                           |
-| js     | item={id:"1", name:"ian"}; key="id";item[key] == 1;//true                            | access value of items dynamically by name(i.e. no hardcode like item.id)             |
-| lodash | let pages = lodash.range(min, max);                                                  | create array with min, max size                                                      |
-| lodash | _(items).slice(startIndex).take(pageSize).value()                                    | cut a chuck sizes(pageSize) of items from start(index)                               |
-| lodash | const sortedMovies = _.orderBy(array,["field1",...],["asc"];                         | sorting array                                                                        |
-| lodash | _.get(object, path)                                                                  | get object member by path                                                            |
-| joi    | schema = {uname: Joi.required().label("User Name")};Joi.validate({uname:""}, schema) | define Joi schema,validate object and return validation message with friendly name   |
-| react  | npm i query-string@6.1.0; queryString.parse(location.search);                        | parse queryString as object                                                          |
-| react  | this.setState({counters});                                                           | update state and refresh the view                                                    |
-| react  | {error && \<div className="alert alert-danger">{error}</div>}                        | show when "error" is not null                                                        |
-| react  | React.Fragment                                                                       | create component without div                                                         |
-| react  | const {handleReset, counters} = this.props; handleReset();                           | destructing argument                                                                 |
-| react  | const {handleReset: customVarName} = this.props; customVarName();                    | destructing argument with custom variable name                                       |
-| react  | onClick={() => handleReset(this.state.counters)}                                     | pass reference to a method with arg                                                  |
-| react  | state={m1: name => \<h1>welcome {name}</h1>}; \<Profile m1={this.state.m1}/>         | pass reference to a method with arg as object member                                 |
-| react  | onClick={handleReset}                                                                | pass reference to a method without arg                                               |
-| react  | parent - \<Counter total=1>; child - this.props.total                                | passing value from parent to child                                                   |
-| react  | parent - \<Counter fn1={fn1}>; child - this.props.fn1()                              | passing method(no arg) reference from parent to child                                |
-| react  | parent - \<Counter fn1={fn1}>; child - () => this.props.fn1(param1,param2)           | passing method(with arg) reference from parent to child                              |
-| react  | this.setState({movie}); // rather than {movie:movie}.                                | ecma6; use when key=value;shorter and cleaner code                                   |
-| react  | Pagination.propTypes = {itemCount: PropTypes.number.isRequired}                      | enforce type - number and required - for a class member                              |
-| react  | MyComponent.defaultProps = { customProp: "default value"}                            | set default value for props member                                                   |
-| react  | \<Route path="/path" component="Products"/>                                          | render component based on path with standard props                                   |
-| react  | \<Route render={(props)=>\<Product sortBy="newest" {...props}/>}/>                   | render component based on path with custom+standard props                            |
-| react  | \<Link to="/path"/>                                                                  | change url without reloading bundle.js                                               |
-| react  | \<NavLink to="/path">                                                                | change url; highlight automatically once clicked                                     |
-| react  | \<Switch/>\<Link/>                                                                   | render component based on path. If match, stop processing the rest                   |
-| react  | \<Route path="/posts/:year?" component={Posts} />; year=this.props.match.param.year  | path with optional parameters                                                        |
-| react  | http://url/?year - let {year} = queryString.parse(this.props.location.search);       | read query param                                                                     |
-| react  | http://url/:year/ - let year = this.props.match.params.year                          | read url param                                                                       |
-| react  | this.props.history.replace(url)                                                      | change browser url without history                                                   |
-| react  | this.props.history.push(url)                                                         | change browser url with history                                                      |
-| react  | \<form onSubmit=\{this.handleSubmit\}*>\<button name=Login/>                         | submit form                                                                          |
-| react  | \<input onChange=\{this.onChange\}/>;onChange(e) {}                                  | call function when input changes                                                     |
+| type   | code                                                                                | description                                                                          |
+| :----- | :---------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------- |
+| vscode | imrc > tab                                                                          | import react ocmponent                                                               |
+| vscode | cc > tab                                                                            | create class component skeleton                                                      |
+| vscode | ccc > tab                                                                           | create class component with constructor                                              |
+| vscode | sfc > tab                                                                           | create stateless functional component skeleton                                       |
+| vscode | table.table>thead>tr>td*4>h1+span.m-2[style="cursor:pointer"] + tab                 | generate table with thead,tr,4 Td, h1 and span(same lvl) with style; zen             |
+| css    | \<span className=\{\{m-2 col-2\}\}\/>\<span className=\{\{col\}\}>                  | 1st column occupy 2 column(grid system has 12 columns); 2nd span the rest of columns |
+| js     | Object.keys(errors).length                                                          | length of all keys of an object                                                      |
+| js     | let errors = { errors: errors \|\| {} }                                             | "\|\|" return left operand if left operand is truthy                                 |
+| js     | const counters = [...this.state.counters, {}]                                       | clone object array with additional object                                            |
+| js     | totalCounters={this.state.counters.filter(c=>c.value>0).length}/>                   | copy with filtering condition and results in array object                            |
+| js     | let person ={persons.filter(p=>p.name==="ian");                                     | copy with filtering condition and results in array object                            |
+| js     | const index = counters.indexOf(counter); const counter = counters[index];           | getting the index of object in an array and get the object based on index            |
+| js     | this.state.counters.map((counter)=>console.log(counter.id));                        | iterate                                                                              |
+| js     | const a1 = [1,2,3]; const a2 = [4,5,6];const combined = [...a1, 'a', ...a2, 'b'];   | combine array and new item                                                           |
+| js     | item={id:"1", name:"ian"}; key="id";item[key] == 1;//true                           | access value of items dynamically by name(i.e. no hardcode like item.id)             |
+| js     | let name="id";let property = { [name]: value };                                     | set object key dynamically                                                           |
+| lodash | let pages = lodash.range(min, max);                                                 | create array with min, max size                                                      |
+| lodash | _(items).slice(startIndex).take(pageSize).value()                                   | cut a chuck sizes(pageSize) of items from start(index)                               |
+| lodash | const sortedMovies = _.orderBy(array,["field1",...],["asc"];                        | sorting array                                                                        |
+| lodash | _.get(object, path)                                                                 | get object member by path                                                            |
+| joi    | schema = {uname: Joi.required()};let errors = Joi.validate({uname:""}, schema)      | define Joi schema,validate object and return validation message with friendly name   |
+| axios  | const { data: posts } = await axios.get(getEndpoint);                               | get from rest api                                                                    |
+| axios  | const { data: post } = await http.post(postEndpoint, { title: "a", body: "b" });    | post to rest api with body                                                           |
+| axios  | const data = await http.patch(putEndpoint + "/" + post.id, {title: post.title});    | update a single property of an object(post update the whole object)                  |
+| axios  | const data = await http.put(putEndpoint + "/" + post.id, post);                     | update an object                                                                     |
+| react  | npm i query-string@6.1.0; queryString.parse(location.search);                       | parse queryString as object                                                          |
+| react  | this.setState({counters});                                                          | update state and refresh the view                                                    |
+| react  | {error && \<div className="alert alert-danger">{error}</div>}                       | show when "error" is not null                                                        |
+| react  | React.Fragment                                                                      | create component without div                                                         |
+| react  | const {handleReset, counters} = this.props; handleReset();                          | destructing argument                                                                 |
+| react  | const {handleReset: customVarName} = this.props; customVarName();                   | destructing argument with custom variable name                                       |
+| react  | onClick={() => handleReset(this.state.counters)}                                    | pass reference to a method with arg                                                  |
+| react  | state={m1: name => \<h1>welcome {name}</h1>}; \<Profile m1={this.state.m1}/>        | pass reference to a method with arg as object member                                 |
+| react  | onClick={handleReset}                                                               | pass reference to a method without arg                                               |
+| react  | parent - \<Counter total=1>; child - this.props.total                               | passing value from parent to child                                                   |
+| react  | parent - \<Counter fn1={fn1}>; child - this.props.fn1()                             | passing method(no arg) reference from parent to child                                |
+| react  | parent - \<Counter fn1={fn1}>; child - () => this.props.fn1(param1,param2)          | passing method(with arg) reference from parent to child                              |
+| react  | this.setState({movie}); // rather than {movie:movie}.                               | ecma6; use when key=value;shorter and cleaner code                                   |
+| react  | Pagination.propTypes = {itemCount: PropTypes.number.isRequired}                     | enforce type - number and required - for a class member                              |
+| react  | MyComponent.defaultProps = { customProp: "default value"}                           | set default value for props member                                                   |
+| react  | \<Route path="/path" component="Products"/>                                         | render component based on path with standard props                                   |
+| react  | \<Route render={(props)=>\<Product product={product} {...props}/>}/>                | render component based on path with custom(i.e. product) and standard props          |
+| react  | \<Link to="/path"/>                                                                 | change url without reloading bundle.js                                               |
+| react  | \<NavLink to="/path">                                                               | change url; highlight automatically once clicked                                     |
+| react  | \<Switch/>\<Link/>                                                                  | render component based on path. If match, stop processing the rest                   |
+| react  | \<Route path="/posts/:year?" component={Posts} />; year=this.props.match.param.year | path with optional parameters                                                        |
+| react  | http://url/?year - let {year} = queryString.parse(this.props.location.search);      | read query param                                                                     |
+| react  | http://url/:year/ - let year = this.props.match.params.year                         | read url param                                                                       |
+| react  | this.props.history.replace(url)                                                     | change browser url without history                                                   |
+| react  | this.props.history.push(url)                                                        | change browser url with history                                                      |
+| react  | \<form onSubmit=\{this.handleSubmit\}>\<button name=Login/>                         | submit form                                                                          |
+| react  | \<input onChange=\{this.onChange\}/>;onChange(e) {}                                 | call function when input changes                                                     |
+| react  | \<select onChange=\{this.onChange}>/>;onChange(e) {}                                | call function when select changes                                                    |
 
-## Tutorial - ES6 Refresher
+## ES6 Refresher
 
 ### var vs let const
 
@@ -537,7 +568,7 @@ function App() {
   * sefvices/fakeMovieService.js
     * _id is the default id column in MongoDB
 
-## Tutorial - Components
+## Components
 
 ### preparation
 
@@ -1008,7 +1039,7 @@ class Counter extends React.Component {
 export default Counter;
 ```
 
-## Tutorial  - Composing Components
+## Composing Components
 
 ### Composing Components (1:17:34)
 
@@ -1713,7 +1744,7 @@ export default Like;
   />
 ```
 
-## Tutorial - Pagination, Filtering and Sorting
+## Pagination, Filtering and Sorting
 
 ### Purpose
 
@@ -2476,6 +2507,7 @@ export default NavBar;
 
 * how to add custom props to router?
   * use Router.render
+    * it will go to this.props (i.e. this.props.sortBy)
 * App.js
 
 ```js
@@ -2488,11 +2520,6 @@ class App extends Component {
               render={(props) => <Products sortBy="newest" {...props} />}
             />
 ...
-    );
-  }
-}
-
-export default App;
 ```
   
 ### 8 - Router parameters
@@ -3091,4 +3118,828 @@ import Joi from "joi-browser";
     return errors;
   }
   ...
+```
+
+### 15 - Validatng a Property
+
+* loginform.jsx
+  * validate only the speicfic field using specific schema
+
+```jsx
+...
+  validateInput = (currentTarget) => {
+    let name = currentTarget.name;
+    let value = currentTarget.value;
+    let property = { [name]: value };
+    let schema = { [name]: this.schema[name] };
+    let results = Joi.validate(property, schema);
+    if (results.error) return results.error.details[0].message;
+    return null;
+  };
+...
+```
+
+### 16 - Disabling the submit button
+
+* loginform.jsx
+  * call validate to check disabled or not
+    * null is considered falsy
+    * not-null is considered truthy
+
+```jsx
+...
+<button disabled={this.validate()} className="btn btn-primary">
+...
+```
+
+### 17/18 - Code Review/Extracting A Resuable Form
+
+* common/form.jsx
+  * extract resuable componebt from loginform.jsx and put here
+
+```jsx
+import React from "react";
+import Joi from "joi-browser";
+class Form extends React.Component {
+  state = {
+    data: {},
+    errors: {},
+  };
+
+  validate() {
+    let results = Joi.validate(this.state.data, this.schema, {
+      abortEarly: false,
+    });
+    if (!results.error) return null;
+
+    let errors = {};
+    for (let item of results.error.details) errors[item.path[0]] = item.message;
+
+    return errors;
+  }
+
+  validateInput = (currentTarget) => {
+    let name = currentTarget.name;
+    let value = currentTarget.value;
+    let property = { [name]: value };
+    let schema = { [name]: this.schema[name] };
+    let results = Joi.validate(property, schema);
+    if (results.error) return results.error.details[0].message;
+    return null;
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    const errors = this.validate();
+    this.setState({ errors: errors || {} });
+    if (errors) return;
+
+    this.doSubmit();
+  };
+
+  handleChange = (e) => {
+    let errorMessage = this.validateInput(e.currentTarget);
+    let errors = {};
+    errors[e.currentTarget.name] = errorMessage;
+    const data = { ...this.state.data };
+    data[e.currentTarget.name] = e.currentTarget.value;
+    this.setState({ data, errors });
+  };
+}
+
+export default Form;
+```
+
+* loginform.jsx
+  * import form.jsx and extend it
+
+```jsx
+import React from "react";
+import Input from "./common/input";
+import Joi from "joi-browser";
+import Form from "./common/form";
+class LoginForm extends Form {
+  state = {
+    data: { username: "", password: "" },
+    errors: {},
+  };
+
+  schema = {
+    username: Joi.string().required().label("User Name"),
+    password: Joi.string().min(8).required().label("Password"),
+  };
+
+  doSubmit = () => {
+    console.log("submitted");
+  };
+
+  render() {
+    return (
+      <div>
+        <h1>Login</h1>
+        <form onSubmit={this.handleSubmit}>
+          <Input
+            name="username"
+            type="text"
+            handleChange={this.handleChange}
+            value={this.state.data.username}
+            label="Username"
+            error={this.state.errors["username"]}
+          />
+          <Input
+            name="password"
+            type="password"
+            handleChange={this.handleChange}
+            value={this.state.data.password}
+            label="Password"
+            error={this.state.errors["password"]}
+          />
+
+          <button disabled={this.validate()} className="btn btn-primary">
+            Login
+          </button>
+        </form>
+      </div>
+    );
+  }
+}
+
+export default LoginForm;
+```
+
+### 19 - extracting helper rendering methods
+
+* form.jsx
+
+```jsx
+...
+  renderButton(label) {
+    return (
+      <button disabled={this.validate()} className="btn btn-primary">
+        {label}
+      </button>
+    );
+  }
+
+  renderInput(name, label, type, value) {
+    return (
+      <Input
+        label={label}
+        name={name}
+        type={type}
+        value={value}
+        handleChange={this.handleChange}
+        error={this.state.errors[name]}
+      />
+    );
+  }
+  ...
+```
+
+* loginform.jsx
+
+```jsx
+...
+          {this.renderInput(
+            "username",
+            "Username",
+            "text",
+            this.state.data.username
+          )}
+          {this.renderInput(
+            "password",
+            "Password",
+            "password",
+            this.state.data.password
+          )}
+
+          {this.renderButton("Login")}
+          ...
+```
+
+### 20, 21 - register form/Code Review
+
+* create register form with (/register)
+  * username
+    * email
+    * required
+    * not null
+  * password
+    * password type
+    * min 5
+    * required
+  * name
+    * required
+  * register
+    * button
+    * disable if got valudation errors
+
+```jsx
+import React from "react";
+import Form from "./common/form";
+import Joi from "joi-browser";
+class RegisterForm extends Form {
+  state = {
+    data: { username: "", password: "", name: "" },
+    errors: {},
+  };
+
+  schema = {
+    username: Joi.string().email().required().label("User Name"),
+    password: Joi.string().min(5).required().label("Password"),
+    name: Joi.string().min(8).required().label("Name"),
+  };
+
+  doSubmit = () => {
+    console.log("submitted");
+  };
+
+  render = () => {
+    return (
+      <div>
+        <h1>Register</h1>
+        <form onSubmit={this.handleSubmit}>
+          {this.renderInput(
+            "username",
+            "Username",
+            "text",
+            this.state.data.username,
+            "true"
+          )}
+          {this.renderInput(
+            "password",
+            "Password",
+            "password",
+            this.state.data.password,
+            "false"
+          )}
+          {this.renderInput(
+            "name",
+            "Name",
+            "text",
+            this.state.data.name,
+            "false"
+          )}
+          {this.renderButton("Login")}
+        </form>
+      </div>
+    );
+  };
+}
+
+export default RegisterForm;
+```
+
+* App.js
+
+```js
+...
+import RegisterForm from "./components/registerform";
+...
+{ link: "/register", label: "Register" },
+...
+<Route path="/register" component={RegisterForm} />
+...
+```
+
+### 22, 23 - Exercuse 2 - Movie Form/Code Review
+
+* movies.jsx
+  * movie (button)
+    * movieform.jsx
+      * title - done
+        * string - done
+      * genre
+        * dropdown - done
+          * onClick - done
+      * stock
+        * number - done
+        * 0 - 10 - done
+      * rate
+        * number - done
+        * 1 - 10 - done
+      * add (button)
+        * add to list
+        * return the movies page
+  * invalid movie link
+    * 404
+  * delete (button)
+    * refresh the list
+* App.js
+
+```js
+...
+import MovieForm from "./components/movieform";
+...
+<Route path="/movieform/new" component={MovieForm} />
+...
+```
+
+* movies.jsx
+
+```jsx
+...
+  addMovie = () => {
+    this.props.history.push("/movieform/new");
+  };
+  ...
+          <button className="btn btn-primary" onClick={this.addMovie}>
+            new movie
+          </button>
+          ...
+```
+
+* movieform.jsx
+
+```jsx
+...
+import { getGenres } from "../services/fakeGenreService";
+import { getMovies, saveMovie } from "../services/fakeMovieService";
+...
+  state = {
+    data: {
+      _id: "",
+      title: "",
+      genreId: {},
+      numberInStock: "",
+      dailyRentalRate: "",
+    },
+    errors: {},
+    genres: [],
+  };
+  schema = {
+    _id: Joi.string(),
+    title: Joi.string().min(1).required().label("Title"),
+    genreId: Joi.string().required().label("Genre"),
+    numberInStock: Joi.number().min(1).max(100).required().label("Stock"),
+    dailyRentalRate: Joi.number().min(1).max(10).required().label("Rate"),
+  };
+  ...
+  componentDidMount() {
+    let genres = [...getGenres()];
+    let data = {
+      _id: Date.now().toString(),
+      title: "",
+      genreId: {},
+      numberInStock: "",
+      dailyRentalRate: "",
+    };
+    if (this.props.match.params.movieid) {
+      let movies = getMovies();
+      data = this.mapToViewModel(
+        movies.filter((m) => m._id === this.props.match.params.movieid)[0]
+      );
+    }
+    this.setState({ data, genres });
+  }
+  doSubmit = (movie) => {
+    saveMovie(movie);
+    this.props.history.replace("/movies");
+  };
+  ...
+            {this.renderDropdown(
+            "genreId",
+            "Genre",
+            this.state.genres,
+            this.state.data.genreId
+          )}
+          ...
+
+```
+
+* form.jsx
+
+```jsx
+...
+import Dropdown from "./dropdown";
+...
+  renderDropdown(name, label, options, value) {
+    const { errors } = this.state;
+    return (
+      <Dropdown
+        options={options}
+        value={value}
+        name={name}
+        label={label}
+        handleChange={this.handleChange}
+        error={errors[name]}
+      />
+    );
+  }
+...
+```
+
+* dropdown.jsx
+
+```jsx
+import React from "react";
+class Dropdown extends React.Component {
+  handleChange = (e) => {
+    this.props.handleChange(e);
+  };
+  render = () => {
+    const { name, label, options, error, value } = this.props;
+    return (
+      <div className="form-group">
+        <label htmlFor={name}>{label}</label>
+        <select
+          name={name}
+          id={name}
+          className="form-control"
+          onChange={this.handleChange}
+          value={value}
+        >
+          <option value=""></option>
+          {options.map((option) => (
+            <option key={option._id} value={option._id}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+        {error && <div className="alert alert-danger">{error}</div>}
+      </div>
+    );
+  };
+}
+
+export default Dropdown;
+```
+
+### 24/25 - Exercise 3 - Search Movies/Code Review
+
+* search box
+  * type and refresh
+* case insensitive
+* ignore filter
+  * either filter or search
+* searchbox.jsx
+
+```jsx
+import React from "react";
+class SearchBox extends React.Component {
+  handleSearch = (e) => {
+    this.props.handleSearch(e.currentTarget.value);
+  };
+  render() {
+    const { value } = this.props;
+    return (
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          id="search"
+          aria-describedby="search"
+          placeholder="search"
+          value={value}
+          onChange={this.handleSearch}
+        />
+      </div>
+    );
+  }
+}
+
+export default SearchBox;
+```
+
+* movies.jsx
+
+```jsx
+...
+import SearchBox from "./common/searchbox";
+...
+  handleFilterGenre = (selectedGenre) => {
+    let movies = getMovies();
+    this.setState({ selectedGenre, currentPage: 1, movies, search: "" });
+  };
+...
+  handleSearch = (value) => {
+    let movies = getMovies().filter(
+      (m) => m.title.toLowerCase().indexOf(value.toLowerCase()) > -1
+    );
+
+    this.setState({
+      selectedGenre: { _id: "all", name: "All Genres" },
+      currentPage: 1,
+      movies: movies,
+      search: value,
+    });
+  };
+...
+          <SearchBox
+            handleSearch={this.handleSearch}
+            value={this.state.search}
+          />
+          ...
+```
+
+## Calling backend Services
+
+### 1/2 - Introducetion/JSON Placeholder
+
+* download Section 8- Calling Backend Services.zip
+* cd http-app
+* npm i
+* npm start
+* fake api
+  * <https://jsonplaceholder.typicode.com/>
+
+### 3 - HttpClients
+
+* modern browser supports
+  * fetch api
+  * jquery ajax
+  * axios (this project)
+* install axios
+  * npm i axios@0.18
+* Promise
+  * object that is returned by api (since is async, api will "promise" to return a object once ready)
+
+### 4 - getting data
+
+* most api is async(doesnt' get results on the spot)
+  * decorate method with "async"
+* App.jsx
+
+```jsx
+...
+async componentDidMount() {}
+...
+    const { data: posts } = await http.get(config.apiEndpoint);
+    this.setState({ posts });
+    ...
+```
+
+### 5 - Creating Data
+
+```jsx
+...
+  handleAdd = async () => {
+    const obj = { title: "a", body: "b" };
+    const { data: post } = await http.post(config.apiEndpoint, obj);
+
+    const posts = [post, ...this.state.posts];
+    this.setState({ posts });
+  };
+  ...
+```
+
+### 6 - Lifecycle of a request
+
+* method will be change to "OPTION" when "get" source and target is different (browsesr behavior)
+
+### 7 - Updating Data
+
+```jsx
+...
+  handleUpdate = async (post) => {
+    post.title = "UPDATED";
+    await http.put(config.apiEndpoint + "/" + post.id, post);
+
+    const posts = [...this.state.posts];
+    const index = posts.indexOf(post);
+    posts[index] = { ...post };
+    this.setState({ posts });
+  };
+  ...
+```
+
+### 8 - Delete Data
+
+```jsx
+...
+  handleDelete = async (post) => {
+    const originalPosts = this.state.posts;
+
+    const posts = this.state.posts.filter((p) => p.id !== post.id);
+    this.setState({ posts });
+  };
+...
+```
+
+### 9 - Optimistic vs Perssimistic updates
+
+* Pessimistic
+  * call api followed by update
+    * there will be latency when calling api, that's why UI looks hanging (0.5s) before the object is added/removed/updated
+
+```jsx
+...
+  handleDelete = async (post) => {
+    await http.delete(config.apiEndpoint + "/" + post.id);
+    // wait for 0.5s
+    const posts = this.state.posts.filter((p) => p.id !== post.id);
+    this.setState({ posts });
+
+  };
+  ...
+```
+
+* Optimistic
+  * update UI first then call api. Revert UI if got error.
+
+```jsx
+...
+  handleDelete = async (post) => {
+    const originalPosts = this.state.posts;
+
+    const posts = this.state.posts.filter((p) => p.id !== post.id);
+    this.setState({ posts });
+
+    try {
+      await http.delete(config.apiEndpoint + "/" + post.id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        alert("This post has already been deleted.");
+      this.setState({ posts: originalPosts });
+    }
+  };
+...
+```
+
+### 10 - Expected vs Unexpected Errors
+
+* Expeceed
+  * 400 - 500
+    * E.g.
+      * 404 - not found
+      * 400 - bad request
+  * client error
+  * display specic error message
+* unexpected
+  * E.g.
+    * daatbase down
+    * network down
+  * log them
+  * display a generic and freindly error message
+
+```jsx
+...
+  handleDelete = async (post) => {
+    ...
+    try {
+      await http.delete(config.apiEndpoint + "/" + post.id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        alert("This post has already been deleted.");
+      this.setState({ posts: originalPosts });
+    }
+  };
+...
+```
+
+### 11 - Unhandling Unexpected Errors Globally
+
+* use axios intercepters
+  * intercept request before going out
+  * intercept success response or failure response(expected and unexpected) before returning to client (i.e. catch(e))
+    * E.g.
+      * axios.interceptors.response.use(success function, error => {... error.response.status ... return Promise.reject(error)...} )
+
+```jsx
+...
+axios.interceptors.response.use(null, error => {
+  const expectedError =
+    error.response &&
+    error.response.status >= 400 &&
+    error.response.status < 500;
+
+  if (!expectedError) {
+    logger.log(error);
+    toast.error("An unexpected error occurrred.");
+  }
+
+  return Promise.reject(error);
+});
+...
+```
+
+### 12 - Extracting a Reusable Http Service
+
+* create a reusnable service
+  * copy intercept code
+* create src/services/httpService.js
+
+```js
+import axios from "axios";
+import logger from "./logService";
+import { toast } from "react-toastify";
+
+axios.interceptors.response.use(null, error => {
+  const expectedError =
+    error.response &&
+    error.response.status >= 400 &&
+    error.response.status < 500;
+
+  if (!expectedError) {
+    logger.log(error);
+    toast.error("An unexpected error occurrred.");
+  }
+
+  return Promise.reject(error);
+});
+
+export default {
+  get: axios.get,
+  post: axios.post,
+  put: axios.put,
+  delete: axios.delete
+};
+```
+
+* app.js
+  * import and use (change all occurances of "axio." to "http.")
+
+```js
+...
+import http from "./services/httpService";
+...
+const { data: posts } = await http.get(config.apiEndpoint);
+...
+```
+
+### 13 - Extracting a config module
+
+* put all config into another file
+* src/config.json
+  * move all config to config.json as object
+
+```json
+{
+  "apiEndpoint": "https://jsonplaceholder.typicode.com/posts"
+}
+```
+
+* app.js
+  * improt and use
+
+```js
+...
+import config from "./config.json";
+...
+const { data: posts } = await http.get(config.apiEndpoint);
+...
+```
+
+### 14 - Displaying Toast Notifications
+
+* in replace of ugly alert
+* install
+  * npm i react-toastify@4.1
+* App.js
+  * import component, css and use
+
+```js
+...
+import { ToastContainer } from "react-toastify";
+...
+import "react-toastify/dist/ReactToastify.css";
+...
+
+  render() {
+    return (
+...
+        <ToastContainer />
+        ...
+```
+
+* httpService.js
+  * import and use
+    * replace alert with toast or toast.error
+
+```js
+...
+import { toast } from "react-toastify";
+...
+toast.error("An unexpected error occurrred.");
+...
+```
+
+### 15 - Logging Errors
+
+* "console.log" is browser, developer won't know. Hence have to log to server
+  * E.g. sentry.io
+    * signup using <http://programmingwithmosh.com/tools>
+    * create an new app under react
+    * copy the code from setup guide and modify index.js
+* install
+  * ~~npm i raven-js@3.26.4~~
+  * npm install --save @sentry/react @sentry/tracing
+* index.js
+
+```js
+...
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
+...
+Sentry.init({
+  dsn: "https://3c19e07221c1496fb666f4c16ea5b692@o1072694.ingest.sentry.io/6071973",
+  integrations: [new Integrations.BrowserTracing()],
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0,
+});
+...
 ```
