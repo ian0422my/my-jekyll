@@ -3933,7 +3933,7 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 ...
 Sentry.init({
-  dsn: "https://3c19e07221c1496fb666f4c16ea5b692@o1072694.ingest.sentry.io/6071973",
+  dsn: "...",
   integrations: [new Integrations.BrowserTracing()],
 
   // Set tracesSampleRate to 1.0 to capture 100%
