@@ -31,19 +31,19 @@ react:
         url: /resources/react/introduction
       - title: "Best Practice"
         url: /resources/react/best-practice
-      - title: "cheatsheet"
+      - title: "Cheatsheet"
         url: /resources/react/cheatsheet
-      - title: "es6-refresher"
+      - title: "ES6 Refresher"
         url: /resources/react/es6-refresher
-      - title: "components"
+      - title: "Components"
         url: /resources/react/components
-      - title: "composing-components"
+      - title: "Composing Components"
         url: /resources/react/composing-components
-      - title: "routing"
+      - title: "Routing"
         url: /resources/react/routing
-      - title: "forms"
+      - title: "Forms"
         url: /resources/react/forms
-      - title: "calling-backend-service"
+      - title: "Calling Backend Service"
         url: /resources/react/calling-backend-service
-      - title: "authentication-and-authorisation"
+      - title: "Authentication and Authorisation"
         url: /resources/react/authentication-and-authorisation
