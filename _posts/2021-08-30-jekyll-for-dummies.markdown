@@ -10,6 +10,7 @@ toc_sticky: true
 sidebar:
   nav: "about"
 ---
+
 ## first things first
 
 1. jekyll doesn't work if you are on vpn
@@ -38,10 +39,6 @@ bundle exec jekyll serve
   * custom variable can be created and reference from html using {{site.mycustomvariable}}
   * any changes is not auto reloaded (need to kill jekyll and run again)
 
-### Reference
-
-<https://highlandsolutions.com/blog/developing-with-jekyll-for-beginners>
-
 ## how to change theme
 
 * find theme in [rubygem](https://rubygems.org/search?utf8=%E2%9C%93&query=jekyll-theme)
@@ -62,14 +59,14 @@ theme: jekyll-theme-hacker
 
 ### Minimal Mistake (Theme)
 
+<https://www.inmotionhosting.com/support/website/jekyll/how-to-change-your-jekyll-theme-with-rubygems/>
+
 * highly customizable
 * <https://mmistakes.github.io/>
 
-### Reference
-
-<https://www.inmotionhosting.com/support/website/jekyll/how-to-change-your-jekyll-theme-with-rubygems/>
-
 ## how to customize theme
+
+<https://jekyllrb.com/docs/themes/>
 
 1. identify your current theme (refer to config.yaml). E.g. jekyll-theme-minimal
 2. run command below to figure out the path where the them is stored in your computer
@@ -81,9 +78,6 @@ bundle info --path jekyll-theme-minimal
 1. open explorer and navigate to theme folder
 1. copy _assests or _layouts to your project and modify accordingly
 
-### Reference
-
-<https://jekyllrb.com/docs/themes/>
 
 ## how to enable gui using plantuml
 
@@ -151,6 +145,11 @@ Bob1 -> Alice1: hihi
 {% endraw %}
 
 {{site.title}}
+
+## how to add menu?
+
+* edit /data/navigation.yml
+  * main
 
 ## escape curl braces (or any special characters)
 

@@ -2,6 +2,8 @@
 main:
   - title: "About"
     url: /about/
+  - title: "Resources"
+    url: /resources/
   - title: "Blogs"
     url: /blogs/
   - title: "Contact Us"
@@ -14,18 +16,34 @@ about:
     children:
       - title: "About"
         url: /about/
+      - title: "Resources"
+        url: /resources/
       - title: "Blogs"
         url: /blogs/
       - title: "Contact Us"
         url: /contact/
 
-architecture:
-  - title: "Architecture"
-    url: /xdlab/architecture/
+react:
+  - title: "React"
+    url: /resources/react/introduction
     children:
-    - title: "Goal"
-      url: /xdlab/architecture/#goal
-    - title: "Users"
-      url: /xdlab/architecture/#users
-    - title: "Design"
-      url: /xdlab/architecture/#design
+      - title: "Introduction"
+        url: /resources/react/introduction
+      - title: "Best Practice"
+        url: /resources/react/best-practice
+      - title: "cheatsheet"
+        url: /resources/react/cheatsheet
+      - title: "es6-refresher"
+        url: /resources/react/es6-refresher
+      - title: "components"
+        url: /resources/react/components
+      - title: "composing-components"
+        url: /resources/react/composing-components
+      - title: "routing"
+        url: /resources/react/routing
+      - title: "forms"
+        url: /resources/react/forms
+      - title: "calling-backend-service"
+        url: /resources/react/calling-backend-service
+      - title: "authentication-and-authorisation"
+        url: /resources/react/authentication-and-authorisation
