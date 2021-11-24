@@ -112,7 +112,7 @@ class LoginForm extends Form {
     * whitelist custom token "x-auth-token" so that it can be seen from browser
 
 ```js
-...
+...s
 .header("access-control-expose-headers", "x-auth-token")
 ...
 ```
@@ -484,4 +484,59 @@ import httpService from "./httpService";
 httpService.setJWT(getJWT());
 ```
 
-### - Authorization
+### 17 - Authorization
+
+* delete get 403
+  * backend require user7@email.com to be admin
+    * update mongodb and add "isAdmin: true" to user7@email.com
+    * logout and login
+
+### 18 - showing or hiding elements based on the user
+
+* hide add movie or edit movie if user is not login
+* App.js
+  * pass user to Movies component
+
+```js
+...
+          <Route
+            path="/movies"
+            render={(props) => <Movies {...props} user={this.state.user} />}
+          />
+          ...
+```
+
+* movies.jsx
+  * check permission before rendering new button
+
+```jsx
+...
+          {this.state.user && (
+            <button className="btn btn-primary" onClick={this.addMovie}>
+              new movie
+            </button>
+          )}
+          ...
+```
+
+### 18 - Protecting Routes
+
+* even without login, /movies/new is still accessible
+* App.js
+
+```js
+...
+          <Route
+            path="/movieform/new"
+            render={(props) => {
+              if (!this.state.user) {
+                return <Redirect to="/login" />;
+              } else {
+                return <MovieForm {...props} user={this.state.user} />;
+              }
+            }}
+          />
+...
+```
+
+### 20 - Extracting ProtectedRoute
