@@ -1,0 +1,70 @@
+---
+layout: single
+#classes: wide
+title:  "Hadoop"
+date:   2021-11-22 16:00:50 +0800
+categories: hadoop
+allow_different_nesting: true
+toc: true
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+## Summary
+
+* sql has limitation in storing alot of data
+* google develop hadoop (using java) to resolve this issue
+  * to handle big data
+    * store data into multiple server - hadoop cluster(hadoop file server, HDFS, distributed file system) - each consists parts of the data
+* hadoop vs sql - schema on read vs schema on write
+  * to pump data into database, we need to match the data to sql table, colmns(write schema)
+    * if wrong, the data will be rejected
+  * to pump data into hadoop, no rules
+    * when read, then data will be map all data from all server and create the required response (read schema)
+      * 2 phase
+        * mapper
+        * reduce
+* technology
+  * manage cluster
+    * Yarn
+      * platform responsible for managing computing resources in clusters and using them for scheduling users' applications
+  * store data
+    * HDFS
+      * each file is split into blocks (64mb or 128mb) and store into nodes
+  * process data
+    * MapReduce
+      * hadoop process data per block(map) and combine the blocks(reduce) to form the file
+
+## AWS EMR
+
+* based on hadoop
+* emr cluster
+  * groups of ec2
+    * >20 need to contact AWS
+  * 3 types of nodes
+    * non-processing node
+      * master
+        * manage cluster, runs yarn resource manager, track clister jobs status, monirpr instance groups health
+    * processing node
+      * core
+        * runs data node daemon (HDFS daemon)
+        * coordinate data storage (HDFS)
+        * run yarn daemon
+        * perform mapreduces
+        * one node per cluster
+        * task tracker daemon
+      * task
+        * run mapreduce
+        * no data store here
+        * no daemon running here
+  * data is chopped as HDFS blocks and stored as EMRFS
+  * EMRFS is stored into S3
+* run with EMR AMI
+* use s3 as file system
+
+## Integration
+
+### 

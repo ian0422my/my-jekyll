@@ -17,16 +17,16 @@ sidebar:
 
 <https://www.digitalocean.com/community/tutorials/how-to-run-nginx-in-a-docker-container-on-ubuntu-14-04>
 
-	* mkdir -p  ~/docker-nginx/html
-	* cd  ~/docker-nginx/html
-	* touch index.html (edit as you might)
-	* sudo docker run --name docker-nginx -p 80:80 -d -v ~/docker-nginx/html:/usr/share/nginx/html nginx
-	* cd ~/docker-nginx
-	* sudo docker cp docker-nginx:/etc/nginx/conf.d/default.conf default.conf
-	* edit default.conf (appropriately)
-	* docker stop docker-nginx
-	* docker rm docker-nginx
-	* sudo docker run --name docker-nginx -p 80:80 -v ~/docker-nginx/html:/usr/share/nginx/html -v ~/docker-nginx/default.conf:/etc/nginx/conf.d/default.conf -d nginx
+* mkdir -p  ~/docker-nginx/html
+* cd  ~/docker-nginx/html
+* touch index.html (edit as you might)
+* sudo docker run --name docker-nginx -p 80:80 -d -v ~/docker-nginx/html:/usr/share/nginx/html nginx
+* cd ~/docker-nginx
+* sudo docker cp docker-nginx:/etc/nginx/conf.d/default.conf default.conf
+* edit default.conf (appropriately)
+* docker stop docker-nginx
+* docker rm docker-nginx
+* sudo docker run --name docker-nginx -p 80:80 -v ~/docker-nginx/html:/usr/share/nginx/html -v ~/docker-nginx/default.conf:/etc/nginx/conf.d/default.conf -d nginx
 
 ### Default Configuration (Full)
 

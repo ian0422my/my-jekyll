@@ -540,3 +540,118 @@ httpService.setJWT(getJWT());
 ```
 
 ### 20 - Extracting ProtectedRoute
+
+* extract all route related code to component
+* common/protectedroute.jsx
+
+```jsx
+import React from "react";
+import { Route, Redirect } from "react-router-dom";
+import authService from "../../services/authService";
+class ProtectedRoute extends React.Component {
+  render() {
+    const { component: Component } = this.props;
+
+    let currentUser = authService.getCurrentUser();
+
+    return (
+      <Route
+        path={this.props.path}
+        render={(props) => {
+          if (!currentUser) {
+            return <Redirect to="/login" />;
+          } else {
+            return <Component {...props} user={currentUser} />;
+          }
+        }}
+      />
+    );
+  }
+}
+
+export default ProtectedRoute;
+```
+
+* App.js
+
+```js
+...
+import ProtectedRoute from "./components/common/protectedroute";
+...
+          <ProtectedRoute path="/movieform/new" component={MovieForm} />
+          <ProtectedRoute path="/movieform/:movieid" component={MovieForm} />
+...
+```
+
+### 21 - redirecting after login
+
+* redirect user to the last page visited before login
+  * pass current location property (this.props.location) to loginform
+  * once login, redurect to this.props.location.state.here.pathname
+* protectedroute.jsx
+
+```jsx
+...
+          if (!currentUser) {
+            return (
+              <Redirect
+                to={{
+                  pathname: "/login",
+                  state: { here: this.props.location },
+                }}
+              />
+            );
+          } 
+          ...
+...
+```
+
+* loginform.jsx
+
+```jsx
+...
+  doSubmit = async (data) => {
+    try {
+...
+      window.location = this.props.location.state
+        ? this.props.location.state.here.pathname
+        : "/";
+    } catch (ex) {
+...
+    }
+    }
+  };
+  ...
+```
+
+### Exercise
+
+* show delete button if admin role + login
+* movietable.jsx
+
+```
+...
+  render() {
+    let columns = [
+      {
+...
+    let user = authService.getCurrentUser();
+
+    if (user) {
+      let deleteButton = {
+        key: 6,
+        label: "Delete",
+        content: (movie) => (
+          <button
+            className="btn btn-danger"
+            onClick={() => this.props.handleDelete(movie)}
+          >
+            delete
+          </button>
+        ),
+      };
+
+      columns.push(deleteButton);
+    }
+...
+```

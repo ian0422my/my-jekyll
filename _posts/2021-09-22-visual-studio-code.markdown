@@ -59,6 +59,7 @@ sidebar:
 * either
   * don't try to open a folder with alot of git project (else, vsc will keep running alot of git process at the background) at the "Source Control", OR
   * you can ignore some of the git project (Settings > git.ignoredRepositories)
+* don't put too many content within a page - sliced it if have to
 
 ### can visual studio code docker extension connect to remote host?
 

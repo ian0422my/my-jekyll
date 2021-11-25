@@ -1,0 +1,67 @@
+---
+layout: single
+#classes: wide
+title:  "Nutch"
+date:   2021-11-22 16:00:50 +0800
+categories: nutch
+allow_different_nesting: true
+toc: true
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+## nutch
+
+* features
+  * parsing
+  * indexing
+  * crawling
+  * map reduce and distributed filesystem
+    * [later evolved into subproject - Hadoop](https://en.wikipedia.org/wiki/Apache_Nutch#History)
+  * plugin frameowkr support
+* installs and run inside AWS EMR
+* version
+  * 1.X - can store on HDFS
+  * 2.X - can store on NoSQL database (Apache GORA)
+
+## Integration
+
+### install nutch on EMR
+
+<https://www.youtube.com/watch?v=v9zjcTjjjyU>
+
+* can ssh to master node
+  * hadoop fs -ls s3m://nutch-emr-tutorial
+    * nutch-site.xml
+      * http.agent.name
+      * http.agent.email
+      * fetcher.server.delay
+      * scopring.depth.max
+      * db.ignore.external.links
+      * db.max.outlink.per.page
+    * top-1k.txt
+      * seed. consist of url to crawl.
+  * sudo yum install ant
+  * install nudge
+    * wget github.com/apaahce/nutch/archive/trunk.zip
+    * unzip trunk.zip
+  * cd nutch-trunk
+  * hadoop fs -copyToLocal s3m://nutch-emr-tutorial/nutch-site.xml conf/nutch-site.xml
+  * compile nutch (apache-nutch-1.11.0-snapshot.job)
+    * ant clean runtime
+  * cd runtime/deploy/bin
+  * vi crawl - standard crawling file
+    * e.g.
+      * numSlaves=2
+  * exit
+  * create hadoop folder
+    * hadoop fs -mkdir /crawl
+  * crawl url and store into hadoop folder (i.e. crawl [-i|--index] [-D key=value] [--wait|-w] <Seed Dir> <Crawl Dir> <Num Records>)
+    * ./crawl s3m://nutch-emr-tutorial/nutch-site.xml /crawl -1 &
+
+### configure nutch to index to aws cloud search
+
+<https://tecprecis.wordpress.com/2016/02/20/indexing-with-amazon-cloudsearch/>
