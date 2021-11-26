@@ -92,4 +92,11 @@ sidebar:
 | react        | \<form onSubmit=\{this.handleSubmit\}>\<button name="Login"/>                       | submit form                                                                              |
 | react        | \<input onChange=\{this.onChange\}/>;onChange(e) {}                                 | call function when input changes                                                         |
 | react        | \<select onChange=\{this.onChange}>/>;onChange(e) {}                                | call function when select changes                                                        |
-| react, serve | npm run build; npm i -g serve; serve -s build                                       | build into "build" folder;install lightweight webserver;run prod app in "build" folder   |
+| react        | .env.production.json>REACT_APP_NAME=vidly>console.log(process.env.REACT_APP_NAME)   | creat environemnt specific json and read the value (must start with REACT_APP_*)         |
+| react,serve  | npm run build; npm i -g serve; serve -s build                                       | build prod("build") folder;install lightweight webserver;run prod app in "build" folder  |
+| react,heroku | cd vidly;heroku create; git push heroku master; heroku open                         | create heroku app; push code to heroku git repo and build; open heroku app in browser    |
+| react,heroku | heroku tail [--tail]                                                                | open/tail heroku logs                                                                    |
+| react,heroku | heroku config:get NODE_ENV -a blooming-beyond-16719                                 | check config                                                                             |
+| react,heroku | heroku config:set envkey=envval                                                     | create environment variables (aslo can do so via app > settings > reveal config vars)    |
+| react,heroku | heroku restart                                                                      | restart heroku app                                                                       |
+| react,heroku | heroku maintenance:on/off                                                           | kind of bring down the app                                                               |

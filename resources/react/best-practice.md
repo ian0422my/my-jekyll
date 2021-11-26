@@ -41,7 +41,7 @@ sidebar:
     * do log error centrally to sentry.io
   * jwt-decode@2.2.0
     * to decode jwt
-  * serve 
+  * serve
     * lightweight web server
 
 ### coding practice
@@ -172,4 +172,13 @@ sidebar:
 
 * use different .env.[dev/sit/uat/stg/prd] to differentiate env parameters
 * changes in .env need to restart server to take effect
-* run in heroku
+* run app in heroku
+  * set env vairableas and read from heroku env variables
+    * heroku config: set key=value, OR
+    * heroku app > settings > reveal config vars
+  * then read from react
+    * create prorudction.json
+
+```json
+{env-key:"val"}
+```

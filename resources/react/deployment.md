@@ -180,3 +180,77 @@ heroku open
 ```
 
 * verify app @ @ <https://stormy-scrubland-16093.herokuapp.com/api/genres>
+
+### 10 - preparing the front-end for deployment
+
+* create environment specific json
+  * add api to json
+* change code to point to envrionement variables value instead of config.json
+* remove config.json
+* create .env.production
+
+```txt
+REACT_APP_API_URL=https://stormy-scrubland-16093.herokuapp.com/api
+```
+
+* edit .env.development
+
+```txt
+REACT_APP_API_URL=http://localhost:3900/api
+```
+
+* remove config.json
+* src/services/movieService.js
+
+```jsx
+// import config from "../config.json";
+...
+const movieEndpoint = "/movies";
+...
+return http.get(movieEndpoint);
+...
+```
+
+* repeat to all module that has reference to config.json
+* src/services/httpService.js
+
+```js
+...
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+...
+```
+
+* build production code
+
+```cmd
+npm run build
+```
+
+* run locally using production(build) code
+
+```cmd
+serve -s build
+```
+
+* verify app @ @ <https://stormy-scrubland-16093.herokuapp.com/api/genres>
+
+### 11 - Deploying the front end
+
+* ***must use backpack*** (heroku create doesn't work)
+* git init
+
+```cmd
+PS D:\Workspace\vidly> heroku create --buildpack https://github.com/mars/create-react-app-buildpack.git
+...
+Creating app... done, ⬢ blooming-beyond-16719
+Setting buildpack to https://github.com/mars/create-react-app-buildpack.git... done
+https://blooming-beyond-16719.herokuapp.com/ | https://git.heroku.com/blooming-beyond-16719.git
+```
+
+* push to heroku
+
+```cmd
+git push heroku master;
+```
+
+* verify app @ <https://blooming-beyond-16719.herokuapp.com/movies>
