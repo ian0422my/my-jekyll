@@ -23,6 +23,7 @@ sidebar:
 | vscode,srs   | log+tab -> console.log()                                                            |                                                                                          |
 | vscode,srs   | error+tab -> console.error()                                                        |                                                                                          |
 | vscode,srs   | warn+tab -> console.warn()                                                          |                                                                                          |
+| vscode,srs   | loc+tab -> localstorage                                                             |                                                                                          |
 | vscode,srs   | trycatch+tab -> try {} catch (ex) {}                                                |                                                                                          |
 | vscode,srs   | cdm+tab -> componentDidMount(){}                                                    |                                                                                          |
 | vscode,srs   | cdu+tab -> componentDidUpdate(){}                                                   |                                                                                          |
@@ -34,9 +35,9 @@ sidebar:
 | js           | totalCounters={this.state.counters.filter(c=>c.value>0).length}/>                   | copy with filtering condition and results in array object                                |
 | js           | let person ={persons.filter(p=>p.name==="ian");                                     | copy with filtering condition and results in array object                                |
 | js           | this.state.counters.map((counter)=>console.log(counter.id));                        | iterate                                                                                  |
-| js           | async getMovies() { return await http.getMovies();}                                 | fetch data and return only when request is fulfilled (promised)                          |
+| js           | async getMovies() { const {data:m} = await http.getMovies(); return m;}             | fetch data and return only when request is fulfilled (promised)                          |
 | js           | try{...}catch(ex){if(ex.response.status===404)} {...}                               | check exception http status                                                              |
-| js           | \<Route render={(p)=>if(login)return <Route to="/login"/> else return <Home/>}/>    | if else within expression                                                                |
+| js           | \<Route render={(p)=>if(login)return \<Route to="/login"/> else return \<Home/>}/>  | if else within expression                                                                |
 | js,arr       | let movies={id:1,name:"2"}; Object.keys(movies).length                              | length of all keys of an object                                                          |
 | js,arr       | const index = movies.indexOf(movie); const movie = movies[index];                   | getting the index of object in an array and get the object based on index                |
 | js,arr       | const a1 = [1,2,3]; const a2 = [4,5,6];const combined = [...a1, 'a', ...a2, 'b'];   | combine array and new item                                                               |
@@ -94,9 +95,139 @@ sidebar:
 | react        | \<select onChange=\{this.onChange}>/>;onChange(e) {}                                | call function when select changes                                                        |
 | react        | .env.production.json>REACT_APP_NAME=vidly>console.log(process.env.REACT_APP_NAME)   | creat environemnt specific json and read the value (must start with REACT_APP_*)         |
 | react,serve  | npm run build; npm i -g serve; serve -s build                                       | build prod("build") folder;install lightweight webserver;run prod app in "build" folder  |
+| react,heroku | heroku create --buildpack https://github.com/mars/create-react-app-buildpack.git    | create heroku app for created using create-react-app                                     |
 | react,heroku | cd vidly;heroku create; git push heroku master; heroku open                         | create heroku app; push code to heroku git repo and build; open heroku app in browser    |
 | react,heroku | heroku tail [--tail]                                                                | open/tail heroku logs                                                                    |
 | react,heroku | heroku config:get NODE_ENV -a blooming-beyond-16719                                 | check config                                                                             |
 | react,heroku | heroku config:set envkey=envval                                                     | create environment variables (aslo can do so via app > settings > reveal config vars)    |
 | react,heroku | heroku restart                                                                      | restart heroku app                                                                       |
 | react,heroku | heroku maintenance:on/off                                                           | kind of bring down the app                                                               |
+| react,adv    | npx create-react-app react-advanced                                                 | create react app using npx                                                               |
+| react,adv    | return class WithTooltip extends React.Component {render(){}}                       | create class component as a return object                                                |
+| react,adv    | var [count, setCount] = useState(0);{setCount(count++)}                             | hook - useState (setState for CC)                                                        |
+| react,adv    | useEffect(function, [dependency arrays])                                            | hook - useEffect (componentDidMount,componentDidUpdate,componentWillUnmount for CC)      |
+
+## Snippet
+
+### Higher Order Component (HOC)
+
+#### HOC
+
+* withTooltip.jsx
+
+```jsx
+import React from "react";
+
+export default function withTooltip(Component) {
+  return class WithTooltip extends React.Component {
+    state = {
+      showTooltip: false,
+    };
+
+    handleMouseOver = () => {
+      this.setState({ showTooltip: true });
+    };
+
+    handleMouseOut = () => {
+      this.setState({ showTooltip: false });
+    };
+
+    render() {
+      return (
+        <div
+          onMouseOver={this.handleMouseOver}
+          onMouseOut={this.handleMouseOut}
+        >
+          <Component showTooltip={this.state.showTooltip} {...this.props} />
+        </div>
+      );
+    }
+  };
+}
+```
+
+#### Main Component
+
+* movie.jsx
+
+```jsx
+import withTooltip from "./withTooltip";
+class Movie extends React.Component {
+  render() {
+    return <div>movies{this.props.showTooltip && "some tooltip"}</div>;
+  }
+}
+
+export default withTooltip(Movie);
+```
+
+### Context
+
+#### Class Component
+
+##### Context
+
+```js
+const UserContext = React.createContext();
+UserContext.displayName = "UserContext";
+```
+
+##### Provider
+
+```js
+import UserContext from "./context/usercontext";
+...
+  state = { currentUser: { name: "ian" } };
+...
+      <UserContext.Provider value={this.state.currentUser}>
+```
+
+##### Consumer
+
+```js
+import UserContext from "./usercontext";
+...
+  static contextType = UserContext;
+...
+      <UserContext.Consumer>
+        {(userctx) => (
+          <div>
+            {userctx.name}
+            <MovieRow />
+          </div>
+        )}
+      </UserContext.Consumer>
+...
+```
+
+#### Functional Component
+
+##### Context
+
+```js
+const UserContext = React.createContext();
+UserContext.displayName = "UserContext";
+export default UserContext;
+```
+
+##### Provider
+
+```js
+import UserContext from "./context/usercontext";
+...
+  state = { currentUser: { name: "ian" } };
+ ...
+  <UserContext.Provider value={this.state.currentUser}>
+```
+
+##### consumer
+
+```js
+import React, { useContext } from "react";
+import UserContext from "./usercontext";
+...
+const currentUser = useContext(UserContext);
+...
+return <div>movierow: {currentUser.name}</div>;
+...
+```

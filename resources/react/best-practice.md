@@ -43,6 +43,12 @@ sidebar:
     * to decode jwt
   * serve
     * lightweight web server
+* sites
+  * sentient
+  * mlab
+    * mongodb on cloud
+  * heroku
+    * application server
 
 ### coding practice
 
@@ -182,3 +188,24 @@ sidebar:
 ```json
 {env-key:"val"}
 ```
+
+### Advanced Topic
+
+* use HOC (higher order component) to implment common functionality (e.g. tooltip)
+  * HOC will
+    * implement the common function and set the state the parent component
+    * parent component will wrap around your component
+* use FC if can (since code is shorter and cleaner)
+  * useState
+    * E.g.
+      * var [count, setCount] = useState(0);{setCount(count++)}
+  * useEffect
+    * E.g.
+      * useEffect(function, [dependency arrays])
+        * useEffect(function)
+          * run in all condition (mount, update, unmount)
+        * useEffect(function, [])
+          * run when mount, unmount
+  * useContext
+    * only for SFC
+    * consumer code is much cleaner than CC
