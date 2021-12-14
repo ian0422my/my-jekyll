@@ -82,7 +82,7 @@ export default withTooltip(Movie);
 ### 6 - hooks
 
 * react 16.8 onwards, we can use state in FC
-  * im other words, FC is no more stateless
+  * in other words, FC is no more stateless
 * FC code is cleaner and will behave just like class component
 * new hook
   * useState
@@ -292,31 +292,17 @@ class MovieList extends React.Component {
 
 ### 13 - Context in Functional Component
 
-* useContext(hook)
-  * only available for functional component
+* provider/consumer
+* consumer
+  * useContext(hook)
+    * only available for functional component
 * App.js
 
 ```js
 ...
 <UserContext.Provider value={this.state.currentUser}>
+          <MovieRow />
 ...
-</UserContext.Provider>
-...
-```
-
-* movielist.jsx
-
-```jsx
-...
-import MovieRow from "./movierow";
-...
-        {(userctx) => (
-          <div>
-            {userctx.name}
-            <MovieRow />
-          </div>
-        )}
-        ...
 ```
 
 * movierow.jsx
@@ -331,4 +317,100 @@ function MovieRow(props) {
 }
 
 export default MovieRow;
+```
+
+### 14 - Updating the Context
+
+* use setState/useState to update the state value and refresh the page
+* pass the value to context provider
+* App.js
+
+```js
+...
+import Login from "./login";
+class App extends React.Component {
+  state = { currentUser: null };
+
+  handleLogin = (username) => {
+    this.setState({ currentUser: { name: username } });
+  };
+
+  render() {
+    return (
+      <UserContext.Provider
+        value={{
+          currentUser: this.state.currentUser,
+          handleLogin: this.handleLogin,
+        }}
+      >
+        <div>
+          <MoviePage />
+          <Login />
+```
+
+* login.jsx
+
+```jsx
+import UserContext from "./context/usercontext";
+import React, { useContext } from "react";
+
+function Login() {
+  const userContext = useContext(UserContext);
+  return <button onClick={() => userContext.handleLogin("ian")}>Login</button>;
+}
+
+export default Login;
+```
+
+* MovieList.jsx
+
+```jsx
+...
+movielist: {userctx.currentUser ? userctx.currentUser.name : ""}{" "}
+...
+```
+
+* Movierow.jsx
+
+```jsx
+...
+movierow: {userContext.currentUser ? userContext.currentUser.name : ""}
+...
+```
+
+### 15 - Consuming multiple context
+
+* create new context
+* wrap existing context(if any) with the new context
+* CartContext.js
+
+```js
+import React from "react";
+
+const CartContext = React.createContext();
+CartContext.displayName = "CartContext";
+
+export default CartContext;
+```
+
+* App.js
+
+```js
+...
+import CartContext from "./context/cartcontext";
+...
+      <CartContext.Provider value={{ carts: [] }}>
+        <UserContext.Provider
+        ...
+```
+
+* movierow.jsx
+
+```jsx
+...
+import CartContext from "./cartcontext";
+...
+  const cartContext = useContext(CartContext);
+  console.log(cartContext);
+  ...
 ```

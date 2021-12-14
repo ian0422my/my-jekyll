@@ -103,9 +103,12 @@ sidebar:
 | react,heroku | heroku restart                                                                      | restart heroku app                                                                       |
 | react,heroku | heroku maintenance:on/off                                                           | kind of bring down the app                                                               |
 | react,adv    | npx create-react-app react-advanced                                                 | create react app using npx                                                               |
-| react,adv    | return class WithTooltip extends React.Component {render(){}}                       | create class component as a return object                                                |
-| react,adv    | var [count, setCount] = useState(0);{setCount(count++)}                             | hook - useState (setState for CC)                                                        |
-| react,adv    | useEffect(function, [dependency arrays])                                            | hook - useEffect (componentDidMount,componentDidUpdate,componentWillUnmount for CC)      |
+| react,hoc    | return class WithTooltip extends React.Component {render(){}}                       | HOC; create class component as a return object                                           |
+| react,ffc    | var [count, setCount] = useState(0);{setCount(count++)}                             | FC hook - useState (setState for CC)                                                     |
+| react,ffc    | useEffect(function, [dependency arrays])                                            | FC hook - useEffect (componentDidMount,componentDidUpdate,componentWillUnmount for CC)   |
+| react,ffc    | const ctx = React.createContext();export default ctx;                               | create and export context                                                                |
+| react,ffc    | import context from "./context";const ctx = useContext(context);                    | import and consume context                                                               |
+| react,ffc    | const currentUser = useContext(UserContext);                                        | global storage; refer [#snippet]                                                         |
 
 ## Snippet
 
@@ -113,6 +116,8 @@ sidebar:
 
 #### HOC
 
+* react snippet
+  * hoc + tab
 * withTooltip.jsx
 
 ```jsx
@@ -200,11 +205,12 @@ import UserContext from "./usercontext";
 ...
 ```
 
-#### Functional Component
+#### Functional Component (FFC)
 
 ##### Context
 
 ```js
+import React from "react";
 const UserContext = React.createContext();
 UserContext.displayName = "UserContext";
 export default UserContext;
@@ -218,9 +224,11 @@ import UserContext from "./context/usercontext";
   state = { currentUser: { name: "ian" } };
  ...
   <UserContext.Provider value={this.state.currentUser}>
+  ...
+  <MoviePage />
 ```
 
-##### consumer
+##### Consumer
 
 ```js
 import React, { useContext } from "react";
