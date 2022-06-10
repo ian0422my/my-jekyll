@@ -1,0 +1,174 @@
+---
+layout: single
+#classes: wide
+title:  "AEM"
+date:   2022-02-17 09:48:50 +0800
+categories: aem
+allow_different_nesting: true
+toc: true
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+## useradmin
+
+* if user details page is not loading via user listing, just load any other user which works and replace the user path on the url (copy the user path from useradmin)
+
+## space utilization
+
+<http://localhost:4502/etc/reports/diskusage.html?path=/content/dam/test1/subpath>
+
+## acl/ace
+
+* there are 2 ways to configure ACL, using
+  * useradmin
+  * access control editor
+    * /crx/explorer/
+      * access control editor
+        * find the path, add "new ace"
+          * path
+          * permission
+          * restrictions
+        * click on "tick" to save
+        * click on windows "Apply"
+
+## Architecture Stack
+
+* <https://experienceleague.adobe.com/docs/experience-manager-learn/cloud-service/underlying-technology/introduction-architecture.html?lang=en>
+* repository
+  * type
+    * CRX2 (based on Jackrabbit)
+    * CRX3 (based on Jackrabbit OAK)
+  * persistency
+    * standalone setup (good performance)
+      * tarmk
+    * cluster setup (good scalability)
+      * rdbmk
+      * mongomk
+* OSGI java container
+  * felix
+* web appication framework
+  * sling
+    * rest base
+* aem
+  * sites
+  * assets
+  * forms
+  * coral UI / granite
+  * workflow
+  * dam
+  * saml/oauth
+
+## JCR
+
+* java content repository (jcr)
+  * kind of database/file system that stores information in both hierachical and non-hierichical way
+    * trees of nodes with properties
+  * consists of the best features from both file system and rdbms with extra features <https://dzone.com/sites/all/files/jcr-best-of-both-worlds.jpg>
+    * file system features
+      * non-hierichical
+      * locking
+    * database features
+      * transaction
+      * integrity
+      * index
+    * extra features
+      * access control
+      * full text search
+  * built based on jsr170, jsr283
+  * project implemented using JCR <https://jackrabbit.apache.org/jcr/news-archive.html>
+    * Apache Jackrabbit 1.X, 2.X
+    * Apache Jackrabbit 3.X (aka known as Apache Jackrabbit Oak)
+
+### AEM JCR
+
+* 3 types of persistence MK (microkernel)
+  * tarmk
+  * mongomk
+  * rdbmk
+* store
+  * datastore
+    * location
+      * default
+        * /repository/datastore
+      * alternative
+        * database
+    * binaries or anything >4kb
+    * housekeeping
+      * datastoregarbagecollection/datastore gc
+        * <http://localhost:4503/libs/granite/operations/content/maintenanceWindow.html/apps/settings/granite/operations/maintenance/granite_weekly#>
+  * segmentstore
+    * node or content or anything >=4kb
+    * location
+      * default
+        * /repository/segmentstore
+    * housekeeping
+      * data store garbage collection(dsgc)
+        * for external data stores
+        * via
+          * tools > operation > maintenance
+          * jmx console
+            * reposiotry management
+              * startDataStoreGC
+      * revision gc(rgc)
+        * for node store
+        * via
+          * tools > operation > maintenances
+          * jmx > revisiongarbagecollection
+
+| node store | data store | node gc | data store gc | remarks |
+| :--------- | :--------- | :------ | :------------ | :------ |
+| tarmk      | tarmk      | rgc     | rgc           |         |
+| tarmk      | filesystem | rgc     | dsgc          |         |
+| mongo/rdb  | mongo      | rgc     | dsgc          |         |
+| mongo/rdb  | filesystem | rgc     | dsgc          | dns     |
+
+      * version gc
+        * purge old version of nodes
+          * <https://<server>:<port>/etc/versioning/purge.html>
+
+#### Revision GC
+
+* since 6.3
+* known as "tar compaction" before 6.4
+* 3 phases
+  * estimation
+  * compaction
+    * full
+      * save most space but need more resources
+    * tail
+      * fast but save space using the most recent segments and tar files
+  * clean up
+* type
+  * online
+    * too ls > operation > maintenance > revision clean up
+      * not appearing in production? why?
+  * offline
+    * need to shutdown aem and run cli (oak-run.jar)
+
+#### Version GC
+
+* new version will be created when ***new page*** are created/activated
+* old version will be kept based on the verison defined in "Day CQ WCM Version Manager"
+
+### SQL2
+
+* reference
+  * <https://gist.github.com/floriankraft/8b3720464318cd5cd9e2>
+
+```cmd
+select * from [nt:base] // select from cq
+select * from [sling:Folder] // same as "select * from [nt:base] where [jcr:primaryType] = 'sling:Folder'
+select * from [sling:Folder] where [jcr:createdBy] = 'admin' and ISDESCENDANTNODE([/content/dam/])
+```
+
+## Tools
+
+### Operation
+
+#### Maintenance
+
+<https://blogs.perficient.com/2021/03/08/managing-aem-repository-size-growth/>

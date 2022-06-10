@@ -14,8 +14,8 @@ sidebar:
 
 ## Summary
 
-* openssl - software librar
-* certutil(windows only) - can be used to inspect certificate
+* openssl - software library
+* certutil(windows only) - can be used to inspect certificate (windows only)
 
 | Type     | acronym          | name                                                                                | desc                                                                                                                                                                                                       |
 | :------- | :--------------- | :---------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

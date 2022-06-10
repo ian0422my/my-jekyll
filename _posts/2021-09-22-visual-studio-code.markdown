@@ -39,16 +39,27 @@ sidebar:
 
 ## Shortcuts
 
+<https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf>
+
 | shortcut                                 | description                                                                          |
 | :--------------------------------------- | :----------------------------------------------------------------------------------- |
 | ctrl+,                                   | settings                                                                             |
 | ctrl+d                                   | select same pattern(run again to select more)                                        |
+| ctrl+g                                   | go to line                                                                           |
 | alt+click                                | select multiple location(to edit multiple location)                                  |
 | shift+alt+[up/down]                      | copy existing line up/down                                                           |
 | shift+delete                             | delete line                                                                          |
 | table.table>thead>tr>td*4>span.m-2 + tab | this will generate a table with thead, tr, 4 Td - Zencoding (using css class syntax) |
 | select line(s) + alt + up/down           | move the line up/down (no need cut/paste)                                            |
 | ctrl+p                                   | find files; can use regex;                                                           |
+| ctlr+p > @<method name>                  | find and go to method                                                                |
+| ctrl+click                               | goto method                                                                          |
+
+## language support
+
+### java
+
+* install language support for java @ <https://marketplace.visualstudio.com/items?itemName=redhat.java>
 
 ## Troubleshoot
 

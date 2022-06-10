@@ -15,6 +15,19 @@ sidebar:
 ## Introduction
 
 * written using Golang
+* layer
+  * docker is layered file system;
+  * each layer is file system changes (control by command. E.g. apt-get install tomcat); once this layer is build, it will become an image and can be REUSE!!!
+    * build 2 docker image using the same Dockerfile but use different docker image name; check the images history (docker history <imagename> and you'll notice that the intermediate image id will be IDENTICAL!!!)
+  * e.g.
+    * custom changes (layer)
+    * apps (layer)
+    * os (layer). 
+  * and the image can run on any docker on any OS (e.g. windows)? yes. possible because of POSIX (unix based)
+* docker engine spins off a linux container to run your process
+* https://medium.freecodecamp.org/comprehensive-introductory-guide-to-docker-vms-and-containers-4e42a13ee103#e9ad
+* that's why windows docker need docker machine
+  * docker machine is a linux
 * use [Visual Studio Code](./2021-09-22-visual-studio-code.markdown) (with docker plugin) to build docker image easily
 * run your application in a lightweight vm (e.g. ubuntu)
   * light footprint
@@ -95,7 +108,7 @@ sidebar:
 | docker rm <cid>                                             |
 | docker container prune                                      | remove all exited contatin                                                                                          |
 | docker build ian0422my/catnip .                             | build dockerimage from current folder (need Dockerfile)                                                             |
-| docker login                                                | login to docker  hub                                                                                                   |
+| docker login                                                | login to docker  hub                                                                                                |
 | docker push ian0422my/catnip                                | push docker image to docker hub                                                                                     |
 | docker cp <cid>:<container path> <local path>               | copy file from container to host                                                                                    |
 | docker compose up                                           | run docker using docker-compose.yml                                                                                 |
