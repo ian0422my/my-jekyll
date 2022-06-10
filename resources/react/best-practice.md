@@ -72,10 +72,26 @@ sidebar:
     * camelCase
     * starts with handle*
   * variable name
-    * plural should append with s
+    * plural should append with "s"
     * utility class should use generic name such as item(e.g. handleItem vs handleMovie; itemCount vs movieCount)
 * JSX returned by render method must consists of only 1 root element - encapsulate with \<div> or <react.fragment>
 * use arrow function instead of constructor with binding to access "this"
+* don't create class member(you can initiazed it if the value is coming from api)
+  * if you need a global scope variables, create within state (and initialized it in componentDidMount)
+* lifecycle
+  * first time load
+    * render > cdm > render > cdu
+  * setState
+    * render > cdu
+  * componentDidMount (cdm) vs componentDidUpdate (cdu)
+    * cdm
+      * called render(first time)
+      * should be used to call api
+    * cdu
+      * called render(subsequent time)
+      * should be use to check prev props vs existing props
+        * if diff then setState
+          * rarely used. you only need to use it when the ***ui data is coming from parent(via this.props and pass to this.state) and UI value is depending on "state"***
 * constructor
   * need to call super() first
 * state should modified
@@ -122,14 +138,34 @@ sidebar:
     * current location info
   * match
     * info of matching path to route
+      * less generic rules should come later
+
+```js
+...
+          <ProtectedRoute
+            path="/timelogdetails/:currentDate"
+            component={TimelogDetails}
+          />
+          <ProtectedRoute path="/timelogdetails" component={TimelogDetails} />
+...
+```
+
 * when using switch, always declare the more specific function/url first followed by less specific function/url
 * parameters
-* optional parameters is better as query parameter than url parameters
-* window.location vs this.history.push
-* full refresh - window.location
+  * optional parameters is better as query parameter than url parameters
+  * window.location vs this.history.push
+  * full refresh - window.location
 
 ### Form
 
+* intpu has 2 modes - controlled and non-controlled
+  * controlled
+    * the UI is editable by user
+    * initial value set using "default*" (e.g. defaultChecked, defaultValue)
+    * value cannot be change via setState
+  * non-controlled (readonly)
+    * value can change via setState (e.g. use "checked", "value")
+    * not editable by user
 * always initialized controlled element state properties to string (cannot null or undefined)
 * all react handler by default gets a [sytheticevent](https://reactjs.org/docs/events.html)
   * do not pass "this" to event handler (i.e. onChange={onChange(this)}) since "this" is refers to the dom itself
@@ -183,7 +219,7 @@ sidebar:
     * heroku config: set key=value, OR
     * heroku app > settings > reveal config vars
   * then read from react
-    * create prorudction.json
+    * create production.json
 
 ```json
 {env-key:"val"}
@@ -197,6 +233,7 @@ sidebar:
     * parent component will wrap around your component
 * use FC if can (since code is shorter and cleaner)
   * useState
+    * use whenever you want to update a state
     * E.g.
       * var [count, setCount] = useState(0);{setCount(count++)}
   * useEffect
@@ -207,5 +244,5 @@ sidebar:
         * useEffect(function, [])
           * run when mount, unmount
   * useContext
-    * only for SFC
+    * only for FFC
     * consumer code is much cleaner than CC

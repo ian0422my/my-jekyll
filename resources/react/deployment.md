@@ -21,7 +21,7 @@ sidebar:
 
 * create environment variables files for different environment
   * changes in .env will only take effect after restart
-  * kvp
+  * key value pair
   * must prefix with REACT_APP_*
   * accessible through process.env.*
     * actual value will be replced into bundles.js (not process.env)
@@ -48,10 +48,11 @@ console.log(process.env.REACT_APP_NAME);
       * consists of code to enable debugging
 * production
   * npm run build
-    * this will build production optimized code (i.e. vidly/build/)
-  * run with .env.production
+    * this will build(folder) production optimized code (i.e. vidly/build/)
+  * install server module(web server)
     * npm i -g server
-    * serve -s build
+  * run with .env.production
+    * serve -s build [-p port]
 
 ### 4 - getting started with heroku
 
@@ -90,7 +91,7 @@ client.connect(err => {
 });
 ```
 
-### 7 - deploying to heroku
+### 7 - deploying to heroku(bug! run in development profile. use create-react-app instead)
 
 * cd vidly-api-node
 * create heroku app
