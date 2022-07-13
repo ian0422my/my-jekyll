@@ -52,3 +52,4 @@ sidebar:
   * log4j2
   * logback
   * apache sling commons log
+    * can integrate to logback via <http://localhost:4502/system/console/configMgr/org.apache.sling.commons.log.LogManager/org.apache.sling.commons.log.configurationFile>

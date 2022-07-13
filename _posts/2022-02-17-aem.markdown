@@ -21,6 +21,106 @@ sidebar:
 
 <http://localhost:4502/etc/reports/diskusage.html?path=/content/dam/test1/subpath>
 
+## logging
+
+* aem use apache sling comons logging (15) which internally uses logback
+
+### Issues 
+
+* logging not rolling daily
+  * to check, need to enable -Dlogback.debug=true
+    * found out that it's caused by RenameUtil.renameTo(which internally uses File.rename)
+      * winnt has problem renaming error.log to error.log1 when error.log1 is locked
+
+| date     | why                                                                                      | how                                                                                                                  |
+| :------- | :--------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------- |
+| 20220523 | PA notice 102p error.log grows until 27GB                                                | aem unable to roll since 13 May 2022 (12 May rolling was ok)                                                         |
+| 20220619 | PA implemented logback.debug=true in prod                                                |                                                                                                                      |
+| 20220620 | PA notice 104p error.log grows until 9GB                                                 | aem unable to roll since 16 Jun 2022 (15 Jun rolling was ok)                                                         |
+|          | PA added com.adobe.fd.df.internal log to null.log @ 202206201556                         | first rename failed happens to null.log on 101p @ 20220624074336 and recovers on 20220624080040                      |
+| 20220621 | who is responsible for rolling                                                           | apache sling commons log has logback-core.jar (bundle 15)                                                            |
+|          | why is rolling failing for 102p?                                                         | windows file is locked?                                                                                              |
+|          | how busy was 102p on 20220513000000?                                                     | 100% utilization but ramp down to 50% in less than 2 min                                                             |
+|          | how busy was 104p on 20220616000000?                                                     | 0%                                                                                                                   |
+|          | what was running on 102p on 20220513000000?                                              | com.adobe.granite.threaddump.impl.backupcleaner(for threaddump housekeeping) and some notices                        |
+|          | what was running on 104p on 20220616000000?                                              | com.adobe.granite.threaddump.impl.backupcleaner(for threaddump housekeeping)                                         |
+|          | how was backupcleaner configured?                                                        | /system/console/configMgr/com.adobe.granite.threaddump.ThreadDumpCollector                                           |
+|          | how often does backupcleaner runs?                                                       | every midnight (0 0 0 \* \* ?)                                                                                       |
+|          | why is file locked?                                                                      | virus? file too big? cpu too busy? a bit of both?                                                                    |
+|          | file too big                                                                             | created org.apache.sling.log(TRACE;restart twice;450+mb) and still manage to roll every 10kb                         |
+|          | file too big + backupcleaner                                                             | org.apache.sling.log(TRACE;restart twice;450+mb) + backupcleaner(run every second) - still manage to roll every 10kb |
+|          | how to solve?                                                                            | Refer [#solution] below                                                                                              |
+|          |
+| 20220706 | why is "undefined variable in notice" causing rolling error? which batch has that error? | B_101_52c63852-a58b-4571-8597-77957f81b932_20220624061306493                                                         |
+
+#### Solution
+
+##### Option 1 - Find out who is locking the file
+
+* go to Resource manager > CPU > handler > find the file while is not rolling, OR
+* talk to security team and check if error.log is being scanned and raised for deviation (not to scan)
+
+##### Options 2 - Use logback
+
+* in order to use logback
+  * remove log writer for error.log
+  * create sling.home/conf/logback.xml
+    * have to make sure that "\<file>" is empty so that logback will not roll
+  * configure "Apache Sling logging Configuration" to point to logback.xml
+    * once saved, you can verify the settings @ sling.home\launchpad\config\org\apache\sling\commons\log\LogManager.config
+
+##### option 3 - log com.adobe.fd.df.internal to null.log and let null.log roll every 25mb (max 2 files)
+
+* PA set log com.adobe.fd.df.internal to null.log on 20220620. error.log is no more throwing too much error nor facing renaming error.b But is affectng null.log
+  * com.adobe.fd.df.internal is thrown when there's "undefined varibale in notice"
+    * e.g.
+      * Notice.NON_STANDARD_VARIABLE.GROUP_NMAE.TX_S_V805
+
+###### LogManager.config
+
+```config
+:org.apache.felix.configadmin.revision:=L"15"
+org.apache.sling.commons.log.configurationFile="conf/logback.xml"
+org.apache.sling.commons.log.file="logs/error.log"
+org.apache.sling.commons.log.file.number=I"7"
+org.apache.sling.commons.log.file.size="'.'yyyy-MM-dd"
+org.apache.sling.commons.log.level="off"
+org.apache.sling.commons.log.maxCallerDataDepth=I"7"
+org.apache.sling.commons.log.maxOldFileCountInDump=I"3"
+org.apache.sling.commons.log.numOfLines=I"10000"
+org.apache.sling.commons.log.packagingDataEnabled=B"true"
+org.apache.sling.commons.log.pattern="{0,date,dd.MM.yyyy\ HH:mm:ss.SSS}\ *{4}*\ [{2}]\ {3}\ {5}"
+service.pid="org.apache.sling.commons.log.LogManager"
+```
+
+###### logback.xml
+
+```xml
+<configuration>
+  <appender name="ERRORLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--file>logs\logFile.html</file-->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>D:\Application\AEM\DNS\Author\crx-quickstart\logs\error.%d{yyyy-MM-dd-hh-mm}.log</fileNamePattern>
+      <!--timeBasedFileNamingAndTriggeringPolicy
+          class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>50MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy-->
+      <maxHistory>3</maxHistory>
+      <totalSizeCap>1GB</totalSizeCap>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d \*%-5level\* [%thread] %msg%n</pattern>
+    </encoder>
+  </appender> 
+
+  <root level="INFO">
+    <appender-ref ref="ERRORLOG" />     
+  </root>
+
+</configuration>
+```
+
 ## acl/ace
 
 * there are 2 ways to configure ACL, using
@@ -50,7 +150,7 @@ sidebar:
       * mongomk
 * OSGI java container
   * felix
-* web appication framework
+* web application framework
   * sling
     * rest base
 * aem
@@ -172,3 +272,35 @@ select * from [sling:Folder] where [jcr:createdBy] = 'admin' and ISDESCENDANTNOD
 #### Maintenance
 
 <https://blogs.perficient.com/2021/03/08/managing-aem-repository-size-growth/>
+
+## Troubleshooting
+
+### SegmentNotFoundException
+
+* unable to resovle ResourceResolverFactory - aem might be corrupted. Restart and see if can access - if still cannot need to revert to the last good revision
+
+#### Restore Last Good Revision
+
+<https://experienceleague.adobe.com/docs/experience-cloud-kcs/kbarticles/KA-16457.html?lang=fr-FR>
+
+* find last good revision
+
+```cmd
+java -jar oak-run-*.jar check --bin=-1 crx-quickstart/repository/segmentstore/
+```
+
+* remove all lines after /crx-quickstart/repository/segmentstore/journal.log based on the revision id found
+* Remove all ./crx-quickstart/repository/segmentstore/*.bak files.
+* Run checkpoint clean-up to remove orphaned checkpoints:
+
+```cmd
+java -jar oak-run-*.jar checkpoints ./crx-quickstart/repository/segmentstore rm-unreferenced.
+```
+
+* compact the repository
+
+```cmd
+java -jar oak-run-*.jar compact ./crx-quickstart/repository/segmentstore/
+```
+
+* start AEM

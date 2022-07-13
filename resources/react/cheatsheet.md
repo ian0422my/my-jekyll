@@ -11,7 +11,11 @@ sidebar:
 
 ## Cheatsheet
 
-* srs = simple react snippet (visual studio code extension)
+* visual studio code
+  * srs = simple react snippet (visual studio code extension)
+  * prettier
+  * sonarlint
+  * project manager
 
 | type         | code                                                                                 | description                                                                               |
 | :----------- | :----------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- |
