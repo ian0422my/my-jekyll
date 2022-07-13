@@ -22,7 +22,9 @@ sidebar:
 * create jeklly-base project through netlify (e.g. <https://github.com/ian0422my/jekyll-base>)
 * modify README.md (e.g. <https://github.com/ian0422my/jekyll-base/tree-save/master/README.md>)
 * go to netlify and deploy
-* preview (e.g. <https://focused-agnesi-dc5095.netlify.app/>)
+* preview E.g.
+  * <https://focused-agnesi-dc5095.netlify.app/>
+  * <https://adoring-blackwell-287e01.netlify.app/>
 
 ### troubleshooting
 
