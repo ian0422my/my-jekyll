@@ -2,7 +2,7 @@
 layout: single
 #classes: wide
 title:  "markdown vs markup"
-date:   2022-07-19 16:48:50 +0800
+date:   2022-07-19 14:48:50 +0800
 categories: markdown, markup
 allow_different_nesting: true
 toc: true

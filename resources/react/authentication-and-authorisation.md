@@ -595,14 +595,13 @@ import ProtectedRoute from "./components/common/protectedroute";
           if (!currentUser) {
             return (
               <Redirect
-                to={{
+                to=\{\{
                   pathname: "/login",
                   state: { here: this.props.location },
-                }}
+                \}\}
               />
             );
           } 
-          ...
 ...
 ```
 
