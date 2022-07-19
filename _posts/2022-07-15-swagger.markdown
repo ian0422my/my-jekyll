@@ -1,0 +1,35 @@
+---
+layout: single
+#classes: wide
+title:  "Swagger"
+date:   2022-07-15 16:48:50 +0800
+categories: swagger,development,api
+allow_different_nesting: true
+toc: true
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+## summary
+
+<https://www.techtarget.com/searchapparchitecture/definition/Swagger#:~:text=Swagger%20helps%20users%20build%2C%20document,before%20any%20code%20is%20written.>
+
+* create api documentation using YAML
+  * yaml can be read and ]present using html ui
+    * so that client/developer can read
+  * yaml can be read by machine to generate client code
+
+### approach
+
+* top down - design first, code later
+  * design using yaml and preview via html
+    * swagger editor
+  * generate client code(any language) using yaml
+    * swagger codegen
+* bottom up
+  * manual coding
+  * describe using yaml and preview via html ui
+    * swagger editor
