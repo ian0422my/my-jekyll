@@ -13,12 +13,14 @@ sidebar:
 
 ## first things first
 
-1. jekyll doesn't work if you are on vpn
+* jekyll doesn't work if you are on vpn
+* transform markdown into html (can host on [netlify](https://www.netlify.com/))
+* `categories` can be used as tag(help with search in netlify)
 
 ## how to install quickly
 
-1. you need ruby (mine was ruby 3.0.2p107)
-2. goto workspace and run command below
+* you need ruby (mine was ruby 3.0.2p107)
+* goto workspace and run command below
 
 ```sh
 gem install bundler jekyll
@@ -68,16 +70,15 @@ theme: jekyll-theme-hacker
 
 <https://jekyllrb.com/docs/themes/>
 
-1. identify your current theme (refer to config.yaml). E.g. jekyll-theme-minimal
-2. run command below to figure out the path where the them is stored in your computer
+* identify your current theme (refer to config.yaml). E.g. jekyll-theme-minimal
+* run command below to figure out the path where the them is stored in your computer
 
 ```sh
 bundle info --path jekyll-theme-minimal
 ```
 
-1. open explorer and navigate to theme folder
-1. copy _assests or _layouts to your project and modify accordingly
-
+* open explorer and navigate to theme folder
+* copy `_assests` or `_layouts` to your project and modify accordingly
 
 ## how to enable gui using plantuml
 

@@ -611,7 +611,7 @@ import ProtectedRoute from "./components/common/protectedroute";
 ...
   doSubmit = async (data) => {
     try {
-...
+...p
       window.location = this.props.location.state
         ? this.props.location.state.here.pathname
         : "/";
