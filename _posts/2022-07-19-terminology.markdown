@@ -15,11 +15,19 @@ sidebar:
 
 ## terminology
 
+| keyword                        | summary                                   | remarks                    |
+| :----------------------------- | :---------------------------------------- | :------------------------- |
+| scss(Syntactically Awesome SS) | superset of css - advanced version of css | import;varible;nested      |
+| headless                       | front end and backend is decouple         | refer detailed description |
+
 ### headless
 
 * front end and backend is decouple
   * backend info is exposed via rest api as json format
   * up to front end to decide how to present
+* E.g.
+  * headless cms
+    * UI and rest api is decouple. REST API is json based and consits of data only
 
 ### markup
 

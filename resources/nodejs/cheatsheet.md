@@ -3,11 +3,22 @@ layout: single
 classes: wide
 title:  "Nodejs"
 date:   2021-12-21 10:00:50 +0800
-categories: react
+categories: nodejs,npm
 allow_different_nesting: true
 sidebar:
-  nav: "react"
+  nav: "nodejs"
 ---
+
+## CLI
+
+| cmd                                                                                 | description                    | remarks                                                               |
+| :---------------------------------------------------------------------------------- | :----------------------------- | :-------------------------------------------------------------------- |
+| initialize                                                                          | npm init [--yes]               | will create package.json                                              |
+| install specific module/dependencies into `/node_modules`                           | npm i [module] --save          | `--save*` will update package.json(not needed if npm version > 5.0.0) |
+| install all dependencies needed for production env(dependencies)                    | npm i --save                   |                                                                       |
+| install all dependencies needed for development env(devDependencies). E.g. eslint   | npm i --save-dev               |                                                                       |
+| install all optionalDependencies(ignore if fail to install). E.g. color for console | npm i --save-optional          |                                                                       |
+| list local [package] dependencies                                                   | npm list [package] [--depth=N] |                                                                       |
 
 ## modules
 
@@ -47,6 +58,7 @@ node index.js
 | express-formidable | to process formdata into request.field, request.files |
 | aws-sdk            |                                                       |
 | nodemailer         | send email                                            |
+| eslint             | code clean                                            |
 
 ### Sample Code
 

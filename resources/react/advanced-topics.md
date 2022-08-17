@@ -338,10 +338,10 @@ class App extends React.Component {
   render() {
     return (
       <UserContext.Provider
-        value={{
+        value=\{\{
           currentUser: this.state.currentUser,
           handleLogin: this.handleLogin,
-        }}
+        \}\}
       >
         <div>
           <MoviePage />
@@ -399,7 +399,7 @@ export default CartContext;
 ...
 import CartContext from "./context/cartcontext";
 ...
-      <CartContext.Provider value={{ carts: [] }}>
+      <CartContext.Provider value=\{\{ carts: \[\] \}\}>
         <UserContext.Provider
         ...
 ```

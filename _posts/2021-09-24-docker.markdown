@@ -34,7 +34,7 @@ sidebar:
   * quick instantiation
 * meant to ***ephemereal***
   * run and destoy; repeat
-* need to run on virtualization (hyper-v or virtualbox)
+* need to run on ***virtualization*** (hyper-v or virtualbox)
   * docker desktop requires
     * [hyper-v and containers (windows features) to be enabled](https://docs.docker.com/desktop/windows/install/#hyper-v-backend-and-windows-containers)
     * [wsl and containers](https://docs.docker.com/desktop/windows/wsl/)
@@ -245,3 +245,11 @@ docker push
 
 * add ["dns":"202.166.1.56"] to docker engine json and restart docker
 * or add --dns 202.166.1.56 to start up command
+
+### docker desktop cannot start
+
+* delete AppData/Local/Docker*
+* delete AppData/Roaming/Docker*
+* make sure Docker Desktop window service is up
+* start Docker Desktop
+* go to `Troubleshoot` > `Clean/Purge data`

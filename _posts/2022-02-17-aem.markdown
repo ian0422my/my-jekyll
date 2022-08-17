@@ -25,7 +25,7 @@ sidebar:
 
 * aem use apache sling comons logging (15) which internally uses logback
 
-### Issues 
+### Issues
 
 * logging not rolling daily
   * to check, need to enable -Dlogback.debug=true
@@ -304,3 +304,11 @@ java -jar oak-run-*.jar compact ./crx-quickstart/repository/segmentstore/
 ```
 
 * start AEM
+
+### bundles cannot start properly - check with gogo shell
+
+* sometimes aem cannot start properly, need to use gogoshell to check
+
+```cmd
+telnet localhost 11311
+```

@@ -46,12 +46,21 @@ sidebar:
   * hash value/signature to prove certificate ownership
 * certificate signature request/csr
   * raw cert send by client to intermidiate ca to sign the cert
+* signed certificate
+  * consists of identity info which are signed genuinely by intermediate CA
 * ssl/tls handshake
   * process where software(chrome) used to
+    * download cert from website
     * check a cert validity (owner, validity, trustworthy)
-    * transact by encryption using public key
-* openssl - software library
-* certutil(windows only) - can be used to inspect certificate (windows only)
+      * extract signed cert
+        * extract intermidiate cert
+          * extract root cert
+            * check if root cert if trusted by browser
+              * extract public key from signed cert, encrypt and send the encrypted info to server/website
+* openssl
+  * software library
+* certutil(windows only)
+  * can be used to inspect certificate (windows only)
 
 ## Summary
 

@@ -24,7 +24,7 @@ sidebar:
 * go to netlify and deploy
 * preview E.g.
   * <https://focused-agnesi-dc5095.netlify.app/>
-  * <https://adoring-blackwell-287e01.netlify.app/>
+  * [my jekyll](https://adoring-blackwell-287e01.netlify.app)
 
 ### troubleshooting
 
