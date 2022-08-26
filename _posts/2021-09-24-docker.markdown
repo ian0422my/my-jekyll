@@ -24,27 +24,29 @@ sidebar:
     * apps (layer)
     * os (layer). 
   * and the image can run on any docker on any OS (e.g. windows)? yes. possible because of POSIX (unix based)
-* ~~docker engine spins off a linux container to run your process~~
-  docker engine does not do virtualization
-    * you will actually notice that what ever process runs in your containers appears in your host
-* https://medium.freecodecamp.org/comprehensive-introductory-guide-to-docker-vms-and-containers-4e42a13ee103#e9ad
-* that's why windows docker need docker machine
-  * docker machine is a linux
 * use [Visual Studio Code](./2021-09-22-visual-studio-code.markdown) (with docker plugin) to build docker image easily
-* run your application in a lightweight vm (e.g. ubuntu)
-  * light footprint
-  * quick instantiation
 * meant to ***ephemereal***
   * run and destoy; repeat
-* need to run on ***virtualization*** (hyper-v or virtualbox)
-  * docker desktop requires
-    * [hyper-v and containers (windows features) to be enabled](https://docs.docker.com/desktop/windows/install/#hyper-v-backend-and-windows-containers)
-    * [wsl and containers](https://docs.docker.com/desktop/windows/wsl/)
+* ~~docker engine spins off a linux container to run your process~~
+* virtualization (hyper-v or virtualbox)
+  * <https://medium.freecodecamp.org/comprehensive-introductory-guide-to-docker-vms-and-containers-4e42a13ee103#e9ad>
+  * that's why windows docker need docker machine
+    * docker machine is a linux
+  * pros and cons
+    * light footprint
+    * quick instantiation
+  * docker vs vm
+    * vm need complete os; docker no need => docker faster "bootup"
+    * docker share kernel with host; vm use own os, own kernel => docker works faster
+  * windows
+    * docker desktop requires
+      * [hyper-v and containers (windows features) to be enabled](https://docs.docker.com/desktop/windows/install/#hyper-v-backend-and-windows-containers)
+      * [wsl and containers](https://docs.docker.com/desktop/windows/wsl/)
 * can be connected ***remotely***
   * guest
-    * dockerd -H tcp://0.0.0.0:2375
+    * `dockerd -H tcp://0.0.0.0:2375`
   * host
-    * set DOCKER_HOST=tcp://<guest>:2375
+    * set `DOCKER_HOST=tcp://<guest>:2375`
 * configuration file
   * [Dockerfile](#Dockerfile)
     * yaml
@@ -61,7 +63,7 @@ sidebar:
       * wordpress, mysql
         * <https://docs.docker.com/samples/wordpress/>
 * VS
-  * start just stasrt a stopped existsing container
+  * start just start a stopped existsing container
   * run start both new and existing container
 
 ## Glossary
