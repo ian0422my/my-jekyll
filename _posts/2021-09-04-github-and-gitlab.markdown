@@ -37,5 +37,7 @@ git push -u origin main
 
 ### set git credentials
 
+```cmd
 git config --global user.name "username"
-git config --global user.password "password"
+git config --global user.password "password" // if enable 2fa, then need to create personal access token
+```
