@@ -24,7 +24,9 @@ sidebar:
     * apps (layer)
     * os (layer). 
   * and the image can run on any docker on any OS (e.g. windows)? yes. possible because of POSIX (unix based)
-* docker engine spins off a linux container to run your process
+* ~~docker engine spins off a linux container to run your process~~
+  docker engine does not do virtualization
+    * you will actually notice that what ever process runs in your containers appears in your host
 * https://medium.freecodecamp.org/comprehensive-introductory-guide-to-docker-vms-and-containers-4e42a13ee103#e9ad
 * that's why windows docker need docker machine
   * docker machine is a linux
