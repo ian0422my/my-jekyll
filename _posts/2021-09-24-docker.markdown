@@ -45,6 +45,8 @@ sidebar:
     * dockerd -H tcp://0.0.0.0:2375
   * host
     * set DOCKER_HOST=tcp://<guest>:2375
+* network
+  * containers by default can see each other since all of them has the same ip mask (172.17.0.4/24)
 * configuration file
   * [Dockerfile](#Dockerfile)
     * yaml
@@ -238,6 +240,43 @@ docker login
 ```ssh
 docker push
 ```
+
+## Installation
+
+### ubuntu
+
+```sh
+sudo apt update
+sudo apt install docker.io
+```
+
+#### expose dockerd at port 2375
+
+* this step is only needed if you want to expose port 2375 to visual studio code `docker` extension
+
+```sh
+sudo vi ./system/multi-user.target.wants/docker.service
+```
+
+* add `-H tcp://0.0.0.0:2375` to the end of EXEC_START
+
+```txt
+/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock -H tcp://0.0.0.0:2375
+```
+
+* reload daemon and restart docker service
+
+```sh
+sudo systemctl daemon-reload
+sudo systemctl restart docker.service
+ps -ef|grep dockerd // make sure -H tcp://0.0.0.0:2375 si there
+```
+
+* in visual studio code, install `docker` extension
+* launch `settings`(CTRL+,)
+* find `DOCKER_HOST`
+* enter `tcp://0.0.0.0:2375`
+* refresh extension connection(docker image, containers should appear by now)
 
 ## Toubleshotting
 
