@@ -19,6 +19,11 @@ sidebar:
 * root ca
   * generate root cert
   * store offline
+  * commercial vs free
+    * commercial
+      * godaddy, google
+    * free
+      * letencrypt
 * intermediate ca
   * generate intermediate cert using root cert
     * by verifying the website domain(e.g. www.abc.com) is indeed owned by company abc

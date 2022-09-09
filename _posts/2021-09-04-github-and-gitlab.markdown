@@ -65,3 +65,29 @@ sudo docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password /
 
 * module to help execute CICD jobs (based on .gitlab-ci.yml) for gitlab project
 * executor can be docker(which eventually will pull ruby:2.7 to executes CICD)
+
+#### Install in docker
+
+```sh
+sudo mkdir /srv/gitlab-runner
+sudo docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock --network myxdlab  gitlab/gitlab-runner:latest
+```
+
+#### register runner
+
+* reference: <https://docs.gitlab.com/runner/register/index.html#docker>
+* get `runner registration token`
+    * login to gitlab using root
+    * navigate to menu > admin > overview > runners > register a runner instance > [copy the instance id] (E.g. A-eQPxWU2bXrNhi3Pyqu)
+* remove the existing runner(if any)
+
+```sh
+sudo docker run --rm -it -v /srv/gitlab-runner/config:/etc/gitlab-runner  --network myxdlab gitlab/gitlab-runner register
+gitlab url: http://gitlab
+registration token: <from step above> (i.e. A-eQPxWU2bXrNhi3Pyqu)
+description: my xdlab gitlab runner
+tags: my-xdlab
+maintenance message: <empty>
+Enter an executor: docker
+default docker image: ruby:2.7
+```
