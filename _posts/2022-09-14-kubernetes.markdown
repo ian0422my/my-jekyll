@@ -15,6 +15,8 @@ sidebar:
 ## summary
 
 * provide orchestration for containers (scaling, ha, load balancing, bring up a dead container)
+* only knows how to pull from registry
+  * no composing capability
 * components
   * high level architecture
     * cluster > node > pod > containers
@@ -39,11 +41,14 @@ sidebar:
 
 ## Minikube
 
+### summary
+
 <https://minikube.sigs.k8s.io/docs/start/>
 
 * not for production used
 * only 1 node will be created in the cluster
-* install `minikube`(lightweight verison of k8s)
+
+### installation
 
 ```sh
 sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -52,19 +57,35 @@ sudo usermod -aG docker $USER && newgrp docker
 sudo sysctl fs.protected_regular=0
 sudo chmod 666 /var/run/docker.sock
 sudo usermod -aG docker ${USER}
-minikube start // start `minikube` as docker container
+// minikube stop
+minikube start // start `minikube` as docker container. do not `sudo`
 minikube version
 minikube kubectl -- get pods -A // install kubectl
 alias kubectl="minikube kubectl --" // create convenient alias
 ```
 
-* launch dashboard(start another terminal). dashboard will close after you close this terminal
+### dashboard
+
+#### visit remotely
+
+* start proxy
+
+```sh
+// killall kubectl // same as kill -15 <pid>
+kubectl proxy --address='0.0.0.0' --disable-filter=true &
+```
+
+* visit http://<host ip>:8001
+
+#### visit locally(from host)
+
+* launch dashboard locally in host machine
 
 ```sh
 minikube dashboard
 ```
 
-* create sample app
+### create sample app
 
 ```sh
 kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.4 // create deployment from image
