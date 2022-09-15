@@ -3,7 +3,7 @@ layout: single
 #classes: wide
 title:  "PlantUML"
 date:   2021-09-06 10:25:50 +0800
-categories: PlantUML
+categories: PlantUML, diagram, mindmap
 toc: true
 toc_label: "In this page"
 toc_icon: " "
@@ -47,10 +47,17 @@ sidebar:
 
 ```markdown
 \{\% plantuml \%\}
-A->B: hello
+A->B: hello12
 B->A: go away!!!
+* A
+** AA
 \{\% endplantuml \%\}
 ```
+
+{% plantuml %}
++ A
+++ AA
+{% endplantuml %}
 
 ### Reference
 

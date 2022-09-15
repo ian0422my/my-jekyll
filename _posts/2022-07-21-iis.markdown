@@ -20,7 +20,7 @@ sidebar:
 
 ## Dispatcher
 
-* make sure hash value for each of the dll below is correct as below (run powershell command get-filehash <dll> to verify)
+* make sure hash value for each of the dll below is correct as below (run powershell command `get-filehash <dll>` to verify)
 
 | dispatcher version | dll          | hash                                                             |
 | :----------------- | :----------- | :--------------------------------------------------------------- |

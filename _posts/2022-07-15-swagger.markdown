@@ -18,9 +18,11 @@ sidebar:
 <https://www.techtarget.com/searchapparchitecture/definition/Swagger#:~:text=Swagger%20helps%20users%20build%2C%20document,before%20any%20code%20is%20written.>
 
 * create api documentation using YAML
-  * yaml can be read and ]present using html ui
-    * so that client/developer can read
+  * yaml can be read, present and tested using html ui
+    * so that client/developer can read, test
   * yaml can be read by machine to generate client code
+* well known stadnard (most of the developer knows)
+* can be hosted on github pages
 
 ### approach
 
@@ -33,3 +35,33 @@ sidebar:
   * manual coding
   * describe using yaml and preview via html ui
     * swagger editor
+
+### hosting
+
+#### github pages
+
+* create github repository (e.g. refer <https://github.com/ian0422my/swagger-demo>)
+  * public
+  * enable `github pages`
+* clone from github (will be refer as `demo`)
+
+```cmd
+git clone https://github.com/ian0422my/swagger-demo.git
+```
+
+* download the latest swagger ui from <https://github.com/swagger-api/swagger-ui/releases>
+* extract zip
+* copy `./dist` folder from swagger ui to `demo` folder
+* copy `./dist/index.html` to `demo` folder
+* create a sample yaml (e.g. `swagger-demo.yaml`)
+* edit demo folder `dist/swagger-iniitialization.js` and changes url value accordingly
+
+```cmd
+...
+    //url: "https://petstore.swagger.io/v2/swagger.json",
+    url: "https://ian0422my.github.io/swagger-demo/swagger-demo.yaml",
+...
+```
+
+* add and commit the changes.
+* Refresh github pages and you should be able to see the swagger ui
