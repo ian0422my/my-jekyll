@@ -69,3 +69,7 @@ B->A: go away!!!
 * docker image build . -t ian0422my/plantuml-server-tomcat -f Dockerfile.tomcat
 * docker push [ian0422my/plantuml-server-jetty](https://hub.docker.com/repository/docker/ian0422my/plantuml-server-jetty)
 * docker push [ian0422my/plantuml-server-tomcat](https://hub.docker.com/repository/docker/ian0422my/plantuml-server-tomcat)
+
+### gitlab
+
+* ian managed to configure plantuml to integrate to gitlab omni bus. best part is, it can generate all types of diagram
