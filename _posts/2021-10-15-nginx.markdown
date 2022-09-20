@@ -140,6 +140,9 @@ http {
 
 * mkdir directory `/srv/nginx/data/nginx`
 * cd /srv/nginx
+
+#### app.conf
+
 * create /srv/nginx/data/nginx/app.conf with content below
 
 ```conf
@@ -167,6 +170,9 @@ server {
 }
 ```
 
+
+#### docker-compose.yml
+
 * create /srv/nginx/docker-compose.yml with content below
 
 ```txt
@@ -187,6 +193,8 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
 ```
+
+#### init-script.sh
 
 * create `/srv/nginx/init-script.sh` with content below
 
