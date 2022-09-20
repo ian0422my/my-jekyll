@@ -75,7 +75,7 @@ alias kubectl="minikube kubectl --" // create convenient alias
 kubectl proxy --address='0.0.0.0' --disable-filter=true &
 ```
 
-* visit http://<host ip>:8001
+* visit <http://192.168.1.110:8001/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/#/workloads?namespace=default>
 
 #### visit locally(from host)
 
@@ -94,3 +94,5 @@ minikube service hello-minikube // launch in browser
 kubectl port-forward service/hello-minikube 7080:8080 // forward to localhost:7080. closing terminal will cancel the port forwarding
 ```
 
+* you can access deployment @ <http://localhost:7080>
+* you can't access deployment remotely. you need to reverse proxy from nginx
