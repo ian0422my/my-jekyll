@@ -17,7 +17,15 @@ sidebar:
 
 ## gitlab
 
-### .gitlab-ci.yml
+### installation
+
+* refers to [myxdlab gitlab installation guide]
+
+### CICD
+
+#### .gitlab-ci.yml
+
+##### sample
 
 <https://gitlab.ian0422my.xyz/help/ci/quick_start/index.md>
 
@@ -50,3 +58,8 @@ deploy-prod:
   script:
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
 ```
+
+### integration
+
+#### plantuml
+
