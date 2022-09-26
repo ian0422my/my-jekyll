@@ -19,7 +19,7 @@ sidebar:
 * use case
 * gannt chant
 * object
-* mindmap
+* [mindmap](https://plantuml.com/mindmap-diagram)
 * [network](https://plantuml.com/nwdiag)
 * [sequence](#sequence-diagram)
 * state

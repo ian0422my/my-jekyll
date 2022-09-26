@@ -269,7 +269,7 @@ sudo vi ./system/multi-user.target.wants/docker.service
 ```sh
 sudo systemctl daemon-reload
 sudo systemctl restart docker.service
-ps -ef|grep dockerd // make sure -H tcp://0.0.0.0:2375 si there
+ps -ef|grep dockerd // make sure -H tcp://0.0.0.0:2375 sis there
 ```
 
 * in visual studio code, install `docker` extension
