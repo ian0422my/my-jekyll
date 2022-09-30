@@ -16,10 +16,22 @@ sidebar:
 
 * provide orchestration for containers (scaling, ha, load balancing, bring up a dead container)
 
-## high level architecture
+## architecture
 
-* cluster > node > pod > containers
-
+* basic
+  * cluster > node > pod(abstract;managed by kublet) > containers
+* advanced
+  * cluster
+    * node
+      * kublet
+      * container runtime(e.g. docker)
+      * kubeproxy
+      * ingress
+      * volume
+      * pod
+        * deployment
+        * service
+        * container
 
 | component     | sub-component      | explaination                                                                                             |
 | :------------ | :----------------- | :------------------------------------------------------------------------------------------------------- |
@@ -27,7 +39,8 @@ sidebar:
 | pod           |                    | where containers run; runs on node; abstraction of containers so that container technology can be change |
 | (worker)node  | container runtime  | software that runs `container`                                                                           |
 | (worker)node  |                    | can be a vm or physical machine                                                                          |
-| (worker)node  | kublet             | agent; make sure `container` run in a `pod`                                                              |
+| (worker)node  | kublet             | agent; make sure `container` run in a `pod`; middleman between `node` and `container`                    |
+| (worker)node  | container runtime  | engine that runs container(e.g. docker); managed by `kublet`                                             |
 | (worker)node  | kube-proxy         | controls network in/out of cluster                                                                       |
 | control plane |                    | orchestration `brain`                                                                                    |
 | control plane | kube-apiserver     | api to control the `plane` - via `kubectl`(CLI) or `Dashboard`(addon); 6443                              |
@@ -40,8 +53,20 @@ sidebar:
 
 ## components (basic)
 
+* `cluster`
+  * group of `node`
 * `node`
+  * aka worker `node`
   * has own ip
+  * pod/node is managed by `kubelet`
+  * network is managed by `kube proxy`
+* `kubelet`
+  * ***brain*** in a `node`
+  * runs `container` using `container runtime`(e.g. docker)
+  * runs `container` in `pod`
+  * runs `pod` in `node`
+* `kube proxy`
+  * intelligently managed the network within `cluster`(e.g. app1 in node1 talks to db1 in node1, not db2 in node2 -> reduce network latency)
 * `pod`
   * ***abstraction*** of containers(so that container technology can be change)
     * hence, pod(app) will communicate to another(pod) despite different container technology
@@ -52,6 +77,7 @@ sidebar:
 * `service`
   * static ip
   * attached to each pod
+  * managed by `kube proxy`
   * `service` can see other `service` within the same `node`
   * also served as ***load balancer*** for the same `pod` on other `deployment`
   * when `pod` dies, `service` will remain
