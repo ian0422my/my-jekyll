@@ -22,20 +22,24 @@ sidebar:
   * cluster > node > pod(abstract;managed by kublet) > containers
 * advanced
   * cluster
+    * storage
     * master node
-      * api server
-      * controller manager
-      * scheduler
-      * etcd
+      * api server(gateway)
+      * controller manager(state detection)
+      * scheduler(resource allocation)
+      * etcd(state)
     * worker node
-      * kublet
+      * kublet(manager)
+      * kubeproxy(network)
       * container runtime(e.g. docker)
-      * kubeproxy
-      * ingress
-      * volume
+      * ingress(network)
+      * volume(storage)
       * pod
-        * deployment
-        * service
+        * deployment(replica)
+        * statefulset(replica)
+        * service(network)
+        * configmap(kvp)
+        * secret(kvp)
         * container
 
 | component     | sub-component      | explaination                                                                                             |
@@ -56,12 +60,17 @@ sidebar:
 | control plane | service controller | control load balancer                                                                                    |
 | cluster       |                    | group of node(vm/pc) working as a unit                                                                   |
 
-## components (basic)
+## components (detailed)
+
+<https://www.youtube.com/watch?v=X48VuDVv0do>
 
 * `cluster`
   * group of `node`
 * `master node`
-  * controlled via `dashboard` or via `api server`(with login)
+  * manage k8s via
+    * `dashboard`
+    * `api server`(with login)
+    * `kubectl`(CLI tools; most powerful)
   * manage orchestration
     * E.g. when `pod` dies in a `node`
       * `kublet` update state in `etcd`???
@@ -105,10 +114,11 @@ sidebar:
       * accessible by `pod` of the same `node`
 * `ingress`
   * port forward from internet to `service`(external)
-* `configmap` and `secret`
+* `configmap`
   * store external pod info, properties, environment variables (e.g. database connection string)
   * can be used by `pod` (e.g. when db connection string changes, no need to rebuild app container. Just change `configmap` and app container will automatically see the changes)
-  * `secret` works exactly like `configmap` but stores confidential data in base64
+* `secret`
+  * works exactly like `configmap` but stores confidential data in base64
 * `volume`
   * external harddisk (to prevent pod shutdown and losing the data)
   * can reside in host(`storage`)
@@ -126,12 +136,8 @@ sidebar:
   * can use to scale up/down
   * deployment of `statefulset` is very complicated
     * try to create this app(e.g. db) outside of k8s
-* kubeadm
+* `kubeadm`
   * use to bootstrap cluster
-* kubelet
-  * component that runs all pod, containers
-* kubectl
-  * cli talking to cluster via api
 
 ## Kubernetes
 
@@ -347,9 +353,13 @@ sudo crictl --runtime-endpoint unix:///var/run/containerd/containerd.sock logs C
 
 ## Minikube
 
-### install
+### <https://www.youtube.com/watch?v=X48VuDVv0do> (34:47)
 
-<https://minikube.sigs.k8s.io/docs/start/>
+* open source
+* master and worker runs in the same node
+* runs node inside `virtual box`?
+
+### <https://minikube.sigs.k8s.io/docs/start/>
 
 * not for production used
 * only 1 node will be created in the cluster
@@ -405,9 +415,9 @@ minikube version
 minikube start --driver=virtualbox
 ```
 
-### uninstall
+#### uninstall
 
-#### ubuntu
+##### ubuntu
 
 <https://stackoverflow.com/questions/66016567/how-to-uninstall-minikube-from-ubuntu-i-get-an-unable-to-load-cached-images-e>
 
