@@ -22,7 +22,12 @@ sidebar:
   * cluster > node > pod(abstract;managed by kublet) > containers
 * advanced
   * cluster
-    * node
+    * master node
+      * api server
+      * controller manager
+      * scheduler
+      * etcd
+    * worker node
       * kublet
       * container runtime(e.g. docker)
       * kubeproxy
@@ -55,8 +60,18 @@ sidebar:
 
 * `cluster`
   * group of `node`
-* `node`
-  * aka worker `node`
+* `master node`
+  * controlled via `dashboard` or via `api server`(with login)
+  * manage orchestration
+    * E.g. when `pod` dies in a `node`
+      * `kublet` update state in `etcd`???
+      * `controller manager` detect changes in `etcd`
+      * `controller manager` inform `scheduler` to create new `pod`
+      * `scheduler` ***calculate*** which `node` to create new `pod`(based on the most resource - cpu, ram, or most idle)
+      * `scheduler` inform `kublet` to create new `pod`
+      * `kublet` in the `node` will then bring up a new `pod`
+* `worker node`
+  * aka `node`
   * has own ip
   * pod/node is managed by `kubelet`
   * network is managed by `kube proxy`
