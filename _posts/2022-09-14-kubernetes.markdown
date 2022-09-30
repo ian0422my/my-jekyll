@@ -15,9 +15,31 @@ sidebar:
 ## summary
 
 * provide orchestration for containers (scaling, ha, load balancing, bring up a dead container)
-* components
-  * high level architecture
-    * cluster > node > pod > containers
+
+## high level architecture
+
+* cluster > node > pod > containers
+
+
+| component     | sub-component      | explaination                                                                                             |
+| :------------ | :----------------- | :------------------------------------------------------------------------------------------------------- |
+| container     |                    |                                                                                                          |
+| pod           |                    | where containers run; runs on node; abstraction of containers so that container technology can be change |
+| (worker)node  | container runtime  | software that runs `container`                                                                           |
+| (worker)node  |                    | can be a vm or physical machine                                                                          |
+| (worker)node  | kublet             | agent; make sure `container` run in a `pod`                                                              |
+| (worker)node  | kube-proxy         | controls network in/out of cluster                                                                       |
+| control plane |                    | orchestration `brain`                                                                                    |
+| control plane | kube-apiserver     | api to control the `plane` - via `kubectl`(CLI) or `Dashboard`(addon); 6443                              |
+| control plane | etcd               | kvp data used by `plane`                                                                                 |
+| control plane | kube-scheduler     | `brain` that assigned `pod` to `node` to run on                                                          |
+| control plane | node controller    | make sure node is deleted after it stop responding                                                       |
+| control plane | route controller   | coutrol route in cloud                                                                                   |
+| control plane | service controller | control load balancer                                                                                    |
+| cluster       |                    | group of node(vm/pc) working as a unit                                                                   |
+
+## components (basic)
+
 * `node`
   * has own ip
 * `pod`
@@ -69,23 +91,6 @@ sidebar:
   * component that runs all pod, containers
 * kubectl
   * cli talking to cluster via api
-
-| component     | sub-component      | explaination                                                                                             |
-| :------------ | :----------------- | :------------------------------------------------------------------------------------------------------- |
-| container     |                    |                                                                                                          |
-| pod           |                    | where containers run; runs on node; abstraction of containers so that container technology can be change |
-| (worker)node  | container runtime  | software that runs `container`                                                                           |
-| (worker)node  |                    | can be a vm or physical machine                                                                          |
-| (worker)node  | kublet             | agent; make sure `container` run in a `pod`                                                              |
-| (worker)node  | kube-proxy         | controls network in/out of cluster                                                                       |
-| control plane |                    | orchestration `brain`                                                                                    |
-| control plane | kube-apiserver     | api to control the `plane` - via `kubectl`(CLI) or `Dashboard`(addon); 6443                              |
-| control plane | etcd               | kvp data used by `plane`                                                                                 |
-| control plane | kube-scheduler     | `brain` that assigned `pod` to `node` to run on                                                          |
-| control plane | node controller    | make sure node is deleted after it stop responding                                                       |
-| control plane | route controller   | coutrol route in cloud                                                                                   |
-| control plane | service controller | control load balancer                                                                                    |
-| cluster       |                    | group of node(vm/pc) working as a unit                                                                   |
 
 ## Kubernetes
 
