@@ -116,6 +116,7 @@ sidebar:
 | docker push ian0422my/catnip                                | push docker image to docker hub                                                                                     |
 | docker cp <cid>:<container path> <local path>               | copy file from container to host                                                                                    |
 | docker compose up                                           | run docker using docker-compose.yml                                                                                 |
+| docker update [option] name                                 | update option(e.g. --restart=always)                                                                                |
 
 ### Docker Compose
 

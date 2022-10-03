@@ -24,23 +24,24 @@ sidebar:
   * cluster
     * storage
     * master node
-      * api server(gateway)
-      * controller manager(state detection)
-      * scheduler(resource allocation)
-      * etcd(state)
+      * control plane
+        * api server(gateway)
+        * controller manager(state detection)
+        * scheduler(resource allocation)
+        * etcd(state)
     * worker node
       * kublet(manager)
       * kubeproxy(network)
       * container runtime(e.g. docker)
       * ingress(network)
       * volume(storage)
-      * pod
-        * deployment(replica)
-        * statefulset(replica)
-        * service(network)
-        * configmap(kvp)
-        * secret(kvp)
-        * container
+      * deployment or statefulset
+        * replicateset
+          * pod
+            * service(network)
+            * configmap(kvp)
+            * secret(kvp)
+            * container
 
 | component     | sub-component      | explaination                                                                                             |
 | :------------ | :----------------- | :------------------------------------------------------------------------------------------------------- |
@@ -91,6 +92,20 @@ sidebar:
   * runs `pod` in `node`
 * `kube proxy`
   * intelligently managed the network within `cluster`(e.g. app1 in node1 talks to db1 in node1, not db2 in node2 -> reduce network latency)
+* `deployment`
+  * blueprint of `pod` setup
+  * manage `docker` image
+  * manage `replicateset`
+* `replicateset`
+  * manage `pod` replication for HA purpose. also can use to scale up/down
+  * a web `pod` in `node`1 can see app `pod` in `node`2 (because `service` in app `pod` act as load balancer)
+  * stateless
+  * not for application such as database
+* `statefulset`
+  * like `deployment` but stateful
+  * can use to scale up/down
+  * deployment of `statefulset` is very complicated
+    * try to create this app(e.g. db) outside of k8s
 * `pod`
   * ***abstraction*** of containers(so that container technology can be change)
     * hence, pod(app) will communicate to another(pod) despite different container technology
@@ -125,17 +140,6 @@ sidebar:
 * `storage`
   * external harddisk plugged into host
   * not part of k8s
-* `deployment`
-  * blueprint of `pod` setup
-  * use to replica the `pod` for HA purpose. also can use to scale up/down
-  * a web `pod` in `node`1 can see app `pod` in `node`2 (because `service` in app `pod` act as load balancer)
-  * stateless
-  * not for application such as database
-* `statefulset`
-  * like `deployment` but stateful
-  * can use to scale up/down
-  * deployment of `statefulset` is very complicated
-    * try to create this app(e.g. db) outside of k8s
 * `kubeadm`
   * use to bootstrap cluster
 
@@ -356,8 +360,91 @@ sudo crictl --runtime-endpoint unix:///var/run/containerd/containerd.sock logs C
 ### <https://www.youtube.com/watch?v=X48VuDVv0do> (34:47)
 
 * open source
-* master and worker runs in the same node
-* runs node inside `virtual box`?
+* need docker
+  * `minikube start` will install `docker` autoamatically or use the existing one if have
+* there's only 1 node(where master and worker runs in the same node)
+  * meant for local testing
+* use `kubectl` to talk to `api server`(master node)
+* need to run on virtualization (e.g. virtualbox, hyper-v)
+
+#### uninstall
+
+<https://stackoverflow.com/questions/44698283/how-to-completely-uninstall-kubernetes>
+
+```sh
+kubeadm reset
+sudo apt-get purge kubeadm kubectl kubelet kubernetes-cni kube*   
+sudo apt-get autoremove
+sudo rm -rf ~/.kube
+sudo kubeadm reset -force
+```
+
+* reboot
+
+#### installation
+
+```sh
+//sudo ufw allow 10248
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+//sudo systemctl enable kubeleet.service
+swapoff -a
+//minikube delete
+minikube delete --all --purge
+docker rmi gcr.io/k8s-minikube/kicbase:v0.0.34 gcr.io/k8s-minikube/kicbase:v0.0.33
+minikube start
+//minikube start --extra-config=kubelet.cgroup-driver=systemd
+//minikube start --driver=docker --extra-config=kubelet.cgroup-driver=systemd --v=5 --alsologtostderr
+```
+
+#### Main Kubectl Commands - K8s CLI
+
+```sh
+kubectl get nodes // only `master`
+minikube status
+kubectl version
+kubectl create deployment nginx-depl --image=nginx
+kubectl get deployment
+kubectl get pod
+kubectl get replicaset
+```
+
+* find image nginx version and add ":1.16". save the changes. old `pod`/`replicateset` will be removed. new one will be created based on thre latest `deployment`
+
+```sh
+kubectl edit deployment nginx-depl // a auto-generated configuraiton deploiyment files will be show
+kubectl get pod // new
+kubectl get replicaset // new 
+```
+
+#### debugging pods
+
+```sh
+kubectl create deployment mongo-depl --image=mongo
+kubectl get pod|grep mongo
+kubectl logs -f --tail=100 <the mongo-depl pod id> // tail
+kubectl exec -it <the mongo-depl pod id> sh
+```
+
+#### delete pods/deployment
+
+```sh
+kubectl delete deployment mongo-depl
+kubectl delete pod <the mongo-depl pod id>
+```
+
+#### apply configuration file
+
+* ***changes save on the yaml can be used for CRUD***
+
+```sh
+touch nginx-deployment.yaml
+kubectl apply -f nginx-deployment.yaml
+```
+
+#### yaml configuration file
+
+
 
 ### <https://minikube.sigs.k8s.io/docs/start/>
 
