@@ -19,7 +19,7 @@ sidebar:
 ## architecture
 
 * basic
-  * cluster > node > pod(abstract;managed by kublet) > containers
+  * cluster(group of pc) > node(pc) > pod(abstract;managed by kublet) > containers
 * advanced
   * cluster
     * storage
@@ -72,6 +72,14 @@ sidebar:
     * `dashboard`
     * `api server`(with login)
     * `kubectl`(CLI tools; most powerful)
+
+| cmd                                                          | description                            |
+| :----------------------------------------------------------- | :------------------------------------- |
+| kubectl get [deployment/pod/service] [-o <wide/yaml>] [NAME] |                                        |
+| kubectl describe [<pod/deployment/service> [NAME]]           | kubectl describe deployment nginx-depl |
+| kubectl delete [<pod/deployment/service> NAME]               | kubectl delete deployment nginx-depl   |
+| kubectl apply -f <yaml>                                      |                                        |
+
   * manage orchestration
     * E.g. when `pod` dies in a `node`
       * `kublet` update state in `etcd`???
@@ -142,6 +150,256 @@ sidebar:
   * not part of k8s
 * `kubeadm`
   * use to bootstrap cluster
+
+## Minikube
+
+### <https://www.youtube.com/watch?v=X48VuDVv0do> (34:47)
+
+* open source
+* need docker
+  * `minikube start` will install `docker` autoamatically or use the existing one if have
+* there's only 1 node(where master and worker runs in the same node)
+  * meant for local testing
+* use `kubectl` to talk to `api server`(master node)
+* need to run on virtualization (e.g. virtualbox, hyper-v)
+
+#### uninstall
+
+<https://stackoverflow.com/questions/44698283/how-to-completely-uninstall-kubernetes>
+
+```sh
+kubeadm reset
+sudo apt-get purge kubeadm kubectl kubelet kubernetes-cni kube*   
+sudo apt-get autoremove
+sudo rm -rf ~/.kube
+sudo kubeadm reset -force
+```
+
+* reboot
+
+#### installation
+
+```sh
+//sudo ufw allow 10248
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+//sudo systemctl enable kubeleet.service
+swapoff -a
+//minikube delete
+minikube delete --all --purge
+docker rmi gcr.io/k8s-minikube/kicbase:v0.0.34 gcr.io/k8s-minikube/kicbase:v0.0.33
+minikube start
+//minikube start --extra-config=kubelet.cgroup-driver=systemd
+//minikube start --driver=docker --extra-config=kubelet.cgroup-driver=systemd --v=5 --alsologtostderr
+```
+
+#### Main Kubectl Commands - K8s CLI
+
+```sh
+kubectl get nodes // only `master`
+minikube status
+kubectl version
+kubectl create deployment nginx-depl --image=nginx
+kubectl get deployment
+kubectl get pod
+kubectl get replicaset
+```
+
+* find image nginx version and add ":1.16". save the changes. old `pod`/`replicateset` will be removed. new one will be created based on thre latest `deployment`
+
+```sh
+kubectl edit deployment nginx-depl // a auto-generated configuraiton deploiyment files will be show
+kubectl get pod // new
+kubectl get replicaset // new 
+```
+
+#### debugging pods
+
+```sh
+kubectl create deployment mongo-depl --image=mongo
+kubectl get pod|grep mongo
+kubectl logs -f --tail=100 <the mongo-depl pod id> // tail
+kubectl exec -it <the mongo-depl pod id> sh
+```
+
+#### delete pods/deployment
+
+```sh
+kubectl delete deployment mongo-depl
+kubectl delete pod <the mongo-depl pod id>
+```
+
+#### apply configuration file
+
+* ***changes save on the yaml can be used for CRUD***
+
+```sh
+touch nginx-deployment.yaml
+kubectl apply -f nginx-deployment.yaml
+```
+
+#### yaml configuration file
+
+* 3 parts structure
+  * metadata
+    * `deployment` or `service`
+  * spec
+    * value depending on `type`
+  * status
+    * auto updated by k8s continuously; pull from `etcd`
+* `pod` configuration resides within `deployment` configuration
+  * i.e.
+    * metadata+spec+status (deployment)
+      * metadata+spec+status (pod)
+* format
+  * yaml
+  
+##### connecting components
+
+###### labels and selectors
+
+* label
+
+```yaml
+labels:
+  app: nginx
+```
+
+* selectors
+
+```yaml
+selector:
+  app: nginx
+```
+
+###### port and targetPort
+
+* deployment
+
+```yaml
+        ports:
+        - containerPort: 8080
+```
+
+* service
+
+```yaml
+      port: 80
+      targetPort: 8080 // refers to `containerPort` in `deployment`
+```
+
+##### tutorial
+
+* nginx-service.yaml
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+```
+
+* nginx-deployment.yaml
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.16
+        ports:
+        - containerPort: 8080
+```
+
+### <https://minikube.sigs.k8s.io/docs/start/>
+
+* not for production used
+* only 1 node will be created in the cluster
+* install `minikube`(lightweight verison of k8s)
+
+#### ubuntu
+
+```sh
+sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+sudo usermod -aG docker $USER && newgrp docker
+sudo sysctl fs.protected_regular=0
+sudo chmod 666 /var/run/docker.sock
+sudo usermod -aG docker ${USER}
+minikube start // start `minikube` as docker container
+minikube version
+minikube kubectl -- get pods -A // install kubectl
+alias kubectl="minikube kubectl --" // create convenient alias
+```
+
+* launch dashboard(start another terminal). dashboard will close after you close this terminal
+
+```sh
+minikube dashboard
+```
+
+* create sample app
+
+```sh
+kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.4 // create deployment from image
+kubectl expose deployment hello-minikube --type=NodePort --port=8080 // expose app to port 8080
+minikube service hello-minikube // launch in browser
+kubectl port-forward service/hello-minikube 7080:8080 // forward to localhost:7080. closing terminal will cancel the port forwarding
+```
+
+#### windows
+
+* install and set as PATH
+
+```ps1
+New-Item -Path 'c:\' -Name 'minikube' -ItemType Directory -Force
+Invoke-WebRequest -OutFile 'c:\minikube\minikube.exe' -Uri 'https://github.com/kubernetes/minikube/releases/latest/download/minikube-windows-amd64.exe' -UseBasicParsing
+$oldPath = [Environment]::GetEnvironmentVariable('Path', [EnvironmentVariableTarget]::Machine)
+if ($oldPath.Split(';') -inotcontains 'C:\minikube'){ `
+  [Environment]::SetEnvironmentVariable('Path', $('{0};C:\minikube' -f $oldPath), [EnvironmentVariableTarget]::Machine) `
+}
+```
+
+* open a new terminal
+
+```ps1
+minikube version
+minikube start --driver=virtualbox
+```
+
+#### uninstall
+
+##### ubuntu
+
+<https://stackoverflow.com/questions/66016567/how-to-uninstall-minikube-from-ubuntu-i-get-an-unable-to-load-cached-images-e>
+
+```sh
+minikube delete
+```
+
+* remove the binary @ `/usr/local/bin/minikube`
+
 
 ## Kubernetes
 
@@ -354,162 +612,3 @@ sudo journalctl -xeu kubelet - check kubelet is running
 sudo crictl --runtime-endpoint unix:///var/run/containerd/containerd.sock ps -a | grep kube | grep -v pause -- list all containers
 sudo crictl --runtime-endpoint unix:///var/run/containerd/containerd.sock logs CONTAINERID' -- inspect failed container
 ```
-
-## Minikube
-
-### <https://www.youtube.com/watch?v=X48VuDVv0do> (34:47)
-
-* open source
-* need docker
-  * `minikube start` will install `docker` autoamatically or use the existing one if have
-* there's only 1 node(where master and worker runs in the same node)
-  * meant for local testing
-* use `kubectl` to talk to `api server`(master node)
-* need to run on virtualization (e.g. virtualbox, hyper-v)
-
-#### uninstall
-
-<https://stackoverflow.com/questions/44698283/how-to-completely-uninstall-kubernetes>
-
-```sh
-kubeadm reset
-sudo apt-get purge kubeadm kubectl kubelet kubernetes-cni kube*   
-sudo apt-get autoremove
-sudo rm -rf ~/.kube
-sudo kubeadm reset -force
-```
-
-* reboot
-
-#### installation
-
-```sh
-//sudo ufw allow 10248
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
-//sudo systemctl enable kubeleet.service
-swapoff -a
-//minikube delete
-minikube delete --all --purge
-docker rmi gcr.io/k8s-minikube/kicbase:v0.0.34 gcr.io/k8s-minikube/kicbase:v0.0.33
-minikube start
-//minikube start --extra-config=kubelet.cgroup-driver=systemd
-//minikube start --driver=docker --extra-config=kubelet.cgroup-driver=systemd --v=5 --alsologtostderr
-```
-
-#### Main Kubectl Commands - K8s CLI
-
-```sh
-kubectl get nodes // only `master`
-minikube status
-kubectl version
-kubectl create deployment nginx-depl --image=nginx
-kubectl get deployment
-kubectl get pod
-kubectl get replicaset
-```
-
-* find image nginx version and add ":1.16". save the changes. old `pod`/`replicateset` will be removed. new one will be created based on thre latest `deployment`
-
-```sh
-kubectl edit deployment nginx-depl // a auto-generated configuraiton deploiyment files will be show
-kubectl get pod // new
-kubectl get replicaset // new 
-```
-
-#### debugging pods
-
-```sh
-kubectl create deployment mongo-depl --image=mongo
-kubectl get pod|grep mongo
-kubectl logs -f --tail=100 <the mongo-depl pod id> // tail
-kubectl exec -it <the mongo-depl pod id> sh
-```
-
-#### delete pods/deployment
-
-```sh
-kubectl delete deployment mongo-depl
-kubectl delete pod <the mongo-depl pod id>
-```
-
-#### apply configuration file
-
-* ***changes save on the yaml can be used for CRUD***
-
-```sh
-touch nginx-deployment.yaml
-kubectl apply -f nginx-deployment.yaml
-```
-
-#### yaml configuration file
-
-
-
-### <https://minikube.sigs.k8s.io/docs/start/>
-
-* not for production used
-* only 1 node will be created in the cluster
-* install `minikube`(lightweight verison of k8s)
-
-#### ubuntu
-
-```sh
-sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
-sudo usermod -aG docker $USER && newgrp docker
-sudo sysctl fs.protected_regular=0
-sudo chmod 666 /var/run/docker.sock
-sudo usermod -aG docker ${USER}
-minikube start // start `minikube` as docker container
-minikube version
-minikube kubectl -- get pods -A // install kubectl
-alias kubectl="minikube kubectl --" // create convenient alias
-```
-
-* launch dashboard(start another terminal). dashboard will close after you close this terminal
-
-```sh
-minikube dashboard
-```
-
-* create sample app
-
-```sh
-kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.4 // create deployment from image
-kubectl expose deployment hello-minikube --type=NodePort --port=8080 // expose app to port 8080
-minikube service hello-minikube // launch in browser
-kubectl port-forward service/hello-minikube 7080:8080 // forward to localhost:7080. closing terminal will cancel the port forwarding
-```
-
-#### windows
-
-* install and set as PATH
-
-```ps1
-New-Item -Path 'c:\' -Name 'minikube' -ItemType Directory -Force
-Invoke-WebRequest -OutFile 'c:\minikube\minikube.exe' -Uri 'https://github.com/kubernetes/minikube/releases/latest/download/minikube-windows-amd64.exe' -UseBasicParsing
-$oldPath = [Environment]::GetEnvironmentVariable('Path', [EnvironmentVariableTarget]::Machine)
-if ($oldPath.Split(';') -inotcontains 'C:\minikube'){ `
-  [Environment]::SetEnvironmentVariable('Path', $('{0};C:\minikube' -f $oldPath), [EnvironmentVariableTarget]::Machine) `
-}
-```
-
-* open a new terminal
-
-```ps1
-minikube version
-minikube start --driver=virtualbox
-```
-
-#### uninstall
-
-##### ubuntu
-
-<https://stackoverflow.com/questions/66016567/how-to-uninstall-minikube-from-ubuntu-i-get-an-unable-to-load-cached-images-e>
-
-```sh
-minikube delete
-```
-
-* remove the binary @ `/usr/local/bin/minikube`

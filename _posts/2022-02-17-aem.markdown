@@ -294,7 +294,7 @@ java -jar oak-run-*.jar check --bin=-1 crx-quickstart/repository/segmentstore/
 * Run checkpoint clean-up to remove orphaned checkpoints:
 
 ```cmd
-java -jar oak-run-*.jar checkpoints ./crx-quickstart/repository/segmentstore rm-unreferenced.
+java -jar oak-run-*.jar checkpoints ./crx-quickstart/repository/segmentstore rm-unreferenced
 ```
 
 * compact the repository
@@ -312,3 +312,15 @@ java -jar oak-run-*.jar compact ./crx-quickstart/repository/segmentstore/
 ```cmd
 telnet localhost 11311
 ```
+
+### unable to join cluster (rdbmk and file data store)
+
+* `... unable to update clusterview... settings ... DATA ... will be truncated...`
+* when this happens, means there are nodes which is not shutdown properly, which causes the string for recovery settings became too long (SETTINGS.DATA column is 4000 characters)
+* solution
+
+```sql
+delete from SETTINGS where dsize in (select dsize from SETTINGS where data like '%clusterview%')
+```
+
+* restart all nodes
