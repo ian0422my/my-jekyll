@@ -332,3 +332,4 @@ delete from SETTINGS where dsize in (select dsize from SETTINGS where data like 
   * if package manager is accessible and forms is uploaded
     * find all "new packages"(i.e. uploaded, extracted but not installed)
       * install all these packages
+        * just make sure no more "new packages" is found inside `package manager`
