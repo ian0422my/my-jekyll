@@ -324,3 +324,11 @@ delete from SETTINGS where dsize in (select dsize from SETTINGS where data like 
 ```
 
 * restart all nodes
+
+### aem taking very long (4 hours) to startup and yet, all bundles not able to become all active
+
+* this happen to me when aem forms installation was interuppted half way(aem was shutdown). Some of the packages is not installed (by right it should be installed automatically)
+* to resolve this, have to check few things
+  * if package manager is accessible and forms is uploaded
+    * find all "new packages"(i.e. uploaded, extracted but not installed)
+      * install all these packages
