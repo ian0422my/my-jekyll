@@ -18,8 +18,10 @@ sidebar:
 
 ## architecture
 
-* basic
-  * cluster(group of pc) > node(pc) > pod(abstract;managed by kublet) > containers
+<img src="../assets/images/summary-architecture.drawio.png" alt="drawing" width="400"/>
+
+* basic(illustration)
+  * cluster(group of pc) > node(pc) > pod(application)
 * advanced
   * cluster
     * storage
@@ -37,7 +39,7 @@ sidebar:
       * volume(storage)
       * deployment or statefulset
         * replicateset
-          * pod
+          * pod(abstraction of container)
             * service(network)
             * configmap(kvp)
             * secret(kvp)

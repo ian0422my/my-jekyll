@@ -36,11 +36,21 @@ or
 
 ### image
 
+* markdown syntax
+
 ```txt
-![netlify download site](/assets/images/netlify-download-site.png)
+![netlify download site](../assets/images/netlify-download-site.png)
 ```
 
-![netlify download site](/assets/images/netlify-download-site.png)
+![netlify download site](../assets/images/netlify-download-site.png)
+
+* html
+
+```html
+<img src="../assets/images/netlify-download-site.png" alt="drawing" width="300"/>
+```
+
+<img src="../assets/images/netlify-download-site.png" alt="drawing" width="300"/>
 
 ### table
 
@@ -52,9 +62,9 @@ or
 change from
 
 ```markdown
-|header1|header2|header3|
-|:---|:---|:---|
-|short|mediummedium|longlonglong|
+| header1 | header2      | header3      |
+| :------ | :----------- | :----------- |
+| short   | mediummedium | longlonglong |
 ```
 
 to (select table > SHIFT+ALT+F)
