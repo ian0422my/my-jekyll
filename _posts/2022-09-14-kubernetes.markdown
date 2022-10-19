@@ -18,7 +18,7 @@ sidebar:
 
 ## architecture
 
-<img src="../assets/images/summary-architecture.drawio.png" alt="drawing" width="400"/>
+<img src="../assets/images/summary-architecture.drawio.png" alt="drawing" width="450"/>
 
 * basic(illustration)
   * cluster(group of pc) > node(pc) > pod(application)
@@ -33,7 +33,7 @@ sidebar:
         * etcd(state)
     * worker node
       * kublet(manager)
-      * kubeproxy(network)
+      * kubeproxy(network manager)
       * container runtime(e.g. docker)
       * ingress(network)
       * volume(storage)
@@ -45,23 +45,22 @@ sidebar:
             * secret(kvp)
             * container
 
-| component     | sub-component      | explaination                                                                                             |
-| :------------ | :----------------- | :------------------------------------------------------------------------------------------------------- |
-| container     |                    |                                                                                                          |
-| pod           |                    | where containers run; runs on node; abstraction of containers so that container technology can be change |
-| (worker)node  | container runtime  | software that runs `container`                                                                           |
-| (worker)node  |                    | can be a vm or physical machine                                                                          |
-| (worker)node  | kublet             | agent; make sure `container` run in a `pod`; middleman between `node` and `container`                    |
-| (worker)node  | container runtime  | engine that runs container(e.g. docker); managed by `kublet`                                             |
-| (worker)node  | kube-proxy         | controls network in/out of cluster                                                                       |
-| control plane |                    | orchestration `brain`                                                                                    |
-| control plane | kube-apiserver     | api to control the `plane` - via `kubectl`(CLI) or `Dashboard`(addon); 6443                              |
-| control plane | etcd               | kvp data used by `plane`                                                                                 |
-| control plane | kube-scheduler     | `brain` that assigned `pod` to `node` to run on                                                          |
-| control plane | node controller    | make sure node is deleted after it stop responding                                                       |
-| control plane | route controller   | coutrol route in cloud                                                                                   |
-| control plane | service controller | control load balancer                                                                                    |
-| cluster       |                    | group of node(vm/pc) working as a unit                                                                   |
+| node   | sub-component      | explaination                                                                          |
+| :----- | :----------------- | :------------------------------------------------------------------------------------ |
+| node   |                    | can be vm or pc                                                                       |
+| worker | cluster            | group of node(vm/pc) working as a unit                                                |
+| worker | deployment         | blueprint for pod                                                                     |
+| worker | pod                | abstraction of containers so that container technology can be change                  |
+| worker | kublet             | agent; make sure `container` run in a `pod`; middleman between `node` and `container` |
+| worker | kube-proxy         | controls network in/out of cluster; smart forwarding with performant                  |
+| worker | container runtime  | engine that runs container(e.g. docker); managed by `kublet`                          |
+| master | control plane      | place where the orchestration works                                                   |
+| master | kube-apiserver     | api to control the `plane` - via `kubectl`(CLI) or `Dashboard`(addon); 6443           |
+| master | etcd               | kvp data used by `plane`                                                              |
+| master | kube-scheduler     | `brain` that assigned `pod` to `node` to run on(based on idlity)                      |
+| master | node controller    | make sure node is deleted after it stop responding                                    |
+| master | route controller   | coutrol route in cloud                                                                |
+| master | service controller | control load balancer                                                                 |
 
 ## components (detailed)
 
@@ -74,25 +73,16 @@ sidebar:
     * `dashboard`
     * `api server`(with login)
     * `kubectl`(CLI tools; most powerful)
-
-| cmd                                                          | description                            |
-| :----------------------------------------------------------- | :------------------------------------- |
-| kubectl get [deployment/pod/service] [-o <wide/yaml>] [NAME] |                                        |
-| kubectl describe [<pod/deployment/service> [NAME]]           | kubectl describe deployment nginx-depl |
-| kubectl delete [<pod/deployment/service> NAME]               | kubectl delete deployment nginx-depl   |
-| kubectl apply -f <yaml>                                      |                                        |
-
   * manage orchestration
     * E.g. when `pod` dies in a `node`
       * `kublet` update state in `etcd`???
-      * `controller manager` detect changes in `etcd`
-      * `controller manager` inform `scheduler` to create new `pod`
-      * `scheduler` ***calculate*** which `node` to create new `pod`(based on the most resource - cpu, ram, or most idle)
-      * `scheduler` inform `kublet` to create new `pod`
+      * `controller manager` detect changes in `etcd` and inform `scheduler` to create new `pod`
+      * `scheduler` ***calculate*** which `node` to create new `pod`(based on the most resource - cpu, ram, or most idle) and inform `kublet` to create new `pod`
       * `kublet` in the `node` will then bring up a new `pod`
 * `worker node`
   * aka `node`
-  * has own ip
+  * has own ip (ephemeral)
+    * solve using `service`
   * pod/node is managed by `kubelet`
   * network is managed by `kube proxy`
 * `kubelet`
@@ -614,3 +604,12 @@ sudo journalctl -xeu kubelet - check kubelet is running
 sudo crictl --runtime-endpoint unix:///var/run/containerd/containerd.sock ps -a | grep kube | grep -v pause -- list all containers
 sudo crictl --runtime-endpoint unix:///var/run/containerd/containerd.sock logs CONTAINERID' -- inspect failed container
 ```
+
+### kubectl
+
+| cmd                                                          | description                            |
+| :----------------------------------------------------------- | :------------------------------------- |
+| kubectl get [deployment/pod/service] [-o <wide/yaml>] [NAME] |                                        |
+| kubectl describe [<pod/deployment/service> [NAME]]           | kubectl describe deployment nginx-depl |
+| kubectl delete [<pod/deployment/service> NAME]               | kubectl delete deployment nginx-depl   |
+| kubectl apply -f <yaml>                                      |                                        |
