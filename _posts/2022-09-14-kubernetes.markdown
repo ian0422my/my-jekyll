@@ -12,9 +12,146 @@ sidebar:
   nav: "about"
 ---
 
-## summary
+## Cheatsheet
 
 * provide orchestration for containers (scaling, ha, load balancing, bring up a dead container)
+* master and worker nodes concept
+* self healing
+  * changes will be auto provisioned based on deployment config
+    * e.g. if you delete a pod for a deployment, k8s will auto create the pod again!!!
+* changes(increase # of replicas) to deployment and below will be automatically reflected when user edit deployment(e.g. `kubectl edit deployment nginx-deployment`)
+* basic command
+
+```sh
+kubectl create deployment nginx-depl --image=nginx
+kubectl [get/delete] deployments/replicasets/pods
+kubectl edit deployment nginx-deployment
+kubectl apply -f nginx-deployment.yaml
+kubectl exec -it <pod> sh
+kubectl logs -f --tail 100 <pod>
+```
+
+### yaml structure
+
+* meta
+* spec(pod - meta,spec,status)
+* status
+  * auto gen by k8s
+
+#### Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-depl
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+```
+
+* json equivalent
+
+```json
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "nginx-depl",
+    "labels": {
+      "app": "nginx"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": "nginx"
+      }
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "nginx"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "nginx",
+            "image": "nginx",
+            "ports": [
+              {
+                "containerPort": 80
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+#### service
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc
+spec:
+  ports:
+  - name: tcp
+    protocol: TCP
+    port: 443
+    targetPort: 
+  - name: tcp
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    app: nginx
+```
+
+* json equivalent
+
+```json
+{
+  "apiVersion": "v1",
+  "kind": "Service",
+  "metadata": {
+    "name": "svc"
+  },
+  "spec": {
+    "ports": [
+      {
+        "name": "tcp",
+        "protocol": "TCP",
+        "port": 443,
+        "targetPort": 443
+      }
+    ],
+    "selector": {
+      "app": "nginx"
+    }
+  }
+}
+```
 
 ## architecture
 
@@ -155,6 +292,17 @@ sidebar:
 * use `kubectl` to talk to `api server`(master node)
 * need to run on virtualization (e.g. virtualbox, hyper-v)
 
+#### architecture
+
+* host
+  * hypervisor(e.g. virtalbox)
+    * vm
+      * docker
+      * k8s
+        * cluster
+          * master
+          * worker
+
 #### uninstall
 
 <https://stackoverflow.com/questions/44698283/how-to-completely-uninstall-kubernetes>
@@ -185,10 +333,12 @@ minikube start
 //minikube start --driver=docker --extra-config=kubelet.cgroup-driver=systemd --v=5 --alsologtostderr
 ```
 
-#### Main Kubectl Commands - K8s CLI
+## Kubectl
+
+### basic
 
 ```sh
-kubectl get nodes // only `master`
+kubectl get nodes
 minikube status
 kubectl version
 kubectl create deployment nginx-depl --image=nginx
@@ -197,7 +347,7 @@ kubectl get pod
 kubectl get replicaset
 ```
 
-* find image nginx version and add ":1.16". save the changes. old `pod`/`replicateset` will be removed. new one will be created based on thre latest `deployment`
+* find image nginx version and add ":1.16". save the changes. old `pod`/`replicateset` will be removed. new one will be created based on the latest `deployment`
 
 ```sh
 kubectl edit deployment nginx-depl // a auto-generated configuraiton deploiyment files will be show
@@ -205,7 +355,7 @@ kubectl get pod // new
 kubectl get replicaset // new 
 ```
 
-#### debugging pods
+### debugging pods
 
 ```sh
 kubectl create deployment mongo-depl --image=mongo
@@ -214,14 +364,14 @@ kubectl logs -f --tail=100 <the mongo-depl pod id> // tail
 kubectl exec -it <the mongo-depl pod id> sh
 ```
 
-#### delete pods/deployment
+### delete pods/deployment
 
 ```sh
 kubectl delete deployment mongo-depl
 kubectl delete pod <the mongo-depl pod id>
 ```
 
-#### apply configuration file
+### apply configuration file
 
 * ***changes save on the yaml can be used for CRUD***
 
@@ -230,7 +380,7 @@ touch nginx-deployment.yaml
 kubectl apply -f nginx-deployment.yaml
 ```
 
-#### yaml configuration file
+### yaml configuration file
 
 * 3 parts structure
   * metadata
@@ -246,9 +396,9 @@ kubectl apply -f nginx-deployment.yaml
 * format
   * yaml
   
-##### connecting components
+#### connecting components
 
-###### labels and selectors
+##### labels and selectors
 
 * label
 
@@ -264,7 +414,7 @@ selector:
   app: nginx
 ```
 
-###### port and targetPort
+##### port and targetPort
 
 * deployment
 
@@ -280,7 +430,7 @@ selector:
       targetPort: 8080 // refers to `containerPort` in `deployment`
 ```
 
-##### tutorial
+#### tutorial
 
 * nginx-service.yaml
 
