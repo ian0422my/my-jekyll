@@ -16,6 +16,9 @@ sidebar:
 
 * provide orchestration for containers (scaling, ha, load balancing, bring up a dead container)
 * master and worker nodes concept
+* yaml based configuration
+  * meta, specs, status(create by k8s)
+* pod is smallest controllable unit
 * self healing
   * changes will be auto provisioned based on deployment config
     * e.g. if you delete a pod for a deployment, k8s will auto create the pod again!!!
@@ -29,129 +32,16 @@ kubectl edit deployment nginx-deployment
 kubectl apply -f nginx-deployment.yaml
 kubectl exec -it <pod> sh
 kubectl logs -f --tail 100 <pod>
+kubectl get <pods/services/deployments> [-o wide/yaml]
 ```
 
-### yaml structure
-
-* meta
-* spec(pod - meta,spec,status)
-* status
-  * auto gen by k8s
-
-#### Deployment
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-depl
-  labels:
-    app: nginx
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx
-        ports:
-        - containerPort: 80
-```
-
-* json equivalent
-
-```json
-{
-  "apiVersion": "apps/v1",
-  "kind": "Deployment",
-  "metadata": {
-    "name": "nginx-depl",
-    "labels": {
-      "app": "nginx"
-    }
-  },
-  "spec": {
-    "replicas": 1,
-    "selector": {
-      "matchLabels": {
-        "app": "nginx"
-      }
-    },
-    "template": {
-      "metadata": {
-        "labels": {
-          "app": "nginx"
-        }
-      },
-      "spec": {
-        "containers": [
-          {
-            "name": "nginx",
-            "image": "nginx",
-            "ports": [
-              {
-                "containerPort": 80
-              }
-            ]
-          }
-        ]
-      }
-    }
-  }
-}
-```
-
-#### service
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: svc
-spec:
-  ports:
-  - name: tcp
-    protocol: TCP
-    port: 443
-    targetPort: 
-  - name: tcp
-    protocol: TCP
-    port: 80
-    targetPort: 80
-  selector:
-    app: nginx
-```
-
-* json equivalent
-
-```json
-{
-  "apiVersion": "v1",
-  "kind": "Service",
-  "metadata": {
-    "name": "svc"
-  },
-  "spec": {
-    "ports": [
-      {
-        "name": "tcp",
-        "protocol": "TCP",
-        "port": 443,
-        "targetPort": 443
-      }
-    ],
-    "selector": {
-      "app": "nginx"
-    }
-  }
-}
-```
+* spec.service.type
+  * default is `ClusterIP` (internal ip with load balancing capability)
+  * `LoadBalancer` (extenal ip with load balancing capability)
+* spec.service.port
+  * `LoadBalancer` will have 3 ports because external ip will get a port too
+    * external:nodeport -> service:port
+    * service:port -> service:targetport (where targetport refers to containers port)
 
 ## architecture
 
@@ -193,13 +83,13 @@ spec:
 | worker | container runtime  | engine that runs container(e.g. docker); managed by `kublet`                          |
 | master | control plane      | place where the orchestration works                                                   |
 | master | kube-apiserver     | api to control the `plane` - via `kubectl`(CLI) or `Dashboard`(addon); 6443           |
-| master | etcd               | kvp data used by `plane`                                                              |
+| master | etcd               | kvp data used by `plane`; `brain`                                                     |
 | master | kube-scheduler     | `brain` that assigned `pod` to `node` to run on(based on idlity)                      |
 | master | node controller    | make sure node is deleted after it stop responding                                    |
 | master | route controller   | coutrol route in cloud                                                                |
 | master | service controller | control load balancer                                                                 |
 
-## components (detailed)
+## components
 
 <https://www.youtube.com/watch?v=X48VuDVv0do>
 
@@ -280,6 +170,136 @@ spec:
 * `kubeadm`
   * use to bootstrap cluster
 
+## yaml
+
+* meta
+* spec(pod - meta,spec,status)
+* status
+  * auto gen by k8s
+* all resources can have label(s)
+* selectors
+  * use to select ***other resource by label***
+  * 2 types of selectors
+    * equality (e.g. `environment=production,tier!=frontend`)
+      * supported by service
+    * set (e.g. `{key: environment, operator: NotIn, values: [dev]}`)
+      * supported by deployment, replicaset, job, daemonset
+
+### Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-depl
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+```
+
+* json equivalent
+
+```json
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "nginx-depl",
+    "labels": {
+      "app": "nginx"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": "nginx"
+      }
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "nginx"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "nginx",
+            "image": "nginx",
+            "ports": [
+              {
+                "containerPort": 80
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+### service
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc
+spec:
+  ports:
+  - name: tcp
+    protocol: TCP
+    port: 443
+    targetPort: 
+  - name: tcp
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    app: nginx
+```
+
+* json equivalent
+
+```json
+{
+  "apiVersion": "v1",
+  "kind": "Service",
+  "metadata": {
+    "name": "svc"
+  },
+  "spec": {
+    "ports": [
+      {
+        "name": "tcp",
+        "protocol": "TCP",
+        "port": 443,
+        "targetPort": 443
+      }
+    ],
+    "selector": {
+      "app": "nginx"
+    }
+  }
+}
+```
+
 ## Minikube
 
 ### <https://www.youtube.com/watch?v=X48VuDVv0do> (34:47)
@@ -345,15 +365,19 @@ kubectl create deployment nginx-depl --image=nginx
 kubectl get deployment
 kubectl get pod
 kubectl get replicaset
+kubectl describe pod <pod/service name>
 ```
 
-* find image nginx version and add ":1.16". save the changes. old `pod`/`replicateset` will be removed. new one will be created based on the latest `deployment`
+* self healing
+  * able to detect changes in configuration file/state and recover to original state
+    * E.g.
+      * find image nginx version and add ":1.16". save the changes. old `pod`/`replicateset` will be removed. new one will be created based on the latest `deployment`
 
 ```sh
-kubectl edit deployment nginx-depl // a auto-generated configuraiton deploiyment files will be show
-kubectl get pod // new
-kubectl get replicaset // new 
+kubectl edit deployment nginx-depl
 ```
+
+* changes `replica` from 1 to 2. Once changes is saved, 2 components will be created
 
 ### debugging pods
 
@@ -371,36 +395,27 @@ kubectl delete deployment mongo-depl
 kubectl delete pod <the mongo-depl pod id>
 ```
 
-### apply configuration file
+### configuration file(yaml)
 
-* ***changes save on the yaml can be used for CRUD***
-
-```sh
-touch nginx-deployment.yaml
-kubectl apply -f nginx-deployment.yaml
-```
-
-### yaml configuration file
-
+* yaml
 * 3 parts structure
-  * metadata
+  * `metadata`
     * `deployment` or `service`
-  * spec
+  * `spec`
     * value depending on `type`
-  * status
+  * `status`
     * auto updated by k8s continuously; pull from `etcd`
 * `pod` configuration resides within `deployment` configuration
   * i.e.
-    * metadata+spec+status (deployment)
-      * metadata+spec+status (pod)
-* format
-  * yaml
+    * `metadata`+`spec`+`status` (`deployment`)
+      * `metadata`+`spec`+`status` (`pod`)
   
 #### connecting components
 
 ##### labels and selectors
 
 * label
+  * name sticked to a resource/component
 
 ```yaml
 labels:
@@ -408,6 +423,7 @@ labels:
 ```
 
 * selectors
+  * use to refer to the label(s) of a component
 
 ```yaml
 selector:
@@ -430,9 +446,9 @@ selector:
       targetPort: 8080 // refers to `containerPort` in `deployment`
 ```
 
-#### tutorial
+#### example
 
-* nginx-service.yaml
+##### nginx-service.yaml
 
 ```yaml
 apiVersion: v1
@@ -448,7 +464,7 @@ spec:
       targetPort: 8080
 ```
 
-* nginx-deployment.yaml
+##### nginx-deployment.yaml
 
 ```yaml
 apiVersion: apps/v1
@@ -472,6 +488,252 @@ spec:
         image: nginx:1.16
         ports:
         - containerPort: 8080
+```
+
+#### apply configuration file
+
+* ***changes save on the yaml can be used for CRUD***
+
+```sh
+kubectl apply -f nginx-deployment.yaml
+kubectl apply -f nginx-service.yaml
+```
+
+#### verify pod's container ip (172.17.0.0/16)
+
+```sh
+kubectl get pods
+kubectl get pods nginx-deployment-78cc6468fb-48zd6 -o wide // e.g. ip=172.17.0.4
+```
+
+#### verify servcice targetPort is pointing towards pod's internal ip and port (i.e. 172.17.0.2:8080)
+
+```shp
+kubectl get service
+kubectl describe service nginx-service // i.e. Endpoints: 172.17.0.2:8080,172.17.0.4:8080
+```
+
+### complete project
+
+* 1:16:19
+* mongoexpress, mongodb
+* flow
+
+```txt
+browser -> external service -> mongo express + secret(userid, password) -> internal service -> mongodb
+```
+
+### mongodb-deployment.yaml
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: 
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: 
+```
+
+### mongo-secret.yaml
+
+* data must be base64 encoceed
+
+```sh
+echo -n 'username'|base64
+echo -n 'password'|base64
+```
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-secret
+type: Opaque
+data:
+  mongo-root-username: dXNlcm5hbWU=
+  mongo-root-password: cGFzc3dvcmQ=
+```
+
+* create `secret`
+
+```sh
+kubectl apply -f mongo-secret.yaml
+kubectl get secret
+```
+
+### apply the secrets into mongo-deployment.yaml
+
+* edit `mongo-deployment.yaml` and replace line below accordingly
+
+```yaml
+...
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom: 
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-password
+...
+```
+
+* apply and run
+
+```sh
+kubectl apply -f mongo-deployment.yaml
+kubectl get pods
+kubectl logs -f --tail 100 mongodb-deployment-844789cd64-n8dhf
+```
+
+### mongodb-service (internal)
+
+* add content below into the bottom of `mongo-deployment.yaml`
+  * `---` is document separation in yaml
+
+```yaml
+...
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+```
+
+* apply and run (new service will be created)
+
+```sh
+kubectl describe service mongodb-service // Endpoints: 172.17.0.2:27017; 
+kubectl get pod mongodb-deployment-844789cd64-n8dhf -o wide // IP: 172.17.0.2
+```
+
+### mongo-configmap.yaml
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-configmap
+data:
+  database_url: mongodb-service
+```
+
+* apply and run
+
+```sh
+kubectl apply -f mongo-configmap.yaml
+kubectl get configmap
+```
+
+### mongoexpress-deployment.yaml
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongoexpress-deployment
+  labels:
+    app: mongoexpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongoexpress
+  template:
+    metadata:
+      labels:
+        app: mongoexpress
+    spec:
+      containers:
+      - name: mongoexpress
+        image: mongo-express
+        ports:
+        - containerPort: 8081
+        env:
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          valueFrom: 
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-username
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-password
+        - name: ME_CONFIG_MONGODB_SERVER
+          valueFrom: 
+            configMapKeyRef:
+              name: mongodb-configmap
+              key: database_url
+```
+
+* apply and run
+
+### mongoexpress-service (external)
+
+* `type: LoadBalancer` will be assign with extenal ip
+* `nodePort: 30000` (30000 - 32767)
+
+```yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongoexpress-service
+spec:
+  selector:
+    app: mongoexpress
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30000
+```
+
+* apply and run
+
+```sh
+kubectl apply -f mongoexpress-deployment.yaml
+kubectl get services -o wide // EXTERNAL-IP will be pending
+```
+
+### assign external service with public ip
+
+* 01:46:10
+
+```sh
+minikube service mongoexpress-service // a new browser will be open @ http://192.168.49.2:30000
 ```
 
 ### <https://minikube.sigs.k8s.io/docs/start/>
