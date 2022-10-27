@@ -16,8 +16,9 @@ sidebar:
 
 * provide orchestration for containers (scaling, ha, load balancing, bring up a dead container)
 * master and worker nodes concept
-* yaml based configuration
+* yaml
   * meta, specs, status(create by k8s)
+  * deployment and service normally is put together(demarcated by `---`)
 * pod is smallest controllable unit
 * self healing
   * changes will be auto provisioned based on deployment config
@@ -521,9 +522,23 @@ kubectl describe service nginx-service // i.e. Endpoints: 172.17.0.2:8080,172.17
 
 ```txt
 browser -> external service -> mongo express + secret(userid, password) -> internal service -> mongodb
+30000 -> 8081 
 ```
 
-### mongodb-deployment.yaml
+* snippet
+
+#### snippet
+
+| metadata.name           | kind              | snippet                                                                                                                                                                                                                                                      |
+| :---------------------- | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| mongo-secret            | secret            | ...<br>mongo-root-username: dXNlcm5hbWU=<br>...                                                                                                                                                                                                              |
+| mongo-deployment        | deployment        | ...<br>containerPort: 27017<br>...<br>name: MONGO_INITDB_ROOT_USERNAME<br>valueFrom:<br>secretKeyRef:<br>name: mongodb-secret<br>key: mongo-root-username                                                                                                    |
+| mongo-service           | service(internal) | ...<br>protocol: TCP<br>...<br>port: 37017<br>targetPort: 27017<br>...                                                                                                                                                                                       |
+| mongodb-configmap       | configmap         | ...<br>database_url: mongodb-service<br>database_port: 37017<br>...                                                                                                                                                                                          |
+| mongoexpress-deployment | deployment        | ...<br>name: ME_CONFIG_MONGODB_ADMINUSERNAME<br>valueFrom:<br>secretKeyRef:<br>name: mongodb-secret<br>key: mongo-root-username<br>...<br>name: ME_CONFIG_MONGODB_PORT<br>valueFrom:<br>configMapKeyRef:<br>name: mogodb-configmap<br>key: database_port<br> |
+| mongoexpress-service    | service(external) | ...<br>type: LoadBalancer<br>...<br>protocol: TCP<br>port: 8081<br>targetPort: 8081<br>nodePort: 30000                                                                                                                                                       |
+
+#### mongodb-deployment.yaml
 
 ```yaml
 apiVersion: apps/v1
@@ -554,7 +569,7 @@ spec:
           value: 
 ```
 
-### mongo-secret.yaml
+#### mongo-secret.yaml
 
 * data must be base64 encoceed
 
@@ -581,7 +596,7 @@ kubectl apply -f mongo-secret.yaml
 kubectl get secret
 ```
 
-### apply the secrets into mongo-deployment.yaml
+#### apply the secrets into mongo-deployment.yaml
 
 * edit `mongo-deployment.yaml` and replace line below accordingly
 
@@ -609,7 +624,7 @@ kubectl get pods
 kubectl logs -f --tail 100 mongodb-deployment-844789cd64-n8dhf
 ```
 
-### mongodb-service (internal)
+#### mongodb-service (internal)
 
 * add content below into the bottom of `mongo-deployment.yaml`
   * `---` is document separation in yaml
@@ -637,7 +652,7 @@ kubectl describe service mongodb-service // Endpoints: 172.17.0.2:27017;
 kubectl get pod mongodb-deployment-844789cd64-n8dhf -o wide // IP: 172.17.0.2
 ```
 
-### mongo-configmap.yaml
+#### mongo-configmap.yaml
 
 ```yaml
 apiVersion: v1
@@ -655,7 +670,7 @@ kubectl apply -f mongo-configmap.yaml
 kubectl get configmap
 ```
 
-### mongoexpress-deployment.yaml
+#### mongoexpress-deployment.yaml
 
 ```yaml
 apiVersion: apps/v1
@@ -699,7 +714,7 @@ spec:
 
 * apply and run
 
-### mongoexpress-service (external)
+#### mongoexpress-service (external)
 
 * `type: LoadBalancer` will be assign with extenal ip
 * `nodePort: 30000` (30000 - 32767)
@@ -728,7 +743,7 @@ kubectl apply -f mongoexpress-deployment.yaml
 kubectl get services -o wide // EXTERNAL-IP will be pending
 ```
 
-### assign external service with public ip
+#### assign external service with public ip
 
 * 01:46:10
 * make sure server's `/etc/ssh/sshd_config` has `X11Forwarding yes`

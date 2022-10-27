@@ -178,17 +178,19 @@ service.pid="org.apache.sling.commons.log.LogManager"
     * extra features
       * access control
       * full text search
-  * built based on jsr170, jsr283
-  * project implemented using JCR <https://jackrabbit.apache.org/jcr/news-archive.html>
+  * built based on `jsr170`, `jsr283`
+  * project implemented using `JCR` <https://jackrabbit.apache.org/jcr/news-archive.html>
     * Apache Jackrabbit 1.X, 2.X
-    * Apache Jackrabbit 3.X (aka known as Apache Jackrabbit Oak)
+    * Apache Jackrabbit 3.X (aka known as `Apache Jackrabbit Oak`)
 
 ### AEM JCR
 
-* 3 types of persistence MK (microkernel)
-  * tarmk
-  * mongomk
-  * rdbmk
+* based on `Apache Jackrabbit Oak`
+* microkernel(MK)
+  * 3 types
+    * tarmk
+    * mongomk
+    * rdbmk
 * store
   * datastore
     * location
@@ -196,12 +198,12 @@ service.pid="org.apache.sling.commons.log.LogManager"
         * /repository/datastore
       * alternative
         * database
-    * binaries or anything >4kb
+    * ***binaries or anything >4kb***
     * housekeeping
       * datastoregarbagecollection/datastore gc
         * <http://localhost:4503/libs/granite/operations/content/maintenanceWindow.html/apps/settings/granite/operations/maintenance/granite_weekly#>
   * segmentstore
-    * node or content or anything >=4kb
+    * ***node or content or anything <>=4kb***
     * location
       * default
         * /repository/segmentstore
