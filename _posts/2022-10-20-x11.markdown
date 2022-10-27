@@ -36,4 +36,6 @@ export DISPLAY=[host]:<x-server #>[:screen #]
       * where server port forward display via port 6010(i.e. servers.DISPLAY=localhost:10.0) to client port 6000
         * i.e. client:6000 <- server:6000+x-server
       * hence, client need to have `x-server` to run in order to display
-        * install `MobaXterm` (port 6000 will be running in client to listen for x11 traffic)
+        * install `MobaXterm`
+          * port 6000 will be running in client to listen for x11 traffic
+          * ssh -X and try to run `xcalc` or `xclock`
