@@ -529,6 +529,8 @@ browser -> external service -> mongo express + secret(userid, password) -> inter
 
 #### snippet
 
+<img src="../resources/kubernetes/mongoexpress.png" alt="drawing" width="600"/>
+
 | metadata.name           | kind              | snippet                                                                                                                                                                                                                                                      |
 | :---------------------- | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | mongo-secret            | secret            | ...<br>mongo-root-username: dXNlcm5hbWU=<br>...                                                                                                                                                                                                              |
