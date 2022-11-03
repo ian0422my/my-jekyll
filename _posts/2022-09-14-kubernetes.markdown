@@ -746,14 +746,7 @@ kubectl get services -o wide // EXTERNAL-IP will be pending
 #### assign external service with public ip
 
 * 01:46:10
-* make sure server's `/etc/ssh/sshd_config` has `X11Forwarding yes`
-* set X forwarding
-  * <https://x410.dev/cookbook/built-in-ssh-x11-forwarding-in-powershell-or-windows-command-prompt/>
-
-```ps1
-$env:DISPLAY="127.0.0.1:0.0"
-ssh -Y ianlow@192.168.1.110
-```
+* imstall mobaxterm (with X-Server)
 
 ```sh
 minikube service mongoexpress-service // a new browser will be open @ http://192.168.49.2:30000

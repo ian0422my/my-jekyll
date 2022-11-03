@@ -3,7 +3,7 @@ layout: single
 #classes: wide
 title:  "x11"
 date:   2022-10-27 11:35:50 +0800
-categories: linux,unix,x11
+categories: linux,unix,x11,x-server
 toc: true
 toc_label: "In this page"
 toc_icon: " "
@@ -14,14 +14,16 @@ sidebar:
 
 ## Summary
 
-| name     | description                                                                 |
-| :------- | :-------------------------------------------------------------------------- |
-| host     | physical host                                                               |
-| x-server | a server program that runs in the host; each linux has a x-server installed |
-| client   | terminal/ssh client that talks to x-server                                  |
-| screen   | a program runs by x-server to redirect display                              |
+* X11 - windows 11
 
-<img src="../resources/x11/summary.png" alt="drawing" width="300"/>
+| name     | description                                                                          |
+| :------- | :----------------------------------------------------------------------------------- |
+| host     | physical host                                                                        |
+| x-server | a server program that runs in the host; each linux has a x-server installed          |
+| client   | client(e.g. MobaXTerm)  which has a local `x-server` that talks to host's `x-server` |
+| screen   | a program runs by x-server to redirect display                                       |
+
+<img src="../resources/x11/summary.png" alt="drawing" width="400"/>
 
 
 ```sh
@@ -32,7 +34,7 @@ export DISPLAY=[host]:<x-server #>[:screen #]
   * memory (:0 or :0.0)
   * TCP connection (hostname:0.0)
     * ssh tunnel
-      * `ssh -X` or `ssh -Y`
+      * `ssh -X`(secure) or `ssh -Y`
       * where server port forward display via port 6010(i.e. servers.DISPLAY=localhost:10.0) to client port 6000
         * i.e. client:6000 <- server:6000+x-server
       * hence, client need to have `x-server` to run in order to display
