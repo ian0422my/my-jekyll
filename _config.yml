@@ -28,7 +28,7 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # Build settings
 #theme: minima
 theme: minimal-mistakes-jekyll
-minimal_mistakes_skin: "neon" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum" "sunrise"
+minimal_mistakes_skin: "sunrise" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum" "sunrise"
 
 plugins:
   - jekyll-feed
@@ -36,12 +36,6 @@ plugins:
 
 gems:
   - "jekyll-plantuml-url"
-
-plantuml:
-  url: "http://localhost:10080/plantuml"
-  type: "svg"
-  ssl_noverify: "0"
-  http_debug: "1"
 
 search: true
 
