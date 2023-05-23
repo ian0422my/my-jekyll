@@ -55,6 +55,13 @@ sidebar:
 
 #### Solution
 
+##### Option 0 - try and see if the log can be release manually(no restart required)
+
+* go to AEM configMgr, then find the log writer for the log
+* edit the `Log File Threshold` and change the value from `'.'yyyy-MM-dd` to `'.'yyyy-MM-dd-HH-mm`(to rotate eveey minute)
+* monitor the log. If current log is rotated to a new file (e.g. error.log.2023-05-23-14-31) then manually rotate is successful
+* restore the `Log File Threshold` back to `'.'yyyy-MM-dd` 
+
 ##### Option 1 - Find out who is locking the file
 
 * go to Resource manager > CPU > handler > find the file while is not rolling, OR
