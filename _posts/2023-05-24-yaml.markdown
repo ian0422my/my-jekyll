@@ -1,0 +1,19 @@
+---
+layout: single
+classes: wide
+title:  "Powershell"
+date:   2023-05-24 15:05:50 +0800
+categories: powershell,pa
+toc: false
+toc_label: "In this page"
+toc_icon: " "
+toc_sticky: true
+sidebar:
+  nav: "about"
+---
+
+## find text in big text files (e.g. 2gb log)
+
+```cmd
+get-content 2gb.log | select-object -skip 100000 -first 10
+```
